@@ -34,7 +34,7 @@ namespace engine {
 
     void Board::make_move(const Move &move) {
         switch (move.type) {
-            case MoveType::Quiet:
+            case MoveType::M_QUIET:
                 make_quiet_move(move);
                 break;
         }
@@ -44,7 +44,7 @@ namespace engine {
 
     void Board::undo_move(const Move &move) {
         switch (move.type) {
-            case MoveType::Quiet:
+            case MoveType::M_QUIET:
                 undo_quiet_move(move);
                 break;
         }

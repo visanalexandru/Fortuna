@@ -41,14 +41,14 @@ namespace engine {
     };
 
     enum MoveType : u8 {
-        Quiet,
-        Capture,
-        QueensideCastle,
-        KingsideCastle,
-        EnPasssant,
-        Promotion,
-        PromotionCapture,
-        DoublePawnPush,
+        M_QUIET,
+        M_CAPTURE,
+        M_QUEENSIDE_CASTLE,
+        M_KINGSIDE_CASTLE,
+        M_EN_PASSANT,
+        M_PROMOTION,
+        M_PROMOTION_CAPTURE,
+        M_DOUBLE_PAWN_PUSH,
     };
 
     enum Square : u8 {

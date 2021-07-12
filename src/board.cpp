@@ -19,7 +19,7 @@ namespace engine {
         u64 pos = square_to_bitboard(square);
         u64 mask = c_all ^pos;
         current_position.placement[piece] &= mask;
-        current_position.pieces[square] = Piece::None;
+        current_position.pieces[square] = Piece::P_NONE;
     }
 
     void Board::make_quiet_move(const Move &move) {
@@ -56,7 +56,7 @@ namespace engine {
         current_position = {};
 
         for (int square = 0; square < C_NUM_SQUARES; square++) {
-            current_position.pieces[square] = Piece::None;
+            current_position.pieces[square] = Piece::P_NONE;
         }
 
         std::stringstream stream;

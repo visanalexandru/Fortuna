@@ -20,33 +20,24 @@ namespace engine {
     const std::string C_BASE_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     enum Color : u8 {
-        White,
-        Black
-    };
-
-    enum PieceType : u8 {
-        Pawn = 0,
-        Knight,
-        Bishop,
-        Rook,
-        Queen,
-        King,
+        CL_WHITE,
+        CL_BLACK
     };
 
     enum Piece : u8 {
-        WPawn = 0,
-        WKnight,
-        WBishop,
-        WRook,
-        WQueen,
-        WKing,
-        BPawn,
-        BKnight,
-        BBishop,
-        BRook,
-        BQueen,
-        BKing,
-        None
+        P_W_PAWN = 0,
+        P_W_KNIGHT,
+        P_W_BISHOP,
+        P_W_ROOK,
+        P_W_QUEEN,
+        P_W_KING,
+        P_B_PAWN,
+        P_B_KNIGHT,
+        P_B_BISHOP,
+        P_B_ROOK,
+        P_B_QUEEN,
+        P_B_KING,
+        P_NONE
     };
 
     enum MoveType : u8 {

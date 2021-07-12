@@ -22,63 +22,63 @@ namespace engine {
     Piece notation_to_piece(char piece) {
         switch (piece) {
             case 'P':
-                return WPawn;
+                return P_W_PAWN;
             case 'N':
-                return WKnight;
+                return P_W_KNIGHT;
             case 'B':
-                return WBishop;
+                return P_W_BISHOP;
             case 'R':
-                return WRook;
+                return P_W_ROOK;
             case 'Q':
-                return WQueen;
+                return P_W_QUEEN;
             case 'K':
-                return WKing;
+                return P_W_KING;
 
             case 'p':
-                return BPawn;
+                return P_B_PAWN;
             case 'n':
-                return BKnight;
+                return P_B_KNIGHT;
             case 'b':
-                return BBishop;
+                return P_B_BISHOP;
             case 'r':
-                return BRook;
+                return P_B_ROOK;
             case 'q':
-                return BQueen;
+                return P_B_QUEEN;
             case 'k':
-                return BKing;
+                return P_B_KING;
             default:
-                return None;
+                return P_NONE;
         }
     }
 
     char piece_to_notation(Piece piece) {
         switch (piece) {
-            case WPawn:
+            case P_W_PAWN:
                 return 'P';
-            case WKnight:
+            case P_W_KNIGHT:
                 return 'N';
-            case WBishop:
+            case P_W_BISHOP:
                 return 'B';
-            case WRook:
+            case P_W_ROOK:
                 return 'R';
-            case WQueen:
+            case P_W_QUEEN:
                 return 'Q';
-            case WKing:
+            case P_W_KING:
                 return 'K';
 
-            case BPawn:
+            case P_B_PAWN:
                 return 'p';
-            case BKnight:
+            case P_B_KNIGHT:
                 return 'n';
-            case BBishop:
+            case P_B_BISHOP:
                 return 'b';
-            case BRook:
+            case P_B_ROOK:
                 return 'r';
-            case BQueen:
+            case P_B_QUEEN:
                 return 'q';
-            case BKing:
+            case P_B_KING:
                 return 'k';
-            case None:
+            case P_NONE:
                 return '#';
         }
 

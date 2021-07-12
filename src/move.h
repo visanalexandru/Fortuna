@@ -21,19 +21,19 @@ namespace engine {
     };
 
     inline Move create_quiet_move(Square origin, Square destination, Piece moved) {
-        return {MoveType::Quiet, origin, destination, moved, Piece::None, Piece::None};
+        return {MoveType::Quiet, origin, destination, moved, Piece::P_NONE, Piece::P_NONE};
     }
 
     inline Move create_capture_move(Square origin, Square destination, Piece moved, Piece captured) {
-        return {MoveType::Capture, origin, destination, moved, captured, Piece::None};
+        return {MoveType::Capture, origin, destination, moved, captured, Piece::P_NONE};
     }
 
     inline Move create_double_pawn_push_move(Square origin, Square destination, Piece moved) {
-        return {MoveType::DoublePawnPush, origin, destination, moved, Piece::None, Piece::None};
+        return {MoveType::DoublePawnPush, origin, destination, moved, Piece::P_NONE, Piece::P_NONE};
     }
 
     inline Move create_promotion_move(Square origin, Square destination, Piece moved, Piece promoted) {
-        return {MoveType::Promotion, origin, destination, moved, Piece::None, promoted};
+        return {MoveType::Promotion, origin, destination, moved, Piece::P_NONE, promoted};
     }
 
     inline Move

@@ -40,37 +40,37 @@ TEST_CASE("Squares","[util]"){
     }
 }
 TEST_CASE("Pieces", "[util]"){
-    REQUIRE(notation_to_piece('P')==Piece::WPawn);
-    REQUIRE(notation_to_piece('N')==Piece::WKnight);
-    REQUIRE(notation_to_piece('B')==Piece::WBishop);
-    REQUIRE(notation_to_piece('R')==Piece::WRook);
-    REQUIRE(notation_to_piece('Q')==Piece::WQueen);
-    REQUIRE(notation_to_piece('K')==Piece::WKing);
+    REQUIRE(notation_to_piece('P')==Piece::P_W_PAWN);
+    REQUIRE(notation_to_piece('N')==Piece::P_W_KNIGHT);
+    REQUIRE(notation_to_piece('B')==Piece::P_W_BISHOP);
+    REQUIRE(notation_to_piece('R')==Piece::P_W_ROOK);
+    REQUIRE(notation_to_piece('Q')==Piece::P_W_QUEEN);
+    REQUIRE(notation_to_piece('K')==Piece::P_W_KING);
 
-    REQUIRE(notation_to_piece('p')==Piece::BPawn);
-    REQUIRE(notation_to_piece('n')==Piece::BKnight);
-    REQUIRE(notation_to_piece('b')==Piece::BBishop);
-    REQUIRE(notation_to_piece('r')==Piece::BRook);
-    REQUIRE(notation_to_piece('q')==Piece::BQueen);
-    REQUIRE(notation_to_piece('k')==Piece::BKing);
+    REQUIRE(notation_to_piece('p')==Piece::P_B_PAWN);
+    REQUIRE(notation_to_piece('n')==Piece::P_B_KNIGHT);
+    REQUIRE(notation_to_piece('b')==Piece::P_B_BISHOP);
+    REQUIRE(notation_to_piece('r')==Piece::P_B_ROOK);
+    REQUIRE(notation_to_piece('q')==Piece::P_B_QUEEN);
+    REQUIRE(notation_to_piece('k')==Piece::P_B_KING);
 
 
 
-    REQUIRE(piece_to_notation(WPawn)=='P');
-    REQUIRE(piece_to_notation(WKnight)=='N');
-    REQUIRE(piece_to_notation(WBishop)=='B');
-    REQUIRE(piece_to_notation(WRook)=='R');
-    REQUIRE(piece_to_notation(WQueen)=='Q');
-    REQUIRE(piece_to_notation(WKing)=='K');
+    REQUIRE(piece_to_notation(P_W_PAWN) == 'P');
+    REQUIRE(piece_to_notation(P_W_KNIGHT) == 'N');
+    REQUIRE(piece_to_notation(P_W_BISHOP) == 'B');
+    REQUIRE(piece_to_notation(P_W_ROOK) == 'R');
+    REQUIRE(piece_to_notation(P_W_QUEEN) == 'Q');
+    REQUIRE(piece_to_notation(P_W_KING) == 'K');
 
-    REQUIRE(piece_to_notation(BPawn)=='p');
-    REQUIRE(piece_to_notation(BKnight)=='n');
-    REQUIRE(piece_to_notation(BBishop)=='b');
-    REQUIRE(piece_to_notation(BRook)=='r');
-    REQUIRE(piece_to_notation(BQueen)=='q');
-    REQUIRE(piece_to_notation(BKing)=='k');
+    REQUIRE(piece_to_notation(P_B_PAWN) == 'p');
+    REQUIRE(piece_to_notation(P_B_KNIGHT) == 'n');
+    REQUIRE(piece_to_notation(P_B_BISHOP) == 'b');
+    REQUIRE(piece_to_notation(P_B_ROOK) == 'r');
+    REQUIRE(piece_to_notation(P_B_QUEEN) == 'q');
+    REQUIRE(piece_to_notation(P_B_KING) == 'k');
 
-    REQUIRE(piece_to_notation(None)=='#');
+    REQUIRE(piece_to_notation(P_NONE) == '#');
 
 }
 

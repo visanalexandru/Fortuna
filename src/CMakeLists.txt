@@ -1,0 +1,4 @@
+add_library (Engine util.cpp util.h board.cpp board.h defines.h move.h movegen.cpp movegen.h attacks.cpp attacks.h)
+add_executable(program main.cpp)
+target_link_libraries(program Engine)
+target_compile_options(program PRIVATE -Wall)

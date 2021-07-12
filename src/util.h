@@ -1,0 +1,72 @@
+//
+// Created by gvisan on 10.07.2021.
+//
+
+#ifndef CHESSENGINE_UTIL_H
+#define CHESSENGINE_UTIL_H
+
+#include"defines.h"
+#include<string>
+
+namespace engine {
+
+    /* Converts the given bitboard to a string for debugging purposes.*/
+    std::string dump_bitboard(u64 bit);
+
+    /* Converts a fen notation character to the corresponding piece. */
+    Piece notation_to_piece(char piece);
+
+    /* Converts a piece to its corresponding fen notation. */
+    char piece_to_notation(Piece piece);
+
+    /* Converts a position given by a square to the corresponding bitboard. */
+    inline u64 square_to_bitboard(Square square) {
+        return 1ull << square;
+    }
+
+    /* Converts the given coordinates to the corresponding square. */
+    inline Square position_to_square(int file, int rank) {
+        return Square((rank) * 8 + file);
+    }
+
+    /* Converts a string that describes a target square eg. "e4" to the corresponding square. */
+    inline Square notation_to_square(const std::string &square) {
+        char file = square[0], rank = square[1];
+        return position_to_square(file - 'a', rank - '1');
+    }
+
+    inline std::string square_to_notation(Square square) {
+        unsigned file = square % 8, rank = square / 8;
+        std::string result;
+        result.push_back(file + 'a');
+        result.push_back(rank + '1');
+        return result;
+    }
+
+
+    inline int bitScanForward(u64 &x) {
+        return __builtin_ffsll(x) - 1;
+    }
+
+    inline Square lsb(u64 &x) {
+        return (Square) bitScanForward(x);
+    }
+
+    inline int bitScanReverse(u64 &x) {
+        return 63 - __builtin_clzll(x);
+    }
+
+    inline int popCount(u64 &x) {
+        return __builtin_popcountll(x);
+    }
+
+    inline Square popLsb(u64 &x) {
+        Square res = lsb(x);
+        x &= x - 1;
+        return res;
+    }
+
+}
+
+
+#endif //CHESSENGINE_UTIL_H

@@ -86,11 +86,11 @@ namespace engine {
     };
 
     enum State : u8 {
-        SideToMove = 1,
-        WhiteCastleK = 1u << 1u,
-        WhiteCastleQ = 1u << 2u,
-        BlackCastleK = 1u << 3u,
-        BlackCastleQ = 1u << 4u,
+        S_SIDE_TO_MOVE = 1, /* The side currently moving. */
+        S_WHITE_CASTLE_K = 1u << 1u, /* Can white castle kingside. */
+        S_WHITE_CASTLE_Q = 1u << 2u, /* Can white castle queenside.*/
+        S_BLACK_CASTLE_K = 1u << 3u, /* Can black castle kingside. */
+        S_BLACK_CASTLE_Q = 1u << 4u, /* Can black castle queenside.*/
     };
 }
 

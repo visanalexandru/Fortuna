@@ -273,7 +273,7 @@ namespace engine {
         u64 all = white | black;
         std::vector<Move> result;
 
-        if (board.current_state->state & State::SideToMove) {
+        if (board.current_state->state & State::S_SIDE_TO_MOVE) {
             add_black_king_moves(white, all, result);
             add_black_knight_moves(white, all, result);
             add_black_pawn_moves(white, black, all, result);

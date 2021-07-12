@@ -82,18 +82,18 @@ namespace engine {
         }
 
         if (move == "b") {
-            current_state->state |= State::SideToMove;
+            current_state->state |= State::S_SIDE_TO_MOVE;
         }
 
         for (char token:castling) {
             if (token == 'K') {
-                current_state->state |= State::WhiteCastleK;
+                current_state->state |= State::S_WHITE_CASTLE_K;
             } else if (token == 'k') {
-                current_state->state |= State::BlackCastleK;
+                current_state->state |= State::S_BLACK_CASTLE_K;
             } else if (token == 'Q') {
-                current_state->state |= State::WhiteCastleQ;
+                current_state->state |= State::S_WHITE_CASTLE_Q;
             } else if (token == 'q') {
-                current_state->state |= State::BlackCastleQ;
+                current_state->state |= State::S_BLACK_CASTLE_Q;
             }
         }
 

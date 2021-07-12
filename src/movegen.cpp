@@ -146,8 +146,8 @@ namespace engine {
     void MoveGen::add_white_pawn_captures(u64 black, std::vector<Move> &moves) {
         u64 pawns = board.current_position.placement[P_W_PAWN];
 
-        u64 left_attacks = ((pawns & clear_file[FILE_A]) << 9u) & black;
-        u64 right_attacks = ((pawns & clear_file[FILE_H]) << 7u) & black;
+        u64 left_attacks = ((pawns & clear_file[FILE_H]) << 9u) & black;
+        u64 right_attacks = ((pawns & clear_file[FILE_A]) << 7u) & black;
 
         u64 left_captures = left_attacks & clear_rank[RANK_8];
         u64 right_captures = right_attacks & clear_rank[RANK_8];
@@ -245,14 +245,54 @@ namespace engine {
         }
     }
 
+    void MoveGen::add_white_en_passant_moves(std::vector<Move> &moves) {
+        if (board.current_state->state & State::S_EN_PASSANT) {
+            u64 pawns = board.current_position.placement[P_W_PAWN];
+            Square ep_square = board.current_state->ep_square;
+            u64 ep_target = square_to_bitboard(ep_square);
+
+            u64 ep_target_left = (ep_target & clear_file[FILE_A]) >> 9u;
+            u64 ep_target_right = (ep_target & clear_file[FILE_H]) >> 7u;
+
+            u64 ep_attackers = (ep_target_left | ep_target_right) & pawns;
+
+            Square origin;
+            while (ep_attackers) {
+                origin = popLsb(ep_attackers);
+                moves.push_back(create_en_passant_move(origin, ep_square, P_W_PAWN, P_B_PAWN));
+            }
+        }
+    }
+
+    void MoveGen::add_black_en_passant_moves(std::vector<Move> &moves) {
+        if (board.current_state->state & State::S_EN_PASSANT) {
+            u64 pawns = board.current_position.placement[P_B_PAWN];
+            Square ep_square = board.current_state->ep_square;
+            u64 ep_target = square_to_bitboard(ep_square);
+
+            u64 ep_target_left = (ep_target & clear_file[FILE_H]) << 9u;
+            u64 ep_target_right = (ep_target & clear_file[FILE_A]) << 7u;
+
+            u64 ep_attackers = (ep_target_left | ep_target_right) & pawns;
+
+            Square origin;
+            while (ep_attackers) {
+                origin = popLsb(ep_attackers);
+                moves.push_back(create_en_passant_move(origin, ep_square, P_B_PAWN, P_W_PAWN));
+            }
+        }
+    }
+
     void MoveGen::add_white_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves) {
         add_white_pawn_pushes(all, moves);
         add_white_pawn_captures(black, moves);
+        add_white_en_passant_moves(moves);
     }
 
     void MoveGen::add_black_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves) {
         add_black_pawn_pushes(all, moves);
         add_black_pawn_captures(white, moves);
+        add_black_en_passant_moves(moves);
     }
 
     std::vector<Move> MoveGen::get_moves() {

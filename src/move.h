@@ -41,9 +41,14 @@ namespace engine {
         return {MoveType::M_PROMOTION_CAPTURE, origin, destination, moved, captured, promoted};
     }
 
+    inline Move create_en_passant_move(Square origin, Square destination, Piece moved, Piece captured) {
+        return {MoveType::M_EN_PASSANT, origin, destination, moved, captured, Piece::P_NONE};
+    }
+
     inline std::string move_to_string(const Move &move) {
         std::string result = square_to_notation(move.origin);
-        if (move.type == MoveType::M_CAPTURE || move.type == MoveType::M_PROMOTION_CAPTURE) {
+        if (move.type == MoveType::M_CAPTURE || move.type == MoveType::M_PROMOTION_CAPTURE ||
+            move.type == MoveType::M_EN_PASSANT) {
             result += 'x';
         }
         result += square_to_notation(move.destination);
@@ -51,6 +56,8 @@ namespace engine {
             result += "=";
             result += piece_to_notation(move.promotion);
         }
+        if (move.type == MoveType::M_EN_PASSANT)
+            result += "ep";
         return result;
     }
 

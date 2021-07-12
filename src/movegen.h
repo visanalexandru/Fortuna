@@ -46,6 +46,14 @@ namespace engine {
         /* Generates all pawn captures for black. */
         void add_black_pawn_captures(u64 white, std::vector<Move> &moves);
 
+        /* Generates all en passant moves for white.*/
+        void add_white_en_passant_moves(std::vector<Move> &moves);
+
+
+        /* Generates all en passant moves for black.*/
+        void add_black_en_passant_moves(std::vector<Move> &moves);
+
+
         /*Generates all pawn moves for white. */
         void add_white_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves);
 

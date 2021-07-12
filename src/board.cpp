@@ -99,6 +99,7 @@ namespace engine {
 
         if (ep_square != "-") {
             current_state->ep_square = notation_to_square(ep_square);
+            current_state->state |= State::S_EN_PASSANT;
         }
 
     }

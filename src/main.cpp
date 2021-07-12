@@ -12,7 +12,7 @@ int main() {
     init_attack_tables();
 
     Board board;
-    board.load_fen("8/pp1p3p/p1B1p1Kp/NNNNNBNN/p6p/NNpNNNNN/p5p1/1R4RR w - - 0 1");
+    board.load_fen("rnbqkbnr/pppppp1p/8/8/6pP/4PP2/PPPP2P1/RNBQKBNR b KQkq h3 0 3");
     MoveGen gen(board);
     auto x=gen.get_moves();
     for(auto a:x){

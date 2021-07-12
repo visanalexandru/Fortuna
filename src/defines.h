@@ -91,6 +91,7 @@ namespace engine {
         S_WHITE_CASTLE_Q = 1u << 2u, /* Can white castle queenside.*/
         S_BLACK_CASTLE_K = 1u << 3u, /* Can black castle kingside. */
         S_BLACK_CASTLE_Q = 1u << 4u, /* Can black castle queenside.*/
+        S_EN_PASSANT = 1u << 5u /* This flag is set if the last move was a double pawn push. */
     };
 }
 

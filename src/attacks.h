@@ -10,8 +10,8 @@
 #include"util.h"
 
 namespace engine {
-    extern u64 king_attacks[c_num_squares];
-    extern u64 knight_attacks[c_num_squares];
+    extern u64 king_attacks[C_NUM_SQUARES];
+    extern u64 knight_attacks[C_NUM_SQUARES];
 
     /* Generates the king move bitboard. */
     u64 king_movement(u64 king_location);

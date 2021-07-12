@@ -13,11 +13,11 @@ namespace engine {
     typedef std::uint64_t u64;
     typedef std::uint8_t u8;
 
-    const int c_max_ply = 512;
-    const int c_num_pieces = 12;
-    const int c_num_squares = 64;
+    const int C_MAX_PLY = 512;
+    const int C_NUM_PIECES = 12;
+    const int C_NUM_SQUARES = 64;
 
-    const std::string c_base_position = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    const std::string C_BASE_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     enum Color : u8 {
         White,

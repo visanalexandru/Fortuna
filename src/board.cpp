@@ -6,7 +6,7 @@
 
 namespace engine {
     Board::Board() : history(), current_position(), current_state(&history[0]) {
-        load_fen(c_base_position);
+        load_fen(C_BASE_POSITION);
     }
 
     void Board::set_piece_at(Square square, Piece piece) {
@@ -55,7 +55,7 @@ namespace engine {
         current_state = &history[0];
         current_position = {};
 
-        for (int square = 0; square < c_num_squares; square++) {
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
             current_position.pieces[square] = Piece::None;
         }
 

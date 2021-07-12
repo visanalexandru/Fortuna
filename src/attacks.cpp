@@ -5,8 +5,8 @@
 #include "attacks.h"
 
 namespace engine {
-    u64 king_attacks[c_num_squares];
-    u64 knight_attacks[c_num_squares];
+    u64 king_attacks[C_NUM_SQUARES];
+    u64 knight_attacks[C_NUM_SQUARES];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & clear_file[FILE_H];
@@ -46,13 +46,13 @@ namespace engine {
     }
 
     void init_king_attacks() {
-        for (int square = 0; square < c_num_squares; square++) {
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
             king_attacks[square] = king_movement(square_to_bitboard((Square) square));
         }
     }
 
     void init_knight_attacks() {
-        for (int square = 0; square < c_num_squares; square++) {
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
             knight_attacks[square] = knight_movement(square_to_bitboard((Square) square));
         }
     }

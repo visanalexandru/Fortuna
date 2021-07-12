@@ -24,10 +24,10 @@ namespace engine {
         /* Structure that holds the board state.*/
         struct BoardData {
             /*The piece-placement bitboards.*/
-            u64 placement[c_num_pieces];
+            u64 placement[C_NUM_PIECES];
 
             /* An array used to retrieve piece type information. */;
-            Piece pieces[c_num_squares];
+            Piece pieces[C_NUM_SQUARES];
         };
 
         /* Structure that holds the irreversible board state. Each move makes a copy of this structure.*/
@@ -40,7 +40,7 @@ namespace engine {
         };
 
         /* Keep an array of irreversible states, to easily undo moves.*/
-        BoardState history[c_max_ply];
+        BoardState history[C_MAX_PLY];
 
         /* Adds the piece to the given square. */
         void set_piece_at(Square square, Piece piece);

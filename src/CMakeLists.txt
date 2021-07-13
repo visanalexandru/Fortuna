@@ -2,3 +2,4 @@ add_library (Engine util.cpp util.h board.cpp board.h defines.h move.h movegen.c
 add_executable(program main.cpp)
 target_link_libraries(program Engine)
 target_compile_options(program PRIVATE -Wall)
+target_compile_options(Engine PRIVATE -Wall)

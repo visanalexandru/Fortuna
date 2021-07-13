@@ -13,16 +13,7 @@ int main() {
     init_attack_tables();
 
     Board board;
-    board.load_fen("rnbqkbnr/pppppp1p/8/8/6pP/4PP2/PPPP2P1/RNBQKBNR b KQkq h3 0 3");
-
-    for (int sq = 0; sq < 64; sq++) {
-
-        u64 queen_attacks = 0;
-        for (int k = 1; k < C_NUM_DIRECTIONS; k += 2) {
-            queen_attacks |= RAY_ATTACKS[sq][k];
-        }
-        std::cout << dump_bitboard(queen_attacks) << std::endl;
-    }
+    board.load_fen("8/8/Qq2r1Q1/Q7/4N2p/8/8/8 b - - 0 1");
 
     MoveGen gen(board);
     auto x = gen.get_moves();

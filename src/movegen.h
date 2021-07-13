@@ -49,16 +49,20 @@ namespace engine {
         /* Generates all en passant moves for white.*/
         void add_white_en_passant_moves(std::vector<Move> &moves);
 
-
         /* Generates all en passant moves for black.*/
         void add_black_en_passant_moves(std::vector<Move> &moves);
-
 
         /*Generates all pawn moves for white. */
         void add_white_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves);
 
         /*Generates all pawn moves for black. */
         void add_black_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves);
+
+        /*Generates all rook moves for white. */
+        void add_white_rook_moves(u64 black, u64 all, std::vector<Move> &moves);
+
+        /*Generates all rook moves for black. */
+        void add_black_rook_moves(u64 white, u64 all, std::vector<Move> &moves);
 
     public:
         explicit MoveGen(Board &internal_board);

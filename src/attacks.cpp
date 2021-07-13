@@ -110,6 +110,45 @@ namespace engine {
         }
     }
 
+    u64 get_rook_attacks(Square square, u64 all) {
+        Square hit;
+        u64 attacks = 0, ray, ray_hit;
+
+        /* South direction.*/
+        ray = RAY_ATTACKS[square][D_SOUTH], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = msb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_SOUTH];
+        }
+
+        /* North direction.*/
+        ray = RAY_ATTACKS[square][D_NORTH], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = lsb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_NORTH];
+        }
+
+        /* West direction.*/
+        ray = RAY_ATTACKS[square][D_WEST], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = msb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_WEST];
+        }
+
+        /* East direction.*/
+        ray = RAY_ATTACKS[square][D_EAST], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = lsb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_EAST];
+        }
+
+        return attacks;
+    }
+
     void init_attack_tables() {
         init_king_attacks();
         init_knight_attacks();

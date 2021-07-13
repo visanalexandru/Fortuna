@@ -33,6 +33,9 @@ namespace engine {
     /*Initializes sliding bishop attacks for all squares.*/
     void init_bishop_attacks();
 
+    /* Returns the rook attack bitboard for the given square and blockers.*/
+    u64 get_rook_attacks(Square square, u64 all);
+
     /* Initializes all attack tables. */
     void init_attack_tables();
 

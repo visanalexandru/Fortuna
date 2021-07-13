@@ -300,6 +300,36 @@ namespace engine {
         add_black_en_passant_moves(moves);
     }
 
+    void MoveGen::add_white_rook_moves(u64 black, u64 all, std::vector<Move> &moves) {
+        u64 rooks = board.current_position.placement[P_W_ROOK], rook_attacks, rook_captures, rook_quiet_moves;
+        Square rook_square;
+        while (rooks) {
+            rook_square = popLsb(rooks);
+            rook_attacks = get_rook_attacks(rook_square, all);
+
+            rook_captures = rook_attacks & black;
+            rook_quiet_moves = rook_attacks & (~all);
+
+            add_capture_moves(rook_square, rook_captures, P_W_ROOK, moves);
+            add_quiet_moves(rook_square, rook_quiet_moves, P_W_ROOK, moves);
+        }
+    }
+
+    void MoveGen::add_black_rook_moves(u64 white, u64 all, std::vector<Move> &moves) {
+        u64 rooks = board.current_position.placement[P_B_ROOK], rook_attacks, rook_captures, rook_quiet_moves;
+        Square rook_square;
+        while (rooks) {
+            rook_square = popLsb(rooks);
+            rook_attacks = get_rook_attacks(rook_square, all);
+
+            rook_captures = rook_attacks & white;
+            rook_quiet_moves = rook_attacks & (~all);
+
+            add_capture_moves(rook_square, rook_captures, P_B_ROOK, moves);
+            add_quiet_moves(rook_square, rook_quiet_moves, P_B_ROOK, moves);
+        }
+    }
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -322,10 +352,12 @@ namespace engine {
             add_black_king_moves(white, all, result);
             add_black_knight_moves(white, all, result);
             add_black_pawn_moves(white, black, all, result);
+            add_black_rook_moves(white, all, result);
         } else {
             add_white_king_moves(black, all, result);
             add_white_knight_moves(black, all, result);
             add_white_pawn_moves(white, black, all, result);
+            add_white_rook_moves(black, all, result);
         }
         return result;
     }

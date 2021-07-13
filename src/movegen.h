@@ -64,6 +64,12 @@ namespace engine {
         /*Generates all rook moves for black. */
         void add_black_rook_moves(u64 white, u64 all, std::vector<Move> &moves);
 
+        /*Generates all bishop moves for white.*/
+        void add_white_bishop_moves(u64 black, u64 all, std::vector<Move> &moves);
+
+        /*Generates all bishop moves for black.*/
+        void add_black_bishop_moves(u64 white, u64 all, std::vector<Move> &moves);
+
     public:
         explicit MoveGen(Board &internal_board);
 

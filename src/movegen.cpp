@@ -330,6 +330,36 @@ namespace engine {
         }
     }
 
+    void MoveGen::add_white_bishop_moves(u64 black, u64 all, std::vector<Move> &moves) {
+        u64 bishops = board.current_position.placement[P_W_BISHOP], bishop_attacks, bishop_captures, bishop_quiet_moves;
+        Square bishop_square;
+        while (bishops) {
+            bishop_square = popLsb(bishops);
+            bishop_attacks = get_bishop_attacks(bishop_square, all);
+
+            bishop_captures = bishop_attacks & black;
+            bishop_quiet_moves = bishop_attacks & (~all);
+
+            add_capture_moves(bishop_square, bishop_captures, P_W_BISHOP, moves);
+            add_quiet_moves(bishop_square, bishop_quiet_moves, P_W_BISHOP, moves);
+        }
+    }
+
+    void MoveGen::add_black_bishop_moves(u64 white, u64 all, std::vector<Move> &moves) {
+        u64 bishops = board.current_position.placement[P_B_BISHOP], bishop_attacks, bishop_captures, bishop_quiet_moves;
+        Square bishop_square;
+        while (bishops) {
+            bishop_square = popLsb(bishops);
+            bishop_attacks = get_bishop_attacks(bishop_square, all);
+
+            bishop_captures = bishop_attacks & white;
+            bishop_quiet_moves = bishop_attacks & (~all);
+
+            add_capture_moves(bishop_square, bishop_captures, P_B_BISHOP, moves);
+            add_quiet_moves(bishop_square, bishop_quiet_moves, P_B_BISHOP, moves);
+        }
+    }
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -353,11 +383,13 @@ namespace engine {
             add_black_knight_moves(white, all, result);
             add_black_pawn_moves(white, black, all, result);
             add_black_rook_moves(white, all, result);
+            add_black_bishop_moves(white, all, result);
         } else {
             add_white_king_moves(black, all, result);
             add_white_knight_moves(black, all, result);
             add_white_pawn_moves(white, black, all, result);
             add_white_rook_moves(black, all, result);
+            add_white_bishop_moves(black, all, result);
         }
         return result;
     }

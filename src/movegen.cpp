@@ -32,7 +32,7 @@ namespace engine {
 
     void MoveGen::add_white_king_moves(u64 black, u64 all, std::vector<Move> &moves) {
         Square king_square = popLsb(board.current_position.placement[P_W_KING]);
-        u64 attacks = king_attacks[king_square];
+        u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
         u64 king_captures = attacks & black;
         add_quiet_moves(king_square, king_quiet_moves, P_W_KING, moves);
@@ -42,7 +42,7 @@ namespace engine {
     void MoveGen::add_black_king_moves(u64 white, u64 all, std::vector<Move> &moves) {
 
         Square king_square = popLsb(board.current_position.placement[P_B_KING]);
-        u64 attacks = king_attacks[king_square];
+        u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
         u64 king_captures = attacks & white;
         add_quiet_moves(king_square, king_quiet_moves, P_B_KING, moves);
@@ -54,7 +54,7 @@ namespace engine {
         Square knight_square;
         while (knights) {
             knight_square = popLsb(knights);
-            attacks = knight_attacks[knight_square];
+            attacks = KNIGHT_ATTACKS[knight_square];
             knight_quiet_moves = attacks & (~all);
             knight_captures = attacks & (black);
             add_quiet_moves(knight_square, knight_quiet_moves, P_W_KNIGHT, moves);
@@ -68,7 +68,7 @@ namespace engine {
         Square knight_square;
         while (knights) {
             knight_square = popLsb(knights);
-            attacks = knight_attacks[knight_square];
+            attacks = KNIGHT_ATTACKS[knight_square];
             knight_quiet_moves = attacks & (~all);
             knight_captures = attacks & (white);
             add_quiet_moves(knight_square, knight_quiet_moves, P_B_KNIGHT, moves);

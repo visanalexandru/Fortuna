@@ -7,6 +7,7 @@
 namespace engine {
     u64 KING_ATTACKS[C_NUM_SQUARES];
     u64 KNIGHT_ATTACKS[C_NUM_SQUARES];
+    u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & clear_file[FILE_H];
@@ -57,8 +58,62 @@ namespace engine {
         }
     }
 
+    void init_rook_attacks() {
+        u64 bit;
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+
+            if (square >= 8) {
+                bit = square_to_bitboard((Square) (square - 8));
+                RAY_ATTACKS[square][D_SOUTH] = bit | RAY_ATTACKS[square - 8][D_SOUTH];
+            }
+            if (square % 8 != 0) {
+                bit = square_to_bitboard((Square) (square - 1));
+                RAY_ATTACKS[square][D_WEST] = bit | RAY_ATTACKS[square - 1][D_WEST];
+            }
+        }
+
+        for (int square = C_NUM_SQUARES - 1; square >= 0; square--) {
+
+            if (square < C_NUM_SQUARES - 8) {
+                bit = square_to_bitboard((Square) (square + 8));
+                RAY_ATTACKS[square][D_NORTH] = bit | RAY_ATTACKS[square + 8][D_NORTH];
+            }
+            if (square % 8 != 7) {
+                bit = square_to_bitboard((Square) (square + 1));
+                RAY_ATTACKS[square][D_EAST] = bit | RAY_ATTACKS[square + 1][D_EAST];
+            }
+        }
+    }
+
+    void init_bishop_attacks() {
+        u64 bit;
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            if (square >= 8 && square % 8 != 0) {
+                bit = square_to_bitboard((Square) (square - 9));
+                RAY_ATTACKS[square][D_SOUTH_WEST] = bit | RAY_ATTACKS[square - 9][D_SOUTH_WEST];
+            }
+            if (square >= 8 && square % 8 != 7) {
+                bit = square_to_bitboard((Square) (square - 7));
+                RAY_ATTACKS[square][D_SOUTH_EAST] = bit | RAY_ATTACKS[square - 7][D_SOUTH_EAST];
+            }
+        }
+
+        for (int square = C_NUM_SQUARES - 1; square >= 0; square--) {
+            if (square < C_NUM_SQUARES - 8 && square % 8 != 0) {
+                bit = square_to_bitboard((Square) (square + 7));
+                RAY_ATTACKS[square][D_NORTH_WEST] = bit | RAY_ATTACKS[square + 7][D_NORTH_WEST];
+            }
+            if (square < C_NUM_SQUARES - 8 && square % 8 != 7) {
+                bit = square_to_bitboard((Square) (square + 9));
+                RAY_ATTACKS[square][D_NORTH_EAST] = bit | RAY_ATTACKS[square + 9][D_NORTH_EAST];
+            }
+        }
+    }
+
     void init_attack_tables() {
         init_king_attacks();
         init_knight_attacks();
+        init_rook_attacks();
+        init_bishop_attacks();
     }
 }

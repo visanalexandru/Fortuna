@@ -16,6 +16,7 @@ namespace engine {
     const int C_MAX_PLY = 512;
     const int C_NUM_PIECES = 12;
     const int C_NUM_SQUARES = 64;
+    const int C_NUM_DIRECTIONS = 8;
 
     const std::string C_BASE_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -83,6 +84,17 @@ namespace engine {
         RANK_6,
         RANK_7,
         RANK_8
+    };
+
+    enum Direction {
+        D_NORTH,
+        D_NORTH_EAST,
+        D_EAST,
+        D_SOUTH_EAST,
+        D_SOUTH,
+        D_SOUTH_WEST,
+        D_WEST,
+        D_NORTH_WEST
     };
 
     enum State : u8 {

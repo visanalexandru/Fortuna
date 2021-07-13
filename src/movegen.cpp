@@ -31,6 +31,9 @@ namespace engine {
 
 
     void MoveGen::add_white_king_moves(u64 black, u64 all, std::vector<Move> &moves) {
+        /* A position without a king is illegal, but we still check if we have no king.*/
+        if (board.current_position.placement[P_W_KING] == 0)
+            return;
         Square king_square = popLsb(board.current_position.placement[P_W_KING]);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
@@ -40,7 +43,9 @@ namespace engine {
     }
 
     void MoveGen::add_black_king_moves(u64 white, u64 all, std::vector<Move> &moves) {
-
+        /* A position without a king is illegal, but we still check if we have no king.*/
+        if (board.current_position.placement[P_B_KING] == 0)
+            return;
         Square king_square = popLsb(board.current_position.placement[P_B_KING]);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);

@@ -36,6 +36,9 @@ namespace engine {
     /* Returns the rook attack bitboard for the given square and blockers.*/
     u64 get_rook_attacks(Square square, u64 all);
 
+    /* Returns the bishop attack bitboard for the given square and blockers.*/
+    u64 get_bishop_attacks(Square square, u64 all);
+
     /* Initializes all attack tables. */
     void init_attack_tables();
 

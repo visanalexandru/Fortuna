@@ -149,6 +149,45 @@ namespace engine {
         return attacks;
     }
 
+    u64 get_bishop_attacks(Square square, u64 all) {
+        Square hit;
+        u64 attacks = 0, ray, ray_hit;
+
+        /* South-west direction.*/
+        ray = RAY_ATTACKS[square][D_SOUTH_WEST], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = msb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_SOUTH_WEST];
+        }
+
+        /* North-west direction.*/
+        ray = RAY_ATTACKS[square][D_NORTH_WEST], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = lsb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_NORTH_WEST];
+        }
+
+        /* South-east direction.*/
+        ray = RAY_ATTACKS[square][D_SOUTH_EAST], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = msb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_SOUTH_EAST];
+        }
+
+        /* North-east direction.*/
+        ray = RAY_ATTACKS[square][D_NORTH_EAST], ray_hit = ray & all;
+        attacks |= ray;
+        if (ray_hit) {
+            hit = lsb(ray_hit);
+            attacks &= ~RAY_ATTACKS[hit][D_NORTH_EAST];
+        }
+
+        return attacks;
+    }
+
     void init_attack_tables() {
         init_king_attacks();
         init_knight_attacks();

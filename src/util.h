@@ -44,16 +44,32 @@ namespace engine {
     }
 
 
+    /* Returns the index of the first set bit, or -1 if the bitboard is empty.*/
     inline int bitScanForward(u64 &x) {
+        if (x == 0)
+            return -1;
+
         return __builtin_ffsll(x) - 1;
     }
 
+    /* Returns the square corresponding to the index of the first set bit of the input.*/
+    /* This function expects a non-zero value as input.*/
     inline Square lsb(u64 &x) {
         return (Square) bitScanForward(x);
     }
 
+    /* Returns the index of the last set bit or -1 if the bitboard is empty.*/
     inline int bitScanReverse(u64 &x) {
+        if (x == 0)
+            return -1;
         return 63 - __builtin_clzll(x);
+    }
+
+    /*Returns the square corresponding to the index of the last set bit of the input.*/
+    /*This function expects a non-zero value as input.*/
+
+    inline Square msb(u64 &x) {
+        return (Square) bitScanReverse(x);
     }
 
     inline int popCount(u64 &x) {

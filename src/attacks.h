@@ -13,6 +13,7 @@
 namespace engine {
     extern u64 KING_ATTACKS[C_NUM_SQUARES];
     extern u64 KNIGHT_ATTACKS[C_NUM_SQUARES];
+    extern u64 PAWN_ATTACKS[C_NUM_SQUARES][2];
     extern u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
     extern u64 ROOK_MASKS[C_NUM_SQUARES];
     extern u64 BISHOP_MASKS[C_NUM_SQUARES];
@@ -37,6 +38,9 @@ namespace engine {
 
     /*Initializes sliding bishop attacks for all squares.*/
     void init_bishop_attacks();
+
+    /*Initializes pawn attacks for all squares.*/
+    void init_pawn_attacks();
 
     /*Initializes the rook masks used to compute the magic tables.*/
     void init_rook_masks();

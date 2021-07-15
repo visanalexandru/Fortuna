@@ -7,6 +7,7 @@
 namespace engine {
     u64 KING_ATTACKS[C_NUM_SQUARES];
     u64 KNIGHT_ATTACKS[C_NUM_SQUARES];
+    u64 PAWN_ATTACKS[C_NUM_SQUARES][2];
     u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
     u64 ROOK_MASKS[C_NUM_SQUARES];
     u64 BISHOP_MASKS[C_NUM_SQUARES];
@@ -112,6 +113,25 @@ namespace engine {
                 RAY_ATTACKS[square][D_NORTH_EAST] = bit | RAY_ATTACKS[square + 9][D_NORTH_EAST];
             }
         }
+    }
+
+    void init_pawn_attacks() {
+        u64 bit, left, right;
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            bit = square_to_bitboard((Square) square);
+
+            /* White side.*/
+            left = ((bit & clear_file[FILE_H]) << 9u);
+            right = ((bit & clear_file[FILE_A]) << 7u);
+
+            PAWN_ATTACKS[square][C_WHITE] = left | right;
+
+            /*Black side.*/
+            left = ((bit & clear_file[FILE_A]) >> 9u);
+            right = ((bit & clear_file[FILE_H]) >> 7u);
+            PAWN_ATTACKS[square][C_BLACK] = left | right;
+        }
+
     }
 
     void init_rook_masks() {
@@ -267,6 +287,7 @@ namespace engine {
 
     void init_tables() {
         init_king_attacks();
+        init_pawn_attacks();
         init_knight_attacks();
         init_rook_attacks();
         init_bishop_attacks();

@@ -70,6 +70,12 @@ namespace engine {
         /*Generates all bishop moves for black.*/
         void add_black_bishop_moves(u64 white, u64 all, std::vector<Move> &moves);
 
+        /*Generates all queen moves for white.*/
+        void add_white_queen_moves(u64 black, u64 all, std::vector<Move> &moves);
+
+        /*Generates all queen moves for black.*/
+        void add_black_queen_moves(u64 white, u64 all, std::vector<Move> &moves);
+
     public:
         explicit MoveGen(Board &internal_board);
 

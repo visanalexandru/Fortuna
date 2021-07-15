@@ -360,6 +360,36 @@ namespace engine {
         }
     }
 
+    void MoveGen::add_white_queen_moves(u64 black, u64 all, std::vector<Move> &moves) {
+        u64 queens = board.current_position.placement[P_W_QUEEN], queen_attacks, queen_captures, queen_quiet_moves;
+        Square queen_square;
+        while (queens) {
+            queen_square = popLsb(queens);
+            queen_attacks = get_bishop_attacks(queen_square, all) | get_rook_attacks(queen_square, all);
+
+            queen_captures = queen_attacks & black;
+            queen_quiet_moves = queen_attacks & (~all);
+
+            add_capture_moves(queen_square, queen_captures, P_W_QUEEN, moves);
+            add_quiet_moves(queen_square, queen_quiet_moves, P_W_QUEEN, moves);
+        }
+    }
+
+    void MoveGen::add_black_queen_moves(u64 white, u64 all, std::vector<Move> &moves) {
+        u64 queens = board.current_position.placement[P_B_QUEEN], queen_attacks, queen_captures, queen_quiet_moves;
+        Square queen_square;
+        while (queens) {
+            queen_square = popLsb(queens);
+            queen_attacks = get_bishop_attacks(queen_square, all) | get_rook_attacks(queen_square, all);
+
+            queen_captures = queen_attacks & white;
+            queen_quiet_moves = queen_attacks & (~all);
+
+            add_capture_moves(queen_square, queen_captures, P_B_QUEEN, moves);
+            add_quiet_moves(queen_square, queen_quiet_moves, P_B_QUEEN, moves);
+        }
+    }
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -384,12 +414,14 @@ namespace engine {
             add_black_pawn_moves(white, black, all, result);
             add_black_rook_moves(white, all, result);
             add_black_bishop_moves(white, all, result);
+            add_black_queen_moves(white, all, result);
         } else {
             add_white_king_moves(black, all, result);
             add_white_knight_moves(black, all, result);
             add_white_pawn_moves(white, black, all, result);
             add_white_rook_moves(black, all, result);
             add_white_bishop_moves(black, all, result);
+            add_white_queen_moves(black, all, result);
         }
         return result;
     }

@@ -199,11 +199,11 @@ namespace engine {
         }
     }
 
-    void MoveGen::add_black_pawn_captures(u64 black, std::vector<Move> &moves) {
+    void MoveGen::add_black_pawn_captures(u64 white, std::vector<Move> &moves) {
         u64 pawns = board.current_position.placement[P_B_PAWN];
 
-        u64 left_attacks = ((pawns & clear_file[FILE_A]) >> 9u) & black;
-        u64 right_attacks = ((pawns & clear_file[FILE_H]) >> 7u) & black;
+        u64 left_attacks = ((pawns & clear_file[FILE_A]) >> 9u) & white;
+        u64 right_attacks = ((pawns & clear_file[FILE_H]) >> 7u) & white;
 
         u64 left_captures = left_attacks & clear_rank[RANK_1];
         u64 right_captures = right_attacks & clear_rank[RANK_1];

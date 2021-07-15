@@ -53,10 +53,10 @@ namespace engine {
         void add_black_en_passant_moves(std::vector<Move> &moves);
 
         /*Generates all pawn moves for white. */
-        void add_white_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves);
+        void add_white_pawn_moves(u64 black, u64 all, std::vector<Move> &moves);
 
         /*Generates all pawn moves for black. */
-        void add_black_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves);
+        void add_black_pawn_moves(u64 white, u64 all, std::vector<Move> &moves);
 
         /*Generates all rook moves for white. */
         void add_white_rook_moves(u64 black, u64 all, std::vector<Move> &moves);

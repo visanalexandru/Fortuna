@@ -288,13 +288,13 @@ namespace engine {
         }
     }
 
-    void MoveGen::add_white_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves) {
+    void MoveGen::add_white_pawn_moves(u64 black, u64 all, std::vector<Move> &moves) {
         add_white_pawn_pushes(all, moves);
         add_white_pawn_captures(black, moves);
         add_white_en_passant_moves(moves);
     }
 
-    void MoveGen::add_black_pawn_moves(u64 white, u64 black, u64 all, std::vector<Move> &moves) {
+    void MoveGen::add_black_pawn_moves(u64 white, u64 all, std::vector<Move> &moves) {
         add_black_pawn_pushes(all, moves);
         add_black_pawn_captures(white, moves);
         add_black_en_passant_moves(moves);
@@ -411,14 +411,14 @@ namespace engine {
         if (board.current_state->state & State::S_SIDE_TO_MOVE) {
             add_black_king_moves(white, all, result);
             add_black_knight_moves(white, all, result);
-            add_black_pawn_moves(white, black, all, result);
+            add_black_pawn_moves(white, all, result);
             add_black_rook_moves(white, all, result);
             add_black_bishop_moves(white, all, result);
             add_black_queen_moves(white, all, result);
         } else {
             add_white_king_moves(black, all, result);
             add_white_knight_moves(black, all, result);
-            add_white_pawn_moves(white, black, all, result);
+            add_white_pawn_moves(black, all, result);
             add_white_rook_moves(black, all, result);
             add_white_bishop_moves(black, all, result);
             add_white_queen_moves(black, all, result);

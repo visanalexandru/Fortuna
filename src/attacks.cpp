@@ -8,6 +8,8 @@ namespace engine {
     u64 KING_ATTACKS[C_NUM_SQUARES];
     u64 KNIGHT_ATTACKS[C_NUM_SQUARES];
     u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
+    u64 ROOK_MASKS[C_NUM_SQUARES];
+    u64 BISHOP_MASKS[C_NUM_SQUARES];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & clear_file[FILE_H];
@@ -110,6 +112,25 @@ namespace engine {
         }
     }
 
+    void init_rook_masks() {
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            ROOK_MASKS[square] = (RAY_ATTACKS[square][D_NORTH] & clear_rank[RANK_8]) |
+                                 (RAY_ATTACKS[square][D_SOUTH] & clear_rank[RANK_1]) |
+                                 (RAY_ATTACKS[square][D_EAST] & clear_file[FILE_H]) |
+                                 (RAY_ATTACKS[square][D_WEST] & clear_file[FILE_A]);
+        }
+    }
+
+
+    void init_bishop_masks() {
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            BISHOP_MASKS[square] = (RAY_ATTACKS[square][D_SOUTH_WEST] & clear_rank[RANK_1] & clear_file[FILE_A]) |
+                                   (RAY_ATTACKS[square][D_SOUTH_EAST] & clear_rank[RANK_1] & clear_file[FILE_H]) |
+                                   (RAY_ATTACKS[square][D_NORTH_WEST] & clear_rank[RANK_8] & clear_file[FILE_A]) |
+                                   (RAY_ATTACKS[square][D_NORTH_EAST] & clear_rank[RANK_8] & clear_file[FILE_H]);
+        }
+    }
+
     u64 get_rook_attacks(Square square, u64 all) {
         Square hit;
         u64 attacks = 0, ray, ray_hit;
@@ -188,10 +209,12 @@ namespace engine {
         return attacks;
     }
 
-    void init_attack_tables() {
+    void init_tables() {
         init_king_attacks();
         init_knight_attacks();
         init_rook_attacks();
         init_bishop_attacks();
+        init_rook_masks();
+        init_bishop_masks();
     }
 }

@@ -305,7 +305,7 @@ namespace engine {
         Square rook_square;
         while (rooks) {
             rook_square = popLsb(rooks);
-            rook_attacks = get_rook_attacks(rook_square, all);
+            rook_attacks = get_magic_rook_attacks(rook_square, all);
 
             rook_captures = rook_attacks & black;
             rook_quiet_moves = rook_attacks & (~all);
@@ -320,7 +320,7 @@ namespace engine {
         Square rook_square;
         while (rooks) {
             rook_square = popLsb(rooks);
-            rook_attacks = get_rook_attacks(rook_square, all);
+            rook_attacks = get_magic_rook_attacks(rook_square, all);
 
             rook_captures = rook_attacks & white;
             rook_quiet_moves = rook_attacks & (~all);
@@ -335,7 +335,7 @@ namespace engine {
         Square bishop_square;
         while (bishops) {
             bishop_square = popLsb(bishops);
-            bishop_attacks = get_bishop_attacks(bishop_square, all);
+            bishop_attacks = get_magic_bishop_attacks(bishop_square, all);
 
             bishop_captures = bishop_attacks & black;
             bishop_quiet_moves = bishop_attacks & (~all);
@@ -350,7 +350,7 @@ namespace engine {
         Square bishop_square;
         while (bishops) {
             bishop_square = popLsb(bishops);
-            bishop_attacks = get_bishop_attacks(bishop_square, all);
+            bishop_attacks = get_magic_bishop_attacks(bishop_square, all);
 
             bishop_captures = bishop_attacks & white;
             bishop_quiet_moves = bishop_attacks & (~all);
@@ -365,7 +365,7 @@ namespace engine {
         Square queen_square;
         while (queens) {
             queen_square = popLsb(queens);
-            queen_attacks = get_bishop_attacks(queen_square, all) | get_rook_attacks(queen_square, all);
+            queen_attacks = get_magic_bishop_attacks(queen_square, all) | get_magic_rook_attacks(queen_square, all);
 
             queen_captures = queen_attacks & black;
             queen_quiet_moves = queen_attacks & (~all);
@@ -380,7 +380,7 @@ namespace engine {
         Square queen_square;
         while (queens) {
             queen_square = popLsb(queens);
-            queen_attacks = get_bishop_attacks(queen_square, all) | get_rook_attacks(queen_square, all);
+            queen_attacks = get_magic_bishop_attacks(queen_square, all) | get_magic_rook_attacks(queen_square, all);
 
             queen_captures = queen_attacks & white;
             queen_quiet_moves = queen_attacks & (~all);

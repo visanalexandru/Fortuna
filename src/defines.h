@@ -12,6 +12,8 @@ namespace engine {
 
     typedef std::uint64_t u64;
     typedef std::uint8_t u8;
+    typedef std::uint16_t u16;
+    typedef std::uint32_t u32;
 
     const int C_MAX_PLY = 512;
     const int C_NUM_PIECES = 12;

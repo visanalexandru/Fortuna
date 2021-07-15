@@ -8,6 +8,7 @@
 #include"defines.h"
 #include"tables.h"
 #include"util.h"
+#include"magic.h"
 
 namespace engine {
     extern u64 KING_ATTACKS[C_NUM_SQUARES];
@@ -15,6 +16,8 @@ namespace engine {
     extern u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
     extern u64 ROOK_MASKS[C_NUM_SQUARES];
     extern u64 BISHOP_MASKS[C_NUM_SQUARES];
+    extern u64 ROOK_MAGIC[C_NUM_SQUARES][magic::ROOK_MAGIC_MAX];
+    extern u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
 
     /* Generates the king move bitboard. */
     u64 king_movement(u64 king_location);
@@ -41,11 +44,23 @@ namespace engine {
     /*Initializes the bishop masks used to compute the magic tables.*/
     void init_bishop_masks();
 
+    /*Initializes the rook magic table.*/
+    void init_rook_magic();
+
+    /*Initializes the bishop magic table.*/
+    void init_bishop_magic();
+
     /* Returns the rook attack bitboard for the given square and blockers.*/
     u64 get_rook_attacks(Square square, u64 all);
 
     /* Returns the bishop attack bitboard for the given square and blockers.*/
     u64 get_bishop_attacks(Square square, u64 all);
+
+    /*Get the rook attack bitboard for the given square and blockers by querying the magic tables.*/
+    u64 get_magic_rook_attacks(Square square, u64 all);
+
+    /*Get the bishop attack bitboard for the given square and blockers by querying the magic tables.*/
+    u64 get_magic_bishop_attacks(Square square, u64 all);
 
     /* Initializes all tables. */
     void init_tables();

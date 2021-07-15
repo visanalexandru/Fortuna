@@ -10,6 +10,8 @@ namespace engine {
     u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
     u64 ROOK_MASKS[C_NUM_SQUARES];
     u64 BISHOP_MASKS[C_NUM_SQUARES];
+    u64 ROOK_MAGIC[C_NUM_SQUARES][magic::ROOK_MAGIC_MAX];
+    u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & clear_file[FILE_H];
@@ -209,6 +211,60 @@ namespace engine {
         return attacks;
     }
 
+
+    void init_rook_magic() {
+        unsigned long long index;
+        u64 mask, sub_mask;
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            mask = ROOK_MASKS[square];
+            sub_mask = mask;
+
+            //We iterate through all the sub-masks of the occupancy mask.
+            while (sub_mask) {
+                index = (sub_mask * magic::MAGIC_NUM_R[square]) >> (64u - magic::BITS_R[square]);
+                ROOK_MAGIC[square][index] = get_rook_attacks((Square) square, sub_mask);
+                sub_mask = (sub_mask - 1) & mask;
+            }
+            //Don't forget about the zero sub-mask
+            index = (sub_mask * magic::MAGIC_NUM_R[square]) >> (64u - magic::BITS_R[square]);
+            ROOK_MAGIC[square][index] = get_rook_attacks((Square) square, sub_mask);
+        }
+    }
+
+    void init_bishop_magic() {
+        unsigned long long index;
+        u64 mask, sub_mask;
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            mask = BISHOP_MASKS[square];
+            sub_mask = mask;
+
+            //We iterate through all the sub-masks of the occupancy mask.
+            while (sub_mask) {
+                index = (sub_mask * magic::MAGIC_NUM_B[square]) >> (64u - magic::BITS_B[square]);
+                BISHOP_MAGIC[square][index] = get_bishop_attacks((Square) square, sub_mask);
+                sub_mask = (sub_mask - 1) & mask;
+            }
+            //Don't forget about the zero sub-mask
+            index = (sub_mask * magic::MAGIC_NUM_B[square]) >> (64u - magic::BITS_B[square]);
+            BISHOP_MAGIC[square][index] = get_bishop_attacks((Square) square, sub_mask);
+        }
+    }
+
+
+    u64 get_magic_rook_attacks(Square square, u64 all) {
+        u64 blockers = all & ROOK_MASKS[square];
+
+        unsigned long index = (blockers * magic::MAGIC_NUM_R[square]) >> (64u - magic::BITS_R[square]);
+        return ROOK_MAGIC[square][index];
+    }
+
+    u64 get_magic_bishop_attacks(Square square, u64 all) {
+        u64 blockers = all & BISHOP_MASKS[square];
+
+        unsigned long index = (blockers * magic::MAGIC_NUM_B[square]) >> (64u - magic::BITS_B[square]);
+        return BISHOP_MAGIC[square][index];
+    }
+
     void init_tables() {
         init_king_attacks();
         init_knight_attacks();
@@ -216,5 +272,7 @@ namespace engine {
         init_bishop_attacks();
         init_rook_masks();
         init_bishop_masks();
+        init_rook_magic();
+        init_bishop_magic();
     }
 }

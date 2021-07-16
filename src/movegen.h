@@ -76,6 +76,12 @@ namespace engine {
         /*Generates all queen moves for black.*/
         void add_black_queen_moves(u64 white, u64 all, std::vector<Move> &moves);
 
+        /*Checks if white can attack the given square.*/
+        bool can_white_attack_square(Square square, u64 all);
+
+        /*Checks if black can attack the given square.*/
+        bool can_black_attack_square(Square square, u64 all);
+
     public:
         explicit MoveGen(Board &internal_board);
 

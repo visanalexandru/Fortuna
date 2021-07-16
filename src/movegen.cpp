@@ -390,6 +390,58 @@ namespace engine {
         }
     }
 
+    bool MoveGen::can_white_attack_square(Square square, u64 all) {
+        u64 bishop_attacks = get_magic_bishop_attacks(square, all);
+        u64 rook_attacks = get_magic_rook_attacks(square, all);
+
+        if (bishop_attacks & board.current_position.placement[P_W_BISHOP])
+            return true;
+
+        if (rook_attacks & board.current_position.placement[P_W_ROOK])
+            return true;
+
+        if ((bishop_attacks | rook_attacks) & board.current_position.placement[P_W_QUEEN]) {
+            return true;
+        }
+
+        if (KNIGHT_ATTACKS[square] & board.current_position.placement[P_W_KNIGHT])
+            return true;
+        if (KING_ATTACKS[square] & board.current_position.placement[P_W_KING])
+            return true;
+
+        /*We take the opposite color pawn attack to know if any white pawns attack this square.*/
+        if (PAWN_ATTACKS[square][C_BLACK] & board.current_position.placement[P_W_PAWN])
+            return true;
+
+        return false;
+    }
+
+    bool MoveGen::can_black_attack_square(Square square, u64 all) {
+        u64 bishop_attacks = get_magic_bishop_attacks(square, all);
+        u64 rook_attacks = get_magic_rook_attacks(square, all);
+
+        if (bishop_attacks & board.current_position.placement[P_B_BISHOP])
+            return true;
+
+        if (rook_attacks & board.current_position.placement[P_B_ROOK])
+            return true;
+
+        if ((bishop_attacks | rook_attacks) & board.current_position.placement[P_B_QUEEN]) {
+            return true;
+        }
+
+        if (KNIGHT_ATTACKS[square] & board.current_position.placement[P_B_KNIGHT])
+            return true;
+        if (KING_ATTACKS[square] & board.current_position.placement[P_B_KING])
+            return true;
+
+        /*We take the opposite color pawn attack to know if any black pawns attack this square.*/
+        if (PAWN_ATTACKS[square][C_WHITE] & board.current_position.placement[P_B_PAWN])
+            return true;
+
+        return false;
+    }
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |

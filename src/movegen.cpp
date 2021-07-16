@@ -3,6 +3,7 @@
 //
 
 #include "movegen.h"
+#include<cassert>
 
 namespace engine {
 
@@ -442,6 +443,69 @@ namespace engine {
         return false;
     }
 
+    void MoveGen::add_white_castling_moves(u64 all, std::vector<Move> &moves) {
+        if (can_black_attack_square(SQ_E1, all))
+            return;
+
+        bool occupied, attacked, can_castle;
+
+        /*Kingside castling.*/
+        occupied = ((square_to_bitboard(SQ_F1) | square_to_bitboard(SQ_G1)) & all);
+        can_castle = board.current_state->state & S_WHITE_CASTLE_K;
+
+        if (can_castle && !occupied) {
+            attacked = can_black_attack_square(SQ_F1, all) ||
+                       can_black_attack_square(SQ_G1, all);
+
+            if (!attacked) {
+                moves.push_back(create_kingside_castle_move(SQ_E1, SQ_G1, P_W_KING));
+            }
+        }
+        /*Queenside castling.*/
+        occupied = ((square_to_bitboard(SQ_D1) | square_to_bitboard(SQ_C1) | square_to_bitboard(SQ_B1)) & all);
+        can_castle = board.current_state->state & S_WHITE_CASTLE_Q;
+
+        if (can_castle && !occupied) {
+            attacked = can_black_attack_square(SQ_D1, all) ||
+                       can_black_attack_square(SQ_C1, all);
+            if (!attacked) {
+                moves.push_back(create_queenside_castle_move(SQ_E1, SQ_C1, P_W_KING));
+            }
+        }
+    }
+
+    void MoveGen::add_black_castling_moves(u64 all, std::vector<Move> &moves) {
+        if (can_white_attack_square(SQ_E8, all))
+            return;
+
+        bool occupied, attacked, can_castle;
+
+        /*Kingside castling.*/
+        occupied = ((square_to_bitboard(SQ_F8) | square_to_bitboard(SQ_G8)) & all);
+        can_castle = board.current_state->state & S_BLACK_CASTLE_K;
+
+        if (can_castle && !occupied) {
+            attacked = can_white_attack_square(SQ_F8, all) ||
+                       can_white_attack_square(SQ_G8, all);
+
+            if (!attacked) {
+                moves.push_back(create_kingside_castle_move(SQ_E8, SQ_G8, P_B_KING));
+            }
+        }
+        /*Queenside castling.*/
+        occupied = ((square_to_bitboard(SQ_D8) | square_to_bitboard(SQ_C8) | square_to_bitboard(SQ_B8)) & all);
+        can_castle = board.current_state->state & S_BLACK_CASTLE_Q;
+
+        if (can_castle && !occupied) {
+            attacked = can_white_attack_square(SQ_D8, all) ||
+                       can_white_attack_square(SQ_C8, all);
+            if (!attacked) {
+                moves.push_back(create_queenside_castle_move(SQ_E8, SQ_C8, P_B_KING));
+            }
+        }
+    }
+
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -467,6 +531,7 @@ namespace engine {
             add_black_rook_moves(white, all, result);
             add_black_bishop_moves(white, all, result);
             add_black_queen_moves(white, all, result);
+            add_black_castling_moves(all, result);
         } else {
             add_white_king_moves(black, all, result);
             add_white_knight_moves(black, all, result);
@@ -474,6 +539,7 @@ namespace engine {
             add_white_rook_moves(black, all, result);
             add_white_bishop_moves(black, all, result);
             add_white_queen_moves(black, all, result);
+            add_white_castling_moves(all, result);
         }
         return result;
     }

@@ -82,6 +82,12 @@ namespace engine {
         /*Checks if black can attack the given square.*/
         bool can_black_attack_square(Square square, u64 all);
 
+        /* Adds all white castling moves.*/
+        void add_white_castling_moves(u64 all, std::vector<Move> &moves);
+
+        /* Adds all black castling moves.*/
+        void add_black_castling_moves(u64 all, std::vector<Move> &moves);
+
     public:
         explicit MoveGen(Board &internal_board);
 

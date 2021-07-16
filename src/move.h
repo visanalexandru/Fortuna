@@ -45,6 +45,14 @@ namespace engine {
         return {MoveType::M_EN_PASSANT, origin, destination, moved, captured, Piece::P_NONE};
     }
 
+    inline Move create_kingside_castle_move(Square origin, Square destination, Piece moved) {
+        return {MoveType::M_KINGSIDE_CASTLE, origin, destination, moved};
+    }
+
+    inline Move create_queenside_castle_move(Square origin, Square destination, Piece moved) {
+        return {MoveType::M_QUEENSIDE_CASTLE, origin, destination, moved};
+    }
+
     inline std::string move_to_string(const Move &move) {
         std::string result = square_to_notation(move.origin);
         if (move.type == MoveType::M_CAPTURE || move.type == MoveType::M_PROMOTION_CAPTURE ||

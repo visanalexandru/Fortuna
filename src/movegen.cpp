@@ -35,7 +35,8 @@ namespace engine {
         /* A position without a king is illegal, but we still check if we have no king.*/
         if (board.current_position.placement[P_W_KING] == 0)
             return;
-        Square king_square = popLsb(board.current_position.placement[P_W_KING]);
+        u64 king_bitboard = board.current_position.placement[P_W_KING];
+        Square king_square = popLsb(king_bitboard);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
         u64 king_captures = attacks & black;
@@ -47,7 +48,8 @@ namespace engine {
         /* A position without a king is illegal, but we still check if we have no king.*/
         if (board.current_position.placement[P_B_KING] == 0)
             return;
-        Square king_square = popLsb(board.current_position.placement[P_B_KING]);
+        u64 king_bitboard = board.current_position.placement[P_B_KING];
+        Square king_square = popLsb(king_bitboard);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
         u64 king_captures = attacks & white;

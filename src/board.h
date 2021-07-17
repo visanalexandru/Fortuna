@@ -26,6 +26,9 @@ namespace engine {
             /*The piece-placement bitboards.*/
             u64 placement[C_NUM_PIECES];
 
+            /*All-piece bitboard.*/
+            u64 all;
+
             /* An array used to retrieve piece type information. */;
             Piece pieces[C_NUM_SQUARES];
         };
@@ -117,6 +120,9 @@ namespace engine {
 
         /* Reverts a move, updating the internal state accordingly.*/
         void undo_move(const Move &move);
+
+        /* Returns the current color to move.*/
+        Color color_to_play() const;
 
         Board();
     };

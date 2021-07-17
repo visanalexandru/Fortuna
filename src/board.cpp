@@ -9,15 +9,21 @@ namespace engine {
         load_fen(C_BASE_POSITION);
     }
 
+    Color Board::color_to_play() const {
+        return (current_state->state & S_SIDE_TO_MOVE) ? C_BLACK : C_WHITE;
+    }
+
     void Board::set_piece_at(Square square, Piece piece) {
         u64 pos = square_to_bitboard(square);
         current_position.placement[piece] |= pos;
+        current_position.all |= pos;
         current_position.pieces[square] = piece;
     }
 
     void Board::remove_piece_at(Square square, Piece piece) {
         u64 pos = square_to_bitboard(square);
         current_position.placement[piece] &= ~pos;
+        current_position.all &= ~pos;
         current_position.pieces[square] = Piece::P_NONE;
     }
 

@@ -89,12 +89,12 @@ namespace engine {
         u64 pawns = board.current_position.placement[P_W_PAWN];
 
         u64 single_step = (pawns << 8u) & (~all);
-        u64 promotions = single_step & mask_rank[RANK_8];
-        u64 double_push = ((single_step & mask_rank[RANK_3]) << 8u) & (~all);
+        u64 promotions = single_step & MASK_RANK[RANK_8];
+        u64 double_push = ((single_step & MASK_RANK[RANK_3]) << 8u) & (~all);
 
         Square destination, origin;
 
-        u64 single_push = single_step & clear_rank[RANK_8];
+        u64 single_push = single_step & CLEAR_RANK[RANK_8];
 
         while (single_push) {
             destination = popLsb(single_push);
@@ -122,12 +122,12 @@ namespace engine {
         u64 pawns = board.current_position.placement[P_B_PAWN];
 
         u64 single_step = (pawns >> 8u) & (~all);
-        u64 promotions = single_step & mask_rank[RANK_1];
-        u64 double_push = ((single_step & mask_rank[RANK_6]) >> 8u) & (~all);
+        u64 promotions = single_step & MASK_RANK[RANK_1];
+        u64 double_push = ((single_step & MASK_RANK[RANK_6]) >> 8u) & (~all);
 
         Square destination, origin;
 
-        u64 single_push = single_step & clear_rank[RANK_1];
+        u64 single_push = single_step & CLEAR_RANK[RANK_1];
 
         while (single_push) {
             destination = popLsb(single_push);
@@ -155,14 +155,14 @@ namespace engine {
     void MoveGen::add_white_pawn_captures(u64 black) {
         u64 pawns = board.current_position.placement[P_W_PAWN];
 
-        u64 left_attacks = ((pawns & clear_file[FILE_H]) << 9u) & black;
-        u64 right_attacks = ((pawns & clear_file[FILE_A]) << 7u) & black;
+        u64 left_attacks = ((pawns & CLEAR_FILE[FILE_H]) << 9u) & black;
+        u64 right_attacks = ((pawns & CLEAR_FILE[FILE_A]) << 7u) & black;
 
-        u64 left_captures = left_attacks & clear_rank[RANK_8];
-        u64 right_captures = right_attacks & clear_rank[RANK_8];
+        u64 left_captures = left_attacks & CLEAR_RANK[RANK_8];
+        u64 right_captures = right_attacks & CLEAR_RANK[RANK_8];
 
-        u64 left_promotion_captures = left_attacks & mask_rank[RANK_8];
-        u64 right_promotion_captures = right_attacks & mask_rank[RANK_8];
+        u64 left_promotion_captures = left_attacks & MASK_RANK[RANK_8];
+        u64 right_promotion_captures = right_attacks & MASK_RANK[RANK_8];
 
         Square origin, destination;
         Piece captured;
@@ -206,14 +206,14 @@ namespace engine {
     void MoveGen::add_black_pawn_captures(u64 white) {
         u64 pawns = board.current_position.placement[P_B_PAWN];
 
-        u64 left_attacks = ((pawns & clear_file[FILE_A]) >> 9u) & white;
-        u64 right_attacks = ((pawns & clear_file[FILE_H]) >> 7u) & white;
+        u64 left_attacks = ((pawns & CLEAR_FILE[FILE_A]) >> 9u) & white;
+        u64 right_attacks = ((pawns & CLEAR_FILE[FILE_H]) >> 7u) & white;
 
-        u64 left_captures = left_attacks & clear_rank[RANK_1];
-        u64 right_captures = right_attacks & clear_rank[RANK_1];
+        u64 left_captures = left_attacks & CLEAR_RANK[RANK_1];
+        u64 right_captures = right_attacks & CLEAR_RANK[RANK_1];
 
-        u64 left_promotion_captures = left_attacks & mask_rank[RANK_1];
-        u64 right_promotion_captures = right_attacks & mask_rank[RANK_1];
+        u64 left_promotion_captures = left_attacks & MASK_RANK[RANK_1];
+        u64 right_promotion_captures = right_attacks & MASK_RANK[RANK_1];
 
         Square origin, destination;
         Piece captured;
@@ -260,8 +260,8 @@ namespace engine {
             Square ep_square = board.current_state->ep_square;
             u64 ep_target = square_to_bitboard(ep_square);
 
-            u64 ep_target_left = (ep_target & clear_file[FILE_A]) >> 9u;
-            u64 ep_target_right = (ep_target & clear_file[FILE_H]) >> 7u;
+            u64 ep_target_left = (ep_target & CLEAR_FILE[FILE_A]) >> 9u;
+            u64 ep_target_right = (ep_target & CLEAR_FILE[FILE_H]) >> 7u;
 
             u64 ep_attackers = (ep_target_left | ep_target_right) & pawns;
 
@@ -279,8 +279,8 @@ namespace engine {
             Square ep_square = board.current_state->ep_square;
             u64 ep_target = square_to_bitboard(ep_square);
 
-            u64 ep_target_left = (ep_target & clear_file[FILE_H]) << 9u;
-            u64 ep_target_right = (ep_target & clear_file[FILE_A]) << 7u;
+            u64 ep_target_left = (ep_target & CLEAR_FILE[FILE_H]) << 9u;
+            u64 ep_target_right = (ep_target & CLEAR_FILE[FILE_A]) << 7u;
 
             u64 ep_attackers = (ep_target_left | ep_target_right) & pawns;
 

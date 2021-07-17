@@ -8,9 +8,7 @@
 #include"defines.h"
 
 namespace engine {
-    const u64 c_all = 0xffffffffffffffff;
-
-    const u64 mask_rank[] = {0xFF,
+    const u64 MASK_RANK[] = {0xFF,
                              0xFF00,
                              0xFF0000,
                              0xFF000000,
@@ -20,7 +18,7 @@ namespace engine {
                              0xFF00000000000000
     };
 
-    const u64 mask_file[] = {0x0101010101010101,
+    const u64 MASK_FILE[] = {0x0101010101010101,
                              0x202020202020202,
                              0x404040404040404,
                              0x808080808080808,
@@ -30,7 +28,7 @@ namespace engine {
                              0x8080808080808080
     };
 
-    const u64 clear_rank[] = {0xFFFFFFFFFFFFFF00,
+    const u64 CLEAR_RANK[] = {0xFFFFFFFFFFFFFF00,
                               0xFFFFFFFFFFFF00FF,
                               0xFFFFFFFFFF00FFFF,
                               0xFFFFFFFF00FFFFFF,
@@ -40,7 +38,7 @@ namespace engine {
                               0x00FFFFFFFFFFFFFF
     };
 
-    const u64 clear_file[] = {0xFEFEFEFEFEFEFEFE,
+    const u64 CLEAR_FILE[] = {0xFEFEFEFEFEFEFEFE,
                               0xFDFDFDFDFDFDFDFD,
                               0xFBFBFBFBFBFBFBFB,
                               0xF7F7F7F7F7F7F7F7,

@@ -15,8 +15,8 @@ namespace engine {
     u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
 
     u64 king_movement(u64 king_location) {
-        u64 clip_file_h = king_location & clear_file[FILE_H];
-        u64 clip_file_a = king_location & clear_file[FILE_A];
+        u64 clip_file_h = king_location & CLEAR_FILE[FILE_H];
+        u64 clip_file_a = king_location & CLEAR_FILE[FILE_A];
 
         u64 moves = 0;
         moves |= clip_file_a << 7u;
@@ -32,11 +32,11 @@ namespace engine {
     }
 
     u64 knight_movement(u64 knight_location) {
-        u64 clip_file_a = knight_location & clear_file[FILE_A];
-        u64 clip_file_ab = clip_file_a & clear_file[FILE_B];
+        u64 clip_file_a = knight_location & CLEAR_FILE[FILE_A];
+        u64 clip_file_ab = clip_file_a & CLEAR_FILE[FILE_B];
 
-        u64 clip_file_h = knight_location & clear_file[FILE_H];
-        u64 clip_file_hg = clip_file_h & clear_file[FILE_G];
+        u64 clip_file_h = knight_location & CLEAR_FILE[FILE_H];
+        u64 clip_file_hg = clip_file_h & CLEAR_FILE[FILE_G];
 
         u64 moves = 0;
         moves |= clip_file_a >> 17u;
@@ -121,14 +121,14 @@ namespace engine {
             bit = square_to_bitboard((Square) square);
 
             /* White side.*/
-            left = ((bit & clear_file[FILE_H]) << 9u);
-            right = ((bit & clear_file[FILE_A]) << 7u);
+            left = ((bit & CLEAR_FILE[FILE_H]) << 9u);
+            right = ((bit & CLEAR_FILE[FILE_A]) << 7u);
 
             PAWN_ATTACKS[square][C_WHITE] = left | right;
 
             /*Black side.*/
-            left = ((bit & clear_file[FILE_A]) >> 9u);
-            right = ((bit & clear_file[FILE_H]) >> 7u);
+            left = ((bit & CLEAR_FILE[FILE_A]) >> 9u);
+            right = ((bit & CLEAR_FILE[FILE_H]) >> 7u);
             PAWN_ATTACKS[square][C_BLACK] = left | right;
         }
 
@@ -136,20 +136,20 @@ namespace engine {
 
     void init_rook_masks() {
         for (int square = 0; square < C_NUM_SQUARES; square++) {
-            ROOK_MASKS[square] = (RAY_ATTACKS[square][D_NORTH] & clear_rank[RANK_8]) |
-                                 (RAY_ATTACKS[square][D_SOUTH] & clear_rank[RANK_1]) |
-                                 (RAY_ATTACKS[square][D_EAST] & clear_file[FILE_H]) |
-                                 (RAY_ATTACKS[square][D_WEST] & clear_file[FILE_A]);
+            ROOK_MASKS[square] = (RAY_ATTACKS[square][D_NORTH] & CLEAR_RANK[RANK_8]) |
+                                 (RAY_ATTACKS[square][D_SOUTH] & CLEAR_RANK[RANK_1]) |
+                                 (RAY_ATTACKS[square][D_EAST] & CLEAR_FILE[FILE_H]) |
+                                 (RAY_ATTACKS[square][D_WEST] & CLEAR_FILE[FILE_A]);
         }
     }
 
 
     void init_bishop_masks() {
         for (int square = 0; square < C_NUM_SQUARES; square++) {
-            BISHOP_MASKS[square] = (RAY_ATTACKS[square][D_SOUTH_WEST] & clear_rank[RANK_1] & clear_file[FILE_A]) |
-                                   (RAY_ATTACKS[square][D_SOUTH_EAST] & clear_rank[RANK_1] & clear_file[FILE_H]) |
-                                   (RAY_ATTACKS[square][D_NORTH_WEST] & clear_rank[RANK_8] & clear_file[FILE_A]) |
-                                   (RAY_ATTACKS[square][D_NORTH_EAST] & clear_rank[RANK_8] & clear_file[FILE_H]);
+            BISHOP_MASKS[square] = (RAY_ATTACKS[square][D_SOUTH_WEST] & CLEAR_RANK[RANK_1] & CLEAR_FILE[FILE_A]) |
+                                   (RAY_ATTACKS[square][D_SOUTH_EAST] & CLEAR_RANK[RANK_1] & CLEAR_FILE[FILE_H]) |
+                                   (RAY_ATTACKS[square][D_NORTH_WEST] & CLEAR_RANK[RANK_8] & CLEAR_FILE[FILE_A]) |
+                                   (RAY_ATTACKS[square][D_NORTH_EAST] & CLEAR_RANK[RANK_8] & CLEAR_FILE[FILE_H]);
         }
     }
 

@@ -546,4 +546,19 @@ namespace engine {
         return result;
     }
 
+
+    unsigned int MoveGen::perft(unsigned int depth) {
+        auto moves = get_moves();
+        if (depth == 1) {
+            return moves.size();
+        } else {
+            unsigned int result = 0;
+            for (const Move &move:moves) {
+                board.make_move(move);
+                result += perft(depth - 1);
+                board.undo_move(move);
+            }
+            return result;
+        }
+    }
 }

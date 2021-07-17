@@ -94,6 +94,9 @@ namespace engine {
         /* Returns all legal moves of the current position.*/
         std::vector<Move> get_moves();
 
+        /*Returns the number of leaf nodes of the tree with the given depth.*/
+        unsigned perft(unsigned depth);
+
     };
 }
 

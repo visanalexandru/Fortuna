@@ -8,7 +8,7 @@
 namespace engine {
 
     MoveGen::MoveGen(Board &internal_board) : board(internal_board) {
-
+        moves.reserve(C_MAX_MOVES);
     }
 
     void MoveGen::add_quiet_moves(Square origin, u64 attacks, Piece piece) {

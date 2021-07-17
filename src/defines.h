@@ -19,6 +19,7 @@ namespace engine {
     const int C_NUM_PIECES = 12;
     const int C_NUM_SQUARES = 64;
     const int C_NUM_DIRECTIONS = 8;
+    const int C_MAX_MOVES = 256;
 
     const std::string C_BASE_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 

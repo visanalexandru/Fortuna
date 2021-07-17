@@ -54,6 +54,50 @@ namespace engine {
         /* Reverts a quiet move. */
         void undo_quiet_move(const Move &move);
 
+        /*Executes a capture move.*/
+        void make_capture_move(const Move &move);
+
+        /*Reverts a capture move.*/
+        void undo_capture_move(const Move &move);
+
+        /*Executes a promotion move.*/
+        void make_promotion_move(const Move &move);
+
+        /*Reverts a promotion move.*/
+        void undo_promotion_move(const Move &move);
+
+        /*Executes a promotion-capture move.*/
+        void make_promotion_capture_move(const Move &move);
+
+        /*Reverts a promotion-capture move.*/
+        void undo_promotion_capture_move(const Move &move);
+
+        /*Executes an en-passant move.*/
+        void make_en_passant_move(const Move &move);
+
+        /*Reverts an en-passant move.*/
+        void undo_en_passant_move(const Move &move);
+
+        /*Executes a kingside-castle move.*/
+        void make_kingside_castle_move(const Move &move);
+
+        /*Reverts a kingside-castle move.*/
+        void undo_kingside_castle_move(const Move &move);
+
+        /*Executes a queenside-castle move.*/
+        void make_queenside_castle_move(const Move &move);
+
+        /*Reverts a queenside-castle move.*/
+        void undo_queenside_castle_move(const Move &move);
+
+        /*Updates en passant flag and target square.*/
+        void update_en_passant_status(const Move &move);
+
+        /*Updates castling rights affected by the move.*/
+        void update_castling_status(const Move &move);
+
+        /*Updates the status flags affected by the move.*/
+        void update_status(const Move &move);
 
     public:
         /* The current position's data. */

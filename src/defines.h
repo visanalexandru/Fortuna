@@ -99,7 +99,7 @@ namespace engine {
         D_NORTH_WEST
     };
 
-    enum State : u8 {
+    enum State : u32 {
         S_SIDE_TO_MOVE = 1, /* The side currently moving. */
         S_WHITE_CASTLE_K = 1u << 1u, /* Can white castle kingside. */
         S_WHITE_CASTLE_Q = 1u << 2u, /* Can white castle queenside.*/

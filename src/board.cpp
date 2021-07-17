@@ -17,8 +17,7 @@ namespace engine {
 
     void Board::remove_piece_at(Square square, Piece piece) {
         u64 pos = square_to_bitboard(square);
-        u64 mask = c_all ^pos;
-        current_position.placement[piece] &= mask;
+        current_position.placement[piece] &= ~pos;
         current_position.pieces[square] = Piece::P_NONE;
     }
 
@@ -32,13 +31,225 @@ namespace engine {
         set_piece_at(move.origin, move.moved);
     }
 
+    void Board::make_capture_move(const Move &move) {
+        remove_piece_at(move.destination, move.captured);
+        remove_piece_at(move.origin, move.moved);
+        set_piece_at(move.destination, move.moved);
+    }
+
+    void Board::undo_capture_move(const Move &move) {
+        remove_piece_at(move.destination, move.moved);
+        set_piece_at(move.destination, move.captured);
+        set_piece_at(move.origin, move.moved);
+    }
+
+    void Board::make_promotion_move(const Move &move) {
+        set_piece_at(move.destination, move.promotion);
+        remove_piece_at(move.origin, move.moved);
+    }
+
+    void Board::undo_promotion_move(const Move &move) {
+        remove_piece_at(move.destination, move.promotion);
+        set_piece_at(move.origin, move.moved);
+    }
+
+    void Board::make_promotion_capture_move(const Move &move) {
+        remove_piece_at(move.destination, move.captured);
+        remove_piece_at(move.origin, move.moved);
+        set_piece_at(move.destination, move.promotion);
+    }
+
+
+    void Board::undo_promotion_capture_move(const Move &move) {
+        remove_piece_at(move.destination, move.promotion);
+        set_piece_at(move.destination, move.captured);
+        set_piece_at(move.origin, move.moved);
+    }
+
+    void Board::make_en_passant_move(const Move &move) {
+        Square pawn_square;
+
+        if (move.moved == P_W_PAWN) {
+            pawn_square = (Square) (move.destination - 8);
+        } else pawn_square = (Square) (move.destination + 8);
+
+        remove_piece_at(pawn_square, move.captured);
+        remove_piece_at(move.origin, move.moved);
+        set_piece_at(move.destination, move.moved);
+    }
+
+    void Board::undo_en_passant_move(const Move &move) {
+        Square pawn_square;
+        if (move.moved == P_W_PAWN) {
+            pawn_square = (Square) (move.destination - 8);
+        } else pawn_square = (Square) (move.destination + 8);
+
+        remove_piece_at(move.destination, move.moved);
+        set_piece_at(pawn_square, move.captured);
+        set_piece_at(move.origin, move.moved);
+    }
+
+    void Board::make_kingside_castle_move(const Move &move) {
+        if (move.moved == P_W_KING) {
+            remove_piece_at(SQ_H1, P_W_ROOK);
+            remove_piece_at(SQ_E1, P_W_KING);
+            set_piece_at(SQ_G1, P_W_KING);
+            set_piece_at(SQ_F1, P_W_ROOK);
+        } else {
+            remove_piece_at(SQ_H8, P_B_ROOK);
+            remove_piece_at(SQ_E8, P_B_KING);
+            set_piece_at(SQ_G8, P_B_KING);
+            set_piece_at(SQ_F8, P_B_ROOK);
+        }
+    }
+
+
+    void Board::undo_kingside_castle_move(const Move &move) {
+        if (move.moved == P_W_KING) {
+            remove_piece_at(SQ_F1, P_W_ROOK);
+            remove_piece_at(SQ_G1, P_W_KING);
+            set_piece_at(SQ_E1, P_W_KING);
+            set_piece_at(SQ_H1, P_W_ROOK);
+        } else {
+            remove_piece_at(SQ_F8, P_B_ROOK);
+            remove_piece_at(SQ_G8, P_B_KING);
+            set_piece_at(SQ_E8, P_B_KING);
+            set_piece_at(SQ_H8, P_B_ROOK);
+        }
+    }
+
+    void Board::make_queenside_castle_move(const Move &move) {
+        if (move.moved == P_W_KING) {
+            remove_piece_at(SQ_A1, P_W_ROOK);
+            remove_piece_at(SQ_E1, P_W_KING);
+            set_piece_at(SQ_C1, P_W_KING);
+            set_piece_at(SQ_D1, P_W_ROOK);
+        } else {
+            remove_piece_at(SQ_A8, P_B_ROOK);
+            remove_piece_at(SQ_E8, P_B_KING);
+            set_piece_at(SQ_C8, P_B_KING);
+            set_piece_at(SQ_D8, P_B_ROOK);
+        }
+    }
+
+
+    void Board::undo_queenside_castle_move(const Move &move) {
+        if (move.moved == P_W_KING) {
+            remove_piece_at(SQ_D1, P_W_ROOK);
+            remove_piece_at(SQ_C1, P_W_KING);
+            set_piece_at(SQ_E1, P_W_KING);
+            set_piece_at(SQ_A1, P_W_ROOK);
+        } else {
+            remove_piece_at(SQ_D8, P_B_ROOK);
+            remove_piece_at(SQ_C8, P_B_KING);
+            set_piece_at(SQ_E8, P_B_KING);
+            set_piece_at(SQ_A8, P_B_ROOK);
+        }
+    }
+
+    void Board::update_en_passant_status(const Move &move) {
+        if (move.type == MoveType::M_DOUBLE_PAWN_PUSH) {
+            current_state->state |= S_EN_PASSANT;
+            if (move.moved == P_W_PAWN) {
+                current_state->ep_square = (Square) (move.destination - 8);
+            } else current_state->ep_square = (Square) (move.destination + 8);
+        } else {
+            current_state->state &= ~S_EN_PASSANT;
+        }
+    }
+
+    void Board::update_castling_status(const Move &move) {
+
+        switch (move.destination) {
+            case SQ_A1:
+                current_state->state &= ~S_WHITE_CASTLE_Q;
+                break;
+            case SQ_H1:
+                current_state->state &= ~S_WHITE_CASTLE_K;
+                break;
+            case SQ_A8:
+                current_state->state &= ~S_BLACK_CASTLE_Q;
+                break;
+            case SQ_H8:
+                current_state->state &= ~S_BLACK_CASTLE_K;
+                break;
+            default:
+                break;
+        }
+
+        switch (move.origin) {
+            case SQ_E1:
+                current_state->state &= ~S_WHITE_CASTLE_K;
+                current_state->state &= ~S_WHITE_CASTLE_Q;
+                break;
+            case SQ_E8:
+                current_state->state &= ~S_BLACK_CASTLE_K;
+                current_state->state &= ~S_BLACK_CASTLE_Q;
+                break;
+            case SQ_A1:
+                current_state->state &= ~S_WHITE_CASTLE_Q;
+                break;
+            case SQ_H1:
+                current_state->state &= ~S_WHITE_CASTLE_K;
+                break;
+            case SQ_A8:
+                current_state->state &= ~S_BLACK_CASTLE_Q;
+                break;
+            case SQ_H8:
+                current_state->state &= ~S_BLACK_CASTLE_K;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void Board::update_status(const Move &move) {
+        update_en_passant_status(move);
+        update_castling_status(move);
+        current_state->state ^= S_SIDE_TO_MOVE;
+    }
+
     void Board::make_move(const Move &move) {
         switch (move.type) {
             case MoveType::M_QUIET:
                 make_quiet_move(move);
                 break;
-        }
 
+            case MoveType::M_CAPTURE:
+                make_capture_move(move);
+                break;
+
+            case MoveType::M_DOUBLE_PAWN_PUSH:
+                make_quiet_move(move);
+                break;
+
+            case MoveType::M_KINGSIDE_CASTLE:
+                make_kingside_castle_move(move);
+                break;
+
+            case MoveType::M_QUEENSIDE_CASTLE:
+                make_queenside_castle_move(move);
+                break;
+
+            case MoveType::M_PROMOTION:
+                make_promotion_move(move);
+                break;
+
+            case MoveType::M_PROMOTION_CAPTURE:
+                make_promotion_capture_move(move);
+                break;
+
+            case MoveType::M_EN_PASSANT:
+                make_en_passant_move(move);
+                break;
+        }
+        /*We copy the current state into the next state.*/
+        *(current_state + 1) = *current_state;
+        /*We increment the state pointer.*/
+        current_state++;
+
+        /*We update the state flags.*/
+        update_status(move);
 
     }
 
@@ -47,7 +258,37 @@ namespace engine {
             case MoveType::M_QUIET:
                 undo_quiet_move(move);
                 break;
+
+            case MoveType::M_CAPTURE:
+                undo_capture_move(move);
+                break;
+
+            case MoveType::M_DOUBLE_PAWN_PUSH:
+                undo_quiet_move(move);
+                break;
+
+            case MoveType::M_KINGSIDE_CASTLE:
+                undo_kingside_castle_move(move);
+                break;
+
+            case MoveType::M_QUEENSIDE_CASTLE:
+                undo_queenside_castle_move(move);
+                break;
+
+            case MoveType::M_PROMOTION:
+                undo_promotion_move(move);
+                break;
+
+            case MoveType::M_PROMOTION_CAPTURE:
+                undo_promotion_capture_move(move);
+                break;
+
+            case MoveType::M_EN_PASSANT:
+                undo_en_passant_move(move);
+                break;
         }
+        /*We decrement the state pointer.*/
+        current_state--;
     }
 
     void Board::load_fen(const std::string &fen) {

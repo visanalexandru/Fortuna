@@ -9,6 +9,7 @@ namespace engine {
 
     MoveGen::MoveGen(Board &internal_board) : board(internal_board) {
         moves.reserve(C_MAX_MOVES);
+        legal_moves.reserve(C_MAX_MOVES);
     }
 
     void MoveGen::add_quiet_moves(Square origin, u64 attacks, Piece piece) {
@@ -507,6 +508,18 @@ namespace engine {
         }
     }
 
+    bool MoveGen::is_in_check(Color color) {
+        u64 king_bitboard;
+        u64 all = board.current_position.all;
+
+        if (color == C_WHITE) {
+            king_bitboard = board.current_position.placement[P_W_KING];
+            return king_bitboard != 0 && can_black_attack_square(popLsb(king_bitboard), all);
+        } else {
+            king_bitboard = board.current_position.placement[P_B_KING];
+            return king_bitboard != 0 && can_white_attack_square(popLsb(king_bitboard), all);
+        }
+    }
 
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
@@ -525,8 +538,10 @@ namespace engine {
 
         u64 all = white | black;
         moves.clear();
+        legal_moves.clear();
+        Color current = board.color_to_play();
 
-        if (board.current_state->state & State::S_SIDE_TO_MOVE) {
+        if (current == C_BLACK) {
             add_black_king_moves(white, all);
             add_black_knight_moves(white, all);
             add_black_pawn_moves(white, all);
@@ -543,7 +558,16 @@ namespace engine {
             add_white_queen_moves(black, all);
             add_white_castling_moves(all);
         }
-        return moves;
+
+        /*Checking for legality.*/
+        for (const Move &move:moves) {
+            board.make_move(move);
+            if (!is_in_check(current)) {
+                legal_moves.push_back(move);
+            }
+            board.undo_move(move);
+        }
+        return legal_moves;
     }
 
 

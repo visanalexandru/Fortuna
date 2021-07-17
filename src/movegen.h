@@ -16,6 +16,9 @@ namespace engine {
         /*The move buffer.*/
         std::vector<Move> moves;
 
+        /*The legal move buffer.*/
+        std::vector<Move> legal_moves;
+
         /* The internal board.*/
         Board &board;
 
@@ -100,6 +103,8 @@ namespace engine {
         /*Returns the number of leaf nodes of the tree with the given depth.*/
         unsigned perft(unsigned depth);
 
+        /*Checks if the given color is in check.*/
+        bool is_in_check(Color color);
     };
 }
 

@@ -166,22 +166,23 @@ namespace engine {
 
     void Board::update_castling_status(const Move &move) {
 
-        switch (move.destination) {
-            case SQ_A1:
-                current_state->state &= ~S_WHITE_CASTLE_Q;
-                break;
-            case SQ_H1:
-                current_state->state &= ~S_WHITE_CASTLE_K;
-                break;
-            case SQ_A8:
-                current_state->state &= ~S_BLACK_CASTLE_Q;
-                break;
-            case SQ_H8:
-                current_state->state &= ~S_BLACK_CASTLE_K;
-                break;
-            default:
-                break;
-        }
+        if (move.type == MoveType::M_CAPTURE || move.type == MoveType::M_PROMOTION_CAPTURE)
+            switch (move.destination) {
+                case SQ_A1:
+                    current_state->state &= ~S_WHITE_CASTLE_Q;
+                    break;
+                case SQ_H1:
+                    current_state->state &= ~S_WHITE_CASTLE_K;
+                    break;
+                case SQ_A8:
+                    current_state->state &= ~S_BLACK_CASTLE_Q;
+                    break;
+                case SQ_H8:
+                    current_state->state &= ~S_BLACK_CASTLE_K;
+                    break;
+                default:
+                    break;
+            }
 
         switch (move.origin) {
             case SQ_E1:

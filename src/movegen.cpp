@@ -395,16 +395,25 @@ namespace engine {
     }
 
     bool MoveGen::can_white_attack_square(Square square, u64 all) {
-        u64 bishop_attacks = get_magic_bishop_attacks(square, all);
-        u64 rook_attacks = get_magic_rook_attacks(square, all);
+        u64 rooks = board.current_position.placement[P_W_ROOK];
+        u64 bishops = board.current_position.placement[P_W_BISHOP];
+        u64 queens = board.current_position.placement[P_W_QUEEN];
 
-        if (bishop_attacks & board.current_position.placement[P_W_BISHOP])
+        u64 bishop_attacks = 0, rook_attacks = 0;
+
+        if (ROOK_ATTACKS[square] & queens || ROOK_ATTACKS[square] & rooks)
+            rook_attacks = get_magic_rook_attacks(square, all);
+
+        if (BISHOP_ATTACKS[square] & queens || BISHOP_ATTACKS[square] & bishops)
+            bishop_attacks = get_magic_bishop_attacks(square, all);
+
+        if (bishop_attacks & bishops)
             return true;
 
-        if (rook_attacks & board.current_position.placement[P_W_ROOK])
+        if (rook_attacks & rooks)
             return true;
 
-        if ((bishop_attacks | rook_attacks) & board.current_position.placement[P_W_QUEEN]) {
+        if ((bishop_attacks | rook_attacks) & queens) {
             return true;
         }
 
@@ -421,16 +430,25 @@ namespace engine {
     }
 
     bool MoveGen::can_black_attack_square(Square square, u64 all) {
-        u64 bishop_attacks = get_magic_bishop_attacks(square, all);
-        u64 rook_attacks = get_magic_rook_attacks(square, all);
+        u64 rooks = board.current_position.placement[P_B_ROOK];
+        u64 bishops = board.current_position.placement[P_B_BISHOP];
+        u64 queens = board.current_position.placement[P_B_QUEEN];
 
-        if (bishop_attacks & board.current_position.placement[P_B_BISHOP])
+        u64 bishop_attacks = 0, rook_attacks = 0;
+
+        if (ROOK_ATTACKS[square] & queens || ROOK_ATTACKS[square] & rooks)
+            rook_attacks = get_magic_rook_attacks(square, all);
+
+        if (BISHOP_ATTACKS[square] & queens || BISHOP_ATTACKS[square] & bishops)
+            bishop_attacks = get_magic_bishop_attacks(square, all);
+
+        if (bishop_attacks & bishops)
             return true;
 
-        if (rook_attacks & board.current_position.placement[P_B_ROOK])
+        if (rook_attacks & rooks)
             return true;
 
-        if ((bishop_attacks | rook_attacks) & board.current_position.placement[P_B_QUEEN]) {
+        if ((bishop_attacks | rook_attacks) & queens) {
             return true;
         }
 

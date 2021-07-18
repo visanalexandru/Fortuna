@@ -7,6 +7,8 @@
 namespace engine {
     u64 KING_ATTACKS[C_NUM_SQUARES];
     u64 KNIGHT_ATTACKS[C_NUM_SQUARES];
+    u64 ROOK_ATTACKS[C_NUM_SQUARES];
+    u64 BISHOP_ATTACKS[C_NUM_SQUARES];
     u64 PAWN_ATTACKS[C_NUM_SQUARES][2];
     u64 RAY_ATTACKS[C_NUM_SQUARES][C_NUM_DIRECTIONS];
     u64 ROOK_MASKS[C_NUM_SQUARES];
@@ -88,6 +90,13 @@ namespace engine {
                 RAY_ATTACKS[square][D_EAST] = bit | RAY_ATTACKS[square + 1][D_EAST];
             }
         }
+
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            ROOK_ATTACKS[square] = RAY_ATTACKS[square][D_SOUTH] |
+                                   RAY_ATTACKS[square][D_WEST] |
+                                   RAY_ATTACKS[square][D_NORTH] |
+                                   RAY_ATTACKS[square][D_EAST];
+        }
     }
 
     void init_bishop_attacks() {
@@ -112,6 +121,13 @@ namespace engine {
                 bit = square_to_bitboard((Square) (square + 9));
                 RAY_ATTACKS[square][D_NORTH_EAST] = bit | RAY_ATTACKS[square + 9][D_NORTH_EAST];
             }
+        }
+
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            BISHOP_ATTACKS[square] = RAY_ATTACKS[square][D_SOUTH_WEST] |
+                                     RAY_ATTACKS[square][D_SOUTH_EAST] |
+                                     RAY_ATTACKS[square][D_NORTH_WEST] |
+                                     RAY_ATTACKS[square][D_NORTH_EAST];
         }
     }
 

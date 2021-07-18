@@ -479,7 +479,7 @@ namespace engine {
                        can_black_attack_square(SQ_G1, all);
 
             if (!attacked) {
-                moves.push_back(create_kingside_castle_move(SQ_E1, SQ_G1, P_W_KING));
+                legal_moves.push_back(create_kingside_castle_move(SQ_E1, SQ_G1, P_W_KING));
             }
         }
         /*Queenside castling.*/
@@ -490,7 +490,7 @@ namespace engine {
             attacked = can_black_attack_square(SQ_D1, all) ||
                        can_black_attack_square(SQ_C1, all);
             if (!attacked) {
-                moves.push_back(create_queenside_castle_move(SQ_E1, SQ_C1, P_W_KING));
+                legal_moves.push_back(create_queenside_castle_move(SQ_E1, SQ_C1, P_W_KING));
             }
         }
     }
@@ -510,7 +510,7 @@ namespace engine {
                        can_white_attack_square(SQ_G8, all);
 
             if (!attacked) {
-                moves.push_back(create_kingside_castle_move(SQ_E8, SQ_G8, P_B_KING));
+                legal_moves.push_back(create_kingside_castle_move(SQ_E8, SQ_G8, P_B_KING));
             }
         }
         /*Queenside castling.*/
@@ -521,7 +521,7 @@ namespace engine {
             attacked = can_white_attack_square(SQ_D8, all) ||
                        can_white_attack_square(SQ_C8, all);
             if (!attacked) {
-                moves.push_back(create_queenside_castle_move(SQ_E8, SQ_C8, P_B_KING));
+                legal_moves.push_back(create_queenside_castle_move(SQ_E8, SQ_C8, P_B_KING));
             }
         }
     }

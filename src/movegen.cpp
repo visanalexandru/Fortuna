@@ -607,14 +607,14 @@ namespace engine {
 
             if (!in_check) {
                 /*If the piece is pinned, check for legality.*/
-                if ((square_to_bitboard(move.origin)) & pinned_pieces) {
+                if (move.type == MoveType::M_EN_PASSANT || ((square_to_bitboard(move.origin)) & pinned_pieces)) {
                     if (is_legal(move, current)) {
                         legal_moves.push_back(move);
                     }
                 } else legal_moves.push_back(move);
 
             } else {
-                if ((square_to_bitboard(move.destination)) & (king_evasions)) {
+                if (move.type == MoveType::M_EN_PASSANT || ((square_to_bitboard(move.destination)) & king_evasions)) {
                     if (is_legal(move, current)) {
                         legal_moves.push_back(move);
                     }

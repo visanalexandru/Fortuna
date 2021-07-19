@@ -211,6 +211,11 @@ TEST_CASE("Perft", "[move-generation]") {
             "n1n5/1Pk5/8/8/8/8/5Kp1/5N1N b - - 0 1 ",
             "8/PPPk4/8/8/8/8/4Kppp/8 b - - 0 1 ",
             "n1n5/PPPk4/8/8/8/8/4Kppp/5N1N b - - 0 1 ",
+            "7k/8/8/K1pP3r/8/8/8/8 w - c6 0 1",
+            "3k4/3p4/8/K1P4r/8/8/8/8 b - - 0 1",
+            "8/8/4k3/8/2p5/8/B2P2K1/8 w - - 0 1",
+            "8/8/1k6/2b5/2pP4/8/5K2/8 b - d3 0 1",
+            "6k1/3p4/8/2P5/2K5/8/8/8 b - - 0 1"
     };
     std::vector<std::vector<int>> values = {
             {20, 400,  8902,  197281,  4865609,  119060324,},
@@ -339,6 +344,11 @@ TEST_CASE("Perft", "[move-generation]") {
             {24, 421,  7421,  124608,  2193768,  37665329,},
             {18, 270,  4699,  79355,   1533145,  28859283,},
             {24, 496,  9483,  182838,  3605103,  71179139,},
+            {5,  70,   438,   7051,    44848,    755356, 4974982, 86145861},
+            {18, 92,   1670,  10138,   185429,   1134888},
+            {13, 102,  1266,  10276,   135655,   1015133},
+            {15, 126,  1928,  13931,   206379,   1440467},
+            {7,  57,   415,   3415,    25611,    209382}
     };
     unsigned positions = fen_strings.size(), to_check, depth;
     for (int pos = 0; pos < positions; pos++) {
@@ -346,7 +356,13 @@ TEST_CASE("Perft", "[move-generation]") {
         board.load_fen(fen_strings[pos]);
         for (int val = 0; val < to_check; val++) {
             depth = val + 1;
-            REQUIRE(gen.perft(depth) == values[pos][val]);
+
+            float time_taken = clock();
+            unsigned result = gen.perft(depth);
+            time_taken = (clock() - time_taken) / CLOCKS_PER_SEC;
+            REQUIRE(result == values[pos][val]);
+            std::cout << "nodes: " << result << " time: " << time_taken << " nps: "
+                      << (int) ((float) result / time_taken) << std::endl;
         }
         std::cout << "Ok " << pos + 1 << " perft positions " << std::endl;
     }

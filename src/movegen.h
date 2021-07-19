@@ -94,6 +94,9 @@ namespace engine {
         /* Adds all black castling moves.*/
         void add_black_castling_moves(u64 all);
 
+        /*Checks move for legality by making and then unmaking it, seeing if it leaves the king in check.*/
+        bool is_legal(const Move &move, Color color);
+
     public:
         explicit MoveGen(Board &internal_board);
 

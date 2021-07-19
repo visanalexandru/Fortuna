@@ -539,6 +539,14 @@ namespace engine {
         }
     }
 
+    bool MoveGen::is_legal(const Move &move, Color color) {
+        bool legal;
+        board.make_move(move);
+        legal = !is_in_check(color);
+        board.undo_move(move);
+        return legal;
+    }
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -555,6 +563,8 @@ namespace engine {
                     board.current_position.placement[P_B_KING];
 
         u64 all = white | black;
+        u64 own;
+        Square king_square;
         moves.clear();
         legal_moves.clear();
         Color current = board.color_to_play();
@@ -567,6 +577,11 @@ namespace engine {
             add_black_bishop_moves(white, all);
             add_black_queen_moves(white, all);
             add_black_castling_moves(all);
+
+            u64 king_bitboard = board.current_position.placement[P_B_KING];
+            king_square = popLsb(king_bitboard);
+            own = black;
+
         } else {
             add_white_king_moves(black, all);
             add_white_knight_moves(black, all);
@@ -575,15 +590,36 @@ namespace engine {
             add_white_bishop_moves(black, all);
             add_white_queen_moves(black, all);
             add_white_castling_moves(all);
+
+            u64 king_bitboard = board.current_position.placement[P_W_KING];
+            king_square = popLsb(king_bitboard);
+            own = white;
         }
+
+        bool in_check = is_in_check(current);
+        u64 sliding_attacks = get_magic_rook_attacks(king_square, all) | get_magic_bishop_attacks(king_square, all);
+        /*We include the king too when generating pinned pieces.*/
+        u64 pinned_pieces = (sliding_attacks | square_to_bitboard(king_square)) & own;
+        u64 king_evasions = sliding_attacks | KNIGHT_ATTACKS[king_square];
 
         /*Checking for legality.*/
         for (const Move &move:moves) {
-            board.make_move(move);
-            if (!is_in_check(current)) {
-                legal_moves.push_back(move);
+
+            if (!in_check) {
+                /*If the piece is pinned, check for legality.*/
+                if ((square_to_bitboard(move.origin)) & pinned_pieces) {
+                    if (is_legal(move, current)) {
+                        legal_moves.push_back(move);
+                    }
+                } else legal_moves.push_back(move);
+
+            } else {
+                if ((square_to_bitboard(move.destination)) & (king_evasions)) {
+                    if (is_legal(move, current)) {
+                        legal_moves.push_back(move);
+                    }
+                }
             }
-            board.undo_move(move);
         }
         return legal_moves;
     }

@@ -33,10 +33,8 @@ namespace engine {
 
 
     void MoveGen::add_white_king_moves(u64 black, u64 all) {
-        /* A position without a king is illegal, but we still check if we have no king.*/
-        if (board.current_position.placement[P_W_KING] == 0)
-            return;
         u64 king_bitboard = board.current_position.placement[P_W_KING];
+        assert(king_bitboard != 0);
         Square king_square = popLsb(king_bitboard);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
@@ -46,10 +44,8 @@ namespace engine {
     }
 
     void MoveGen::add_black_king_moves(u64 white, u64 all) {
-        /* A position without a king is illegal, but we still check if we have no king.*/
-        if (board.current_position.placement[P_B_KING] == 0)
-            return;
         u64 king_bitboard = board.current_position.placement[P_B_KING];
+        assert(king_bitboard != 0);
         Square king_square = popLsb(king_bitboard);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
@@ -532,9 +528,11 @@ namespace engine {
 
         if (color == C_WHITE) {
             king_bitboard = board.current_position.placement[P_W_KING];
+            assert(king_bitboard != 0);
             return king_bitboard != 0 && can_black_attack_square(popLsb(king_bitboard), all);
         } else {
             king_bitboard = board.current_position.placement[P_B_KING];
+            assert(king_bitboard != 0);
             return king_bitboard != 0 && can_white_attack_square(popLsb(king_bitboard), all);
         }
     }
@@ -553,11 +551,13 @@ namespace engine {
 
         if (color == C_WHITE) {
             king_bitboard = board.current_position.placement[P_W_KING];
+            assert(king_bitboard != 0);
             own = white;
             op_bq = board.current_position.placement[P_B_QUEEN] | board.current_position.placement[P_B_BISHOP];
             op_rq = board.current_position.placement[P_B_QUEEN] | board.current_position.placement[P_B_ROOK];
         } else {
             king_bitboard = board.current_position.placement[P_B_KING];
+            assert(king_bitboard != 0);
             own = black;
             op_bq = board.current_position.placement[P_W_QUEEN] | board.current_position.placement[P_W_BISHOP];
             op_rq = board.current_position.placement[P_W_QUEEN] | board.current_position.placement[P_W_ROOK];
@@ -610,6 +610,7 @@ namespace engine {
             add_black_castling_moves(all);
 
             u64 king_bitboard = board.current_position.placement[P_B_KING];
+            assert(king_bitboard != 0);
             king_square = popLsb(king_bitboard);
 
         } else {
@@ -622,6 +623,7 @@ namespace engine {
             add_white_castling_moves(all);
 
             u64 king_bitboard = board.current_position.placement[P_W_KING];
+            assert(king_bitboard != 0);
             king_square = popLsb(king_bitboard);
         }
 

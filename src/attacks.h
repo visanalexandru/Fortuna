@@ -21,6 +21,7 @@ namespace engine {
     extern u64 BISHOP_MASKS[C_NUM_SQUARES];
     extern u64 ROOK_MAGIC[C_NUM_SQUARES][magic::ROOK_MAGIC_MAX];
     extern u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
+    extern u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
 
     /* Generates the king move bitboard. */
     u64 king_movement(u64 king_location);
@@ -56,6 +57,9 @@ namespace engine {
     /*Initializes the bishop magic table.*/
     void init_bishop_magic();
 
+    /*Initializes the in-between table.*/
+    void init_in_between();
+
     /* Returns the rook attack bitboard for the given square and blockers.*/
     u64 get_rook_attacks(Square square, u64 all);
 
@@ -67,6 +71,12 @@ namespace engine {
 
     /*Get the bishop attack bitboard for the given square and blockers by querying the magic tables.*/
     u64 get_magic_bishop_attacks(Square square, u64 all);
+
+    /*Get rook attacks through blockers, useful for finding pinned pieces.*/
+    u64 xray_rook_attacks(Square square, u64 blockers, u64 all);
+
+    /*Get bishop attacks through blockers, useful for finding pinned pieces.*/
+    u64 xray_bishop_attacks(Square square, u64 blockers, u64 all);
 
     /* Initializes all tables. */
     void init_tables();

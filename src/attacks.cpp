@@ -15,6 +15,7 @@ namespace engine {
     u64 BISHOP_MASKS[C_NUM_SQUARES];
     u64 ROOK_MAGIC[C_NUM_SQUARES][magic::ROOK_MAGIC_MAX];
     u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
+    u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & CLEAR_FILE[FILE_H];
@@ -287,6 +288,63 @@ namespace engine {
     }
 
 
+    void init_in_between() {
+        int aux;
+        u64 mask;
+
+        for (int origin = 0; origin < C_NUM_SQUARES; origin++) {
+            for (int destination = origin; destination < C_NUM_SQUARES; destination++) {
+                int origin_rank = origin / 8, destination_rank = destination / 8;
+                int origin_file = origin % 8, destination_file = destination % 8;
+
+                if (destination_rank - origin_rank == destination_file - origin_file) {//Same diagonal
+                    aux = origin;
+                    mask = 0;
+
+                    while (aux <= destination) {
+                        mask |= square_to_bitboard((Square) aux);
+                        aux += 9;
+                    }
+                    IN_BETWEEN[origin][destination] = mask;
+                    IN_BETWEEN[destination][origin] = mask;
+
+                } else if (destination_rank - origin_rank == origin_file - destination_file) {//Same anti-diagonal
+                    aux = origin;
+                    mask = 0;
+
+                    while (aux <= destination) {
+                        mask |= square_to_bitboard((Square) aux);
+                        aux += 7;
+                    }
+                    IN_BETWEEN[origin][destination] = mask;
+                    IN_BETWEEN[destination][origin] = mask;
+
+                } else if (origin_file == destination_file) {//Same file
+                    aux = origin;
+                    mask = 0;
+                    while (aux <= destination) {
+                        mask |= square_to_bitboard((Square) aux);
+                        aux += 8;
+                    }
+                    IN_BETWEEN[origin][destination] = mask;
+                    IN_BETWEEN[destination][origin] = mask;
+
+                } else if (origin_rank == destination_rank) {//Same rank
+
+                    aux = origin;
+                    mask = 0;
+                    while (aux <= destination) {
+                        mask |= square_to_bitboard((Square) aux);
+                        aux++;
+                    }
+                    IN_BETWEEN[origin][destination] = mask;
+                    IN_BETWEEN[destination][origin] = mask;
+                }
+            }
+        }
+    }
+
+
     u64 get_magic_rook_attacks(Square square, u64 all) {
         u64 blockers = all & ROOK_MASKS[square];
 
@@ -301,6 +359,18 @@ namespace engine {
         return BISHOP_MAGIC[square][index];
     }
 
+    u64 xray_rook_attacks(Square square, u64 blockers, u64 all) {
+        u64 attacks = get_magic_rook_attacks(square, all);
+        blockers &= attacks;
+        return attacks ^ get_magic_rook_attacks(square, all ^ blockers);
+    }
+
+    u64 xray_bishop_attacks(Square square, u64 blockers, u64 all) {
+        u64 attacks = get_magic_bishop_attacks(square, all);
+        blockers &= attacks;
+        return attacks ^ get_magic_bishop_attacks(square, all ^ blockers);
+    }
+
     void init_tables() {
         init_king_attacks();
         init_pawn_attacks();
@@ -311,5 +381,6 @@ namespace engine {
         init_bishop_masks();
         init_rook_magic();
         init_bishop_magic();
+        init_in_between();
     }
 }

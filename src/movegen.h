@@ -97,6 +97,9 @@ namespace engine {
         /*Checks move for legality by making and then unmaking it, seeing if it leaves the king in check.*/
         bool is_legal(const Move &move, Color color);
 
+        /*Returns the pinned pieces bitboard for the given color.*/
+        u64 get_pinned_pieces(Color color, u64 white, u64 black);
+
     public:
         explicit MoveGen(Board &internal_board);
 

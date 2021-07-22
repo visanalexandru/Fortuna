@@ -547,6 +547,38 @@ namespace engine {
         return legal;
     }
 
+    u64 MoveGen::get_pinned_pieces(Color color, u64 white, u64 black) {
+        u64 pinned = 0, occupied = board.current_position.all;
+        u64 king_bitboard, own, op_rq, op_bq;
+
+        if (color == C_WHITE) {
+            king_bitboard = board.current_position.placement[P_W_KING];
+            own = white;
+            op_bq = board.current_position.placement[P_B_QUEEN] | board.current_position.placement[P_B_BISHOP];
+            op_rq = board.current_position.placement[P_B_QUEEN] | board.current_position.placement[P_B_ROOK];
+        } else {
+            king_bitboard = board.current_position.placement[P_B_KING];
+            own = black;
+            op_bq = board.current_position.placement[P_W_QUEEN] | board.current_position.placement[P_W_BISHOP];
+            op_rq = board.current_position.placement[P_W_QUEEN] | board.current_position.placement[P_W_ROOK];
+        }
+
+        Square king_square = popLsb(king_bitboard), pinner_square;
+        u64 pins = xray_rook_attacks(king_square, own, occupied) & op_rq;
+
+        while (pins) {
+            pinner_square = popLsb(pins);
+            pinned |= IN_BETWEEN[king_square][pinner_square] & own;
+        }
+
+        pins = xray_bishop_attacks(king_square, own, occupied) & op_bq;
+        while (pins) {
+            pinner_square = popLsb(pins);
+            pinned |= IN_BETWEEN[king_square][pinner_square] & own;
+        }
+        return pinned;
+    }
+
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -563,7 +595,6 @@ namespace engine {
                     board.current_position.placement[P_B_KING];
 
         u64 all = white | black;
-        u64 own;
         Square king_square;
         moves.clear();
         legal_moves.clear();
@@ -580,7 +611,6 @@ namespace engine {
 
             u64 king_bitboard = board.current_position.placement[P_B_KING];
             king_square = popLsb(king_bitboard);
-            own = black;
 
         } else {
             add_white_king_moves(black, all);
@@ -593,14 +623,12 @@ namespace engine {
 
             u64 king_bitboard = board.current_position.placement[P_W_KING];
             king_square = popLsb(king_bitboard);
-            own = white;
         }
 
         bool in_check = is_in_check(current);
-        u64 sliding_attacks = get_magic_rook_attacks(king_square, all) | get_magic_bishop_attacks(king_square, all);
-        /*We include the king too when generating pinned pieces.*/
-        u64 pinned_pieces = (sliding_attacks | square_to_bitboard(king_square)) & own;
-        u64 king_evasions = sliding_attacks | KNIGHT_ATTACKS[king_square];
+        u64 pinned_pieces = get_pinned_pieces(current, white, black) | square_to_bitboard(king_square);
+        u64 king_evasions = get_magic_rook_attacks(king_square, all) | get_magic_bishop_attacks(king_square, all) |
+                            KNIGHT_ATTACKS[king_square];
 
         /*Checking for legality.*/
         for (const Move &move:moves) {

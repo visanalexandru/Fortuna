@@ -626,9 +626,10 @@ namespace engine {
         }
 
         bool in_check = is_in_check(current);
-        u64 pinned_pieces = get_pinned_pieces(current, white, black) | square_to_bitboard(king_square);
-        u64 king_evasions = get_magic_rook_attacks(king_square, all) | get_magic_bishop_attacks(king_square, all) |
-                            KNIGHT_ATTACKS[king_square];
+        u64 pinned_pieces = (in_check) ? 0 : get_pinned_pieces(current, white, black) | square_to_bitboard(king_square);
+        u64 king_evasions = (!in_check) ? 0 : get_magic_rook_attacks(king_square, all) |
+                                              get_magic_bishop_attacks(king_square, all) |
+                                              KNIGHT_ATTACKS[king_square];
 
         /*Checking for legality.*/
         for (const Move &move:moves) {

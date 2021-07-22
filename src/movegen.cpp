@@ -529,11 +529,11 @@ namespace engine {
         if (color == C_WHITE) {
             king_bitboard = board.current_position.placement[P_W_KING];
             assert(king_bitboard != 0);
-            return king_bitboard != 0 && can_black_attack_square(popLsb(king_bitboard), all);
+            return can_black_attack_square(popLsb(king_bitboard), all);
         } else {
             king_bitboard = board.current_position.placement[P_B_KING];
             assert(king_bitboard != 0);
-            return king_bitboard != 0 && can_white_attack_square(popLsb(king_bitboard), all);
+            return can_white_attack_square(popLsb(king_bitboard), all);
         }
     }
 

@@ -47,7 +47,7 @@ namespace engine {
     };
 
     enum PieceType : u8 {
-        PT_PAWN,
+        PT_PAWN=0,
         PT_KNIGHT,
         PT_BISHOP,
         PT_ROOK,

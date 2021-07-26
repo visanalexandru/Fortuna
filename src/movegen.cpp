@@ -397,10 +397,10 @@ namespace engine {
 
         u64 bishop_attacks = 0, rook_attacks = 0;
 
-        if (ROOK_ATTACKS[square] & queens || ROOK_ATTACKS[square] & rooks)
+        if (ROOK_ATTACKS[square] & (queens | rooks))
             rook_attacks = get_magic_rook_attacks(square, all);
 
-        if (BISHOP_ATTACKS[square] & queens || BISHOP_ATTACKS[square] & bishops)
+        if (BISHOP_ATTACKS[square] & (queens | bishops))
             bishop_attacks = get_magic_bishop_attacks(square, all);
 
         if (bishop_attacks & bishops)
@@ -432,10 +432,10 @@ namespace engine {
 
         u64 bishop_attacks = 0, rook_attacks = 0;
 
-        if (ROOK_ATTACKS[square] & queens || ROOK_ATTACKS[square] & rooks)
+        if (ROOK_ATTACKS[square] & (queens | rooks))
             rook_attacks = get_magic_rook_attacks(square, all);
 
-        if (BISHOP_ATTACKS[square] & queens || BISHOP_ATTACKS[square] & bishops)
+        if (BISHOP_ATTACKS[square] & (queens | bishops))
             bishop_attacks = get_magic_bishop_attacks(square, all);
 
         if (bishop_attacks & bishops)

@@ -75,6 +75,30 @@ TEST_CASE("Pieces", "[util]") {
 
     REQUIRE(piece_to_notation(P_NONE) == '#');
 
+
+    REQUIRE(get_piece(PT_NONE, C_WHITE) == P_NONE);
+    REQUIRE(get_piece(PT_NONE, C_BLACK) == P_NONE);
+
+    REQUIRE(get_piece(PT_PAWN, C_WHITE) == P_W_PAWN);
+    REQUIRE(get_piece(PT_PAWN, C_BLACK) == P_B_PAWN);
+
+    REQUIRE(get_piece(PT_KNIGHT, C_WHITE) == P_W_KNIGHT);
+    REQUIRE(get_piece(PT_KNIGHT, C_BLACK) == P_B_KNIGHT);
+
+    REQUIRE(get_piece(PT_BISHOP, C_WHITE) == P_W_BISHOP);
+    REQUIRE(get_piece(PT_BISHOP, C_BLACK) == P_B_BISHOP);
+
+    REQUIRE(get_piece(PT_ROOK, C_WHITE) == P_W_ROOK);
+    REQUIRE(get_piece(PT_ROOK, C_BLACK) == P_B_ROOK);
+
+    REQUIRE(get_piece(PT_QUEEN, C_WHITE) == P_W_QUEEN);
+    REQUIRE(get_piece(PT_QUEEN, C_BLACK) == P_B_QUEEN);
+
+    REQUIRE(get_piece(PT_KING, C_WHITE) == P_W_KING);
+    REQUIRE(get_piece(PT_KING, C_BLACK) == P_B_KING);
+
+    REQUIRE(get_opposite(C_WHITE) == C_BLACK);
+    REQUIRE(get_opposite(C_BLACK) == C_WHITE);
 }
 
 

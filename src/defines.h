@@ -20,6 +20,8 @@ namespace engine {
     const int C_NUM_SQUARES = 64;
     const int C_NUM_DIRECTIONS = 8;
     const int C_MAX_MOVES = 256;
+    const int C_NUM_PIECE_TYPES = 6;
+    const int C_NUM_PHASES = 2;
 
     const std::string C_BASE_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -42,6 +44,16 @@ namespace engine {
         P_B_QUEEN,
         P_B_KING,
         P_NONE
+    };
+
+    enum PieceType : u8 {
+        PT_PAWN,
+        PT_KNIGHT,
+        PT_BISHOP,
+        PT_ROOK,
+        PT_QUEEN,
+        PT_KING,
+        PT_NONE
     };
 
     enum MoveType : u8 {

@@ -82,6 +82,16 @@ namespace engine {
         return res;
     }
 
+    inline Color get_opposite(Color color) {
+        return (Color) (1 - color);
+    }
+
+    inline Piece get_piece(PieceType type, Color color) {
+        if (type == PT_NONE)
+            return P_NONE;
+        return (Piece)(type + C_NUM_PIECE_TYPES * color);
+    }
+
 }
 
 

@@ -298,6 +298,87 @@ namespace engine {
         current_state--;
     }
 
+    PieceType Board::get_smallest_attacker(Square square, Color side, Square &attacker) const {
+        u64 pawns = current_position.placement[get_piece(PT_PAWN, side)];
+        u64 knights = current_position.placement[get_piece(PT_KNIGHT, side)];
+        u64 bishops = current_position.placement[get_piece(PT_BISHOP, side)];
+        u64 rooks = current_position.placement[get_piece(PT_ROOK, side)];
+        u64 queens = current_position.placement[get_piece(PT_QUEEN, side)];
+        u64 king = current_position.placement[get_piece(PT_KING, side)];
+
+        u64 all = current_position.all;
+
+        if (PAWN_ATTACKS[square][get_opposite(side)] & pawns) {
+            pawns &= PAWN_ATTACKS[square][get_opposite(side)];
+            attacker = popLsb(pawns);
+            return PT_PAWN;
+        }
+
+        if (KNIGHT_ATTACKS[square] & knights) {
+            knights &= KNIGHT_ATTACKS[square];
+            attacker = popLsb(knights);
+            return PT_KNIGHT;
+        }
+
+        u64 bishop_attacks = (BISHOP_ATTACKS[square] & (bishops | queens)) ? get_magic_bishop_attacks(square, all) : 0;
+        u64 rook_attacks = (ROOK_ATTACKS[square] & (rooks | queens)) ? get_magic_rook_attacks(square, all) : 0;
+
+        if (bishop_attacks & bishops) {
+            bishops &= bishop_attacks;
+            attacker = popLsb(bishops);
+            return PT_BISHOP;
+        }
+
+        if (rook_attacks & rooks) {
+            rooks &= rook_attacks;
+            attacker = popLsb(rooks);
+            return PT_ROOK;
+        }
+        u64 queen_attacks = bishop_attacks | rook_attacks;
+
+        if (queen_attacks & queens) {
+            queens &= (queen_attacks);
+            attacker = popLsb(queens);
+            return PT_QUEEN;
+        }
+
+        if (KING_ATTACKS[square] & king) {
+            attacker = popLsb(king);
+            return PT_KING;
+        }
+
+        /*No piece attacks the given square.*/
+        attacker = SQ_NONE;
+        return PT_NONE;
+    }
+
+    int Board::see(Square square, Color side) {
+        Square attacker_square;
+        PieceType attacker = get_smallest_attacker(square, side, attacker_square);
+        if (attacker == PT_NONE) {
+            return 0;
+        }
+
+        Piece captured = current_position.pieces[square];
+
+        int score;
+        Move capture = create_capture_move(attacker_square, square, get_piece(attacker, side), captured);
+
+        make_move(capture);
+        score = get_piece_value(get_piece_type(captured)) - see(square, get_opposite(side));
+        score = std::max(0, score);
+        undo_move(capture);
+
+        return score;
+    }
+
+    int Board::see(const Move &capture, Color side) {
+        make_move(capture);
+        int score = get_piece_value(get_piece_type(capture.captured)) - see(capture.destination, get_opposite(side));
+        undo_move(capture);
+        return score;
+    }
+
     void Board::load_fen(const std::string &fen) {
         history[0] = {};
         current_state = &history[0];

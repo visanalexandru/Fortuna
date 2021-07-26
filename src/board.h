@@ -13,6 +13,8 @@
 #include "tables.h"
 #include "util.h"
 #include "move.h"
+#include "attacks.h"
+#include"eval_defines.h"
 
 
 namespace engine {
@@ -123,6 +125,16 @@ namespace engine {
 
         /* Returns the current color to move.*/
         Color color_to_play() const;
+
+        /*Returns the smallest attacker of the given square, of the given side.
+         *It also returns the square of the attacker through the "attacker" parameter.*/
+        PieceType get_smallest_attacker(Square square, Color side, Square &attacker) const;
+
+        /*Statically evaluates captures on the given square, and returns the score for the given side.*/
+        int see(Square square, Color side);
+
+        /*Statically evaluates a capture.*/
+        int see(const Move &capture, Color side);
 
         Board();
     };

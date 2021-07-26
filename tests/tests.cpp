@@ -99,6 +99,35 @@ TEST_CASE("Pieces", "[util]") {
 
     REQUIRE(get_opposite(C_WHITE) == C_BLACK);
     REQUIRE(get_opposite(C_BLACK) == C_WHITE);
+
+
+    REQUIRE(get_piece_type(P_W_PAWN) == PT_PAWN);
+    REQUIRE(get_piece_type(P_B_PAWN) == PT_PAWN);
+
+    REQUIRE(get_piece_type(P_W_KNIGHT) == PT_KNIGHT);
+    REQUIRE(get_piece_type(P_B_KNIGHT) == PT_KNIGHT);
+
+    REQUIRE(get_piece_type(P_W_BISHOP) == PT_BISHOP);
+    REQUIRE(get_piece_type(P_B_BISHOP) == PT_BISHOP);
+
+    REQUIRE(get_piece_type(P_W_ROOK) == PT_ROOK);
+    REQUIRE(get_piece_type(P_B_ROOK) == PT_ROOK);
+
+    REQUIRE(get_piece_type(P_W_QUEEN) == PT_QUEEN);
+    REQUIRE(get_piece_type(P_B_QUEEN) == PT_QUEEN);
+
+    REQUIRE(get_piece_type(P_W_KING) == PT_KING);
+    REQUIRE(get_piece_type(P_W_KING) == PT_KING);
+
+    REQUIRE(get_piece_type(P_NONE) == PT_NONE);
+
+    REQUIRE(get_piece_value(PT_PAWN) == C_PAWN_VALUE);
+    REQUIRE(get_piece_value(PT_KNIGHT) == C_KNIGHT_VALUE);
+    REQUIRE(get_piece_value(PT_BISHOP) == C_BISHOP_VALUE);
+    REQUIRE(get_piece_value(PT_ROOK) == C_ROOK_VALUE);
+    REQUIRE(get_piece_value(PT_QUEEN) == C_QUEEN_VALUE);
+    REQUIRE(get_piece_value(PT_KING) == C_KING_VALUE);
+    REQUIRE(get_piece_value(PT_NONE) == 0);
 }
 
 
@@ -390,5 +419,67 @@ TEST_CASE("Perft", "[move-generation]") {
         }
         std::cout << "Ok " << pos + 1 << " perft positions " << std::endl;
     }
+}
+
+TEST_CASE("Smallest-Attacker", "[board]") {
+    engine::init_tables();
+    Board board;
+    board.load_fen("2Q5/3B4/5q2/4b3/2N1k3/5p2/5K1R/8 w - - 0 1");
+    Square attacker;
+
+    REQUIRE(board.get_smallest_attacker(SQ_F3, C_WHITE, attacker) == PT_KING);
+    REQUIRE(board.get_smallest_attacker(SQ_H1, C_WHITE, attacker) == PT_ROOK);
+    REQUIRE(board.get_smallest_attacker(SQ_H3, C_WHITE, attacker) == PT_BISHOP);
+    REQUIRE(board.get_smallest_attacker(SQ_G2, C_WHITE, attacker) == PT_ROOK);
+    REQUIRE(board.get_smallest_attacker(SQ_E5, C_WHITE, attacker) == PT_KNIGHT);
+    REQUIRE(board.get_smallest_attacker(SQ_G4, C_WHITE, attacker) == PT_BISHOP);
+    REQUIRE(board.get_smallest_attacker(SQ_F3, C_BLACK, attacker) == PT_QUEEN);
+    REQUIRE(board.get_smallest_attacker(SQ_D1, C_BLACK, attacker) == PT_NONE);
+    REQUIRE(board.get_smallest_attacker(SQ_H2, C_BLACK, attacker) == PT_BISHOP);
+    REQUIRE(board.get_smallest_attacker(SQ_F2, C_BLACK, attacker) == PT_NONE);
+    REQUIRE(board.get_smallest_attacker(SQ_E2, C_BLACK, attacker) == PT_PAWN);
+    REQUIRE(board.get_smallest_attacker(SQ_G2, C_BLACK, attacker) == PT_PAWN);
+}
+
+
+TEST_CASE("SEE", "[board]") {
+    engine::init_tables();
+    Board board;
+
+    board.load_fen("4R3/2r3p1/5bk1/1p1r3p/p2PR1P1/P1BK1P2/1P6/8 b - - 0 1");
+    REQUIRE(board.see(create_capture_move(SQ_H5, SQ_G4, P_B_PAWN, P_W_PAWN), C_BLACK) == 0);
+    board.load_fen("4R3/2r3p1/5bk1/1p1r1p1p/p2PR1P1/P1BK1P2/1P6/8 b - - 0 1");
+    REQUIRE(board.see(create_capture_move(SQ_H5, SQ_G4, P_B_PAWN, P_W_PAWN), C_BLACK) == 0);
+    board.load_fen("4r1k1/5pp1/nbp4p/1p2p2q/1P2P1b1/1BP2N1P/1B2QPPK/3R4 b - - 0 1");
+    REQUIRE(board.see(create_capture_move(SQ_G4, SQ_F3, P_B_BISHOP, P_W_KNIGHT), C_BLACK) ==
+            C_KNIGHT_VALUE - C_BISHOP_VALUE);
+    board.load_fen("2r1r1k1/pp1bppbp/3p1np1/q3P3/2P2P2/1P2B3/P1N1B1PP/2RQ1RK1 b - - 0 1");
+    REQUIRE(board.see(create_capture_move(SQ_D6, SQ_E5, P_B_PAWN, P_W_PAWN), C_BLACK) == C_PAWN_VALUE);
+    board.load_fen("7r/5qpk/p1Qp1b1p/3r3n/BB3p2/5p2/P1P2P2/4RK1R w - -");
+    REQUIRE(board.see(create_quiet_move(SQ_E1, SQ_E8, P_W_ROOK), C_WHITE) == 0);
+    board.load_fen("6rr/6pk/p1Qp1b1p/2n5/1B3p2/5p2/P1P2P2/4RK1R w - - 0 1");
+    REQUIRE(board.see(create_quiet_move(SQ_E1, SQ_E8, P_W_ROOK), C_WHITE) == -C_ROOK_VALUE);
+    board.load_fen("7r/5qpk/2Qp1b1p/1N1r3n/BB3p2/5p2/P1P2P2/4RK1R w - -");
+    REQUIRE(board.see(create_quiet_move(SQ_E1, SQ_E8, P_W_ROOK), C_WHITE) == -C_ROOK_VALUE);
+
+    board.load_fen("8/4kp2/2npp3/1Nn5/1p2PQP1/7q/1PP1B3/4KR1r b - -");
+    REQUIRE(board.see(create_capture_move(SQ_H1, SQ_F1, P_B_ROOK, P_W_ROOK), C_BLACK) == 0);
+
+    board.load_fen("8/4kp2/2npp3/1Nn5/1p2P1P1/7q/1PP1B3/4KR1r b");
+    REQUIRE(board.see(create_capture_move(SQ_H1, SQ_F1, P_B_ROOK, P_W_ROOK), C_BLACK) == 0);
+
+    board.load_fen("2r2r1k/6bp/p7/2q2p1Q/3PpP2/1B6/P5PP/2RR3K b - -");
+    REQUIRE(board.see(create_capture_move(SQ_C5, SQ_C1, P_B_QUEEN, P_W_ROOK), C_BLACK) ==
+            2 * C_ROOK_VALUE - C_QUEEN_VALUE);
+
+    board.load_fen("r2qk1nr/pp2ppbp/2b3p1/2p1p3/8/2N2N2/PPPP1PPP/R1BQR1K1 w kq - 0 1");
+    REQUIRE(board.see(create_capture_move(SQ_F3, SQ_E5, P_W_KNIGHT, P_B_PAWN), C_WHITE) == C_PAWN_VALUE);
+
+    board.load_fen("6r1/4kq2/b2p1p2/p1pPb3/p1P2B1Q/2P4P/2B1R1P1/6K1 w - - 0 1");
+    REQUIRE(board.see(create_capture_move(SQ_F4, SQ_E5, P_W_BISHOP, P_B_BISHOP), C_WHITE) == 0);
+
+
+    board.load_fen("k1b3b1/8/4p3/8/2B3B1/1Q6/B7/K7 w - - 0 1");
+    REQUIRE(board.see(SQ_E6, C_WHITE) == C_PAWN_VALUE);
 }
 

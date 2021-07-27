@@ -31,53 +31,31 @@ namespace engine {
         }
     }
 
-
-    void MoveGen::add_white_king_moves(u64 black, u64 all) {
-        u64 king_bitboard = board.current_position.placement[P_W_KING];
+    template<Color side>
+    void MoveGen::add_king_moves(u64 opposite, u64 all) {
+        u64 king_bitboard = board.current_position.placement[get_piece(PT_KING, side)];
         assert(king_bitboard != 0);
         Square king_square = popLsb(king_bitboard);
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
-        u64 king_captures = attacks & black;
-        add_quiet_moves(king_square, king_quiet_moves, P_W_KING);
-        add_capture_moves(king_square, king_captures, P_W_KING);
+        u64 king_captures = attacks & opposite;
+        add_quiet_moves(king_square, king_quiet_moves, get_piece(PT_KING, side));
+        add_capture_moves(king_square, king_captures, get_piece(PT_KING, side));
     }
 
-    void MoveGen::add_black_king_moves(u64 white, u64 all) {
-        u64 king_bitboard = board.current_position.placement[P_B_KING];
-        assert(king_bitboard != 0);
-        Square king_square = popLsb(king_bitboard);
-        u64 attacks = KING_ATTACKS[king_square];
-        u64 king_quiet_moves = attacks & (~all);
-        u64 king_captures = attacks & white;
-        add_quiet_moves(king_square, king_quiet_moves, P_B_KING);
-        add_capture_moves(king_square, king_captures, P_B_KING);
-    }
-
-    void MoveGen::add_white_knight_moves(u64 black, u64 all) {
-        u64 knights = board.current_position.placement[P_W_KNIGHT], attacks, knight_quiet_moves, knight_captures;
+    template<Color side>
+    void MoveGen::add_knight_moves(u64 opposite, u64 all) {
+        u64 knights = board.current_position.placement[get_piece(PT_KNIGHT, side)];
+        u64 attacks, knight_quiet_moves, knight_captures;
         Square knight_square;
         while (knights) {
             knight_square = popLsb(knights);
             attacks = KNIGHT_ATTACKS[knight_square];
             knight_quiet_moves = attacks & (~all);
-            knight_captures = attacks & (black);
-            add_quiet_moves(knight_square, knight_quiet_moves, P_W_KNIGHT);
-            add_capture_moves(knight_square, knight_captures, P_W_KNIGHT);
+            knight_captures = attacks & (opposite);
+            add_quiet_moves(knight_square, knight_quiet_moves, get_piece(PT_KNIGHT, side));
+            add_capture_moves(knight_square, knight_captures, get_piece(PT_KNIGHT, side));
 
-        }
-    }
-
-    void MoveGen::add_black_knight_moves(u64 white, u64 all) {
-        u64 knights = board.current_position.placement[P_B_KNIGHT], attacks, knight_quiet_moves, knight_captures;
-        Square knight_square;
-        while (knights) {
-            knight_square = popLsb(knights);
-            attacks = KNIGHT_ATTACKS[knight_square];
-            knight_quiet_moves = attacks & (~all);
-            knight_captures = attacks & (white);
-            add_quiet_moves(knight_square, knight_quiet_moves, P_B_KNIGHT);
-            add_capture_moves(knight_square, knight_captures, P_B_KNIGHT);
         }
     }
 
@@ -300,100 +278,62 @@ namespace engine {
         add_black_en_passant_moves();
     }
 
-    void MoveGen::add_white_rook_moves(u64 black, u64 all) {
-        u64 rooks = board.current_position.placement[P_W_ROOK], rook_attacks, rook_captures, rook_quiet_moves;
+    template<Color side>
+    void MoveGen::add_rook_moves(u64 opposite, u64 all) {
+        u64 rooks = board.current_position.placement[get_piece(PT_ROOK, side)];
+        u64 rook_attacks, rook_captures, rook_quiet_moves;
         Square rook_square;
         while (rooks) {
             rook_square = popLsb(rooks);
             rook_attacks = get_magic_rook_attacks(rook_square, all);
 
-            rook_captures = rook_attacks & black;
+            rook_captures = rook_attacks & opposite;
             rook_quiet_moves = rook_attacks & (~all);
 
-            add_capture_moves(rook_square, rook_captures, P_W_ROOK);
-            add_quiet_moves(rook_square, rook_quiet_moves, P_W_ROOK);
+            add_capture_moves(rook_square, rook_captures, get_piece(PT_ROOK, side));
+            add_quiet_moves(rook_square, rook_quiet_moves, get_piece(PT_ROOK, side));
         }
     }
 
-    void MoveGen::add_black_rook_moves(u64 white, u64 all) {
-        u64 rooks = board.current_position.placement[P_B_ROOK], rook_attacks, rook_captures, rook_quiet_moves;
-        Square rook_square;
-        while (rooks) {
-            rook_square = popLsb(rooks);
-            rook_attacks = get_magic_rook_attacks(rook_square, all);
-
-            rook_captures = rook_attacks & white;
-            rook_quiet_moves = rook_attacks & (~all);
-
-            add_capture_moves(rook_square, rook_captures, P_B_ROOK);
-            add_quiet_moves(rook_square, rook_quiet_moves, P_B_ROOK);
-        }
-    }
-
-    void MoveGen::add_white_bishop_moves(u64 black, u64 all) {
-        u64 bishops = board.current_position.placement[P_W_BISHOP], bishop_attacks, bishop_captures, bishop_quiet_moves;
+    template<Color side>
+    void MoveGen::add_bishop_moves(u64 opposite, u64 all) {
+        u64 bishops = board.current_position.placement[get_piece(PT_BISHOP, side)];
+        u64 bishop_attacks, bishop_captures, bishop_quiet_moves;
         Square bishop_square;
         while (bishops) {
             bishop_square = popLsb(bishops);
             bishop_attacks = get_magic_bishop_attacks(bishop_square, all);
 
-            bishop_captures = bishop_attacks & black;
+            bishop_captures = bishop_attacks & opposite;
             bishop_quiet_moves = bishop_attacks & (~all);
 
-            add_capture_moves(bishop_square, bishop_captures, P_W_BISHOP);
-            add_quiet_moves(bishop_square, bishop_quiet_moves, P_W_BISHOP);
+            add_capture_moves(bishop_square, bishop_captures, get_piece(PT_BISHOP, side));
+            add_quiet_moves(bishop_square, bishop_quiet_moves, get_piece(PT_BISHOP, side));
         }
     }
 
-    void MoveGen::add_black_bishop_moves(u64 white, u64 all) {
-        u64 bishops = board.current_position.placement[P_B_BISHOP], bishop_attacks, bishop_captures, bishop_quiet_moves;
-        Square bishop_square;
-        while (bishops) {
-            bishop_square = popLsb(bishops);
-            bishop_attacks = get_magic_bishop_attacks(bishop_square, all);
-
-            bishop_captures = bishop_attacks & white;
-            bishop_quiet_moves = bishop_attacks & (~all);
-
-            add_capture_moves(bishop_square, bishop_captures, P_B_BISHOP);
-            add_quiet_moves(bishop_square, bishop_quiet_moves, P_B_BISHOP);
-        }
-    }
-
-    void MoveGen::add_white_queen_moves(u64 black, u64 all) {
-        u64 queens = board.current_position.placement[P_W_QUEEN], queen_attacks, queen_captures, queen_quiet_moves;
+    template<Color side>
+    void MoveGen::add_queen_moves(u64 opposite, u64 all) {
+        u64 queens = board.current_position.placement[get_piece(PT_QUEEN, side)];
+        u64 queen_attacks, queen_captures, queen_quiet_moves;
         Square queen_square;
         while (queens) {
             queen_square = popLsb(queens);
             queen_attacks = get_magic_bishop_attacks(queen_square, all) | get_magic_rook_attacks(queen_square, all);
 
-            queen_captures = queen_attacks & black;
+            queen_captures = queen_attacks & opposite;
             queen_quiet_moves = queen_attacks & (~all);
 
-            add_capture_moves(queen_square, queen_captures, P_W_QUEEN);
-            add_quiet_moves(queen_square, queen_quiet_moves, P_W_QUEEN);
+            add_capture_moves(queen_square, queen_captures, get_piece(PT_QUEEN, side));
+            add_quiet_moves(queen_square, queen_quiet_moves, get_piece(PT_QUEEN, side));
         }
     }
 
-    void MoveGen::add_black_queen_moves(u64 white, u64 all) {
-        u64 queens = board.current_position.placement[P_B_QUEEN], queen_attacks, queen_captures, queen_quiet_moves;
-        Square queen_square;
-        while (queens) {
-            queen_square = popLsb(queens);
-            queen_attacks = get_magic_bishop_attacks(queen_square, all) | get_magic_rook_attacks(queen_square, all);
-
-            queen_captures = queen_attacks & white;
-            queen_quiet_moves = queen_attacks & (~all);
-
-            add_capture_moves(queen_square, queen_captures, P_B_QUEEN);
-            add_quiet_moves(queen_square, queen_quiet_moves, P_B_QUEEN);
-        }
-    }
-
-    bool MoveGen::can_white_attack_square(Square square, u64 all) {
-        u64 rooks = board.current_position.placement[P_W_ROOK];
-        u64 bishops = board.current_position.placement[P_W_BISHOP];
-        u64 queens = board.current_position.placement[P_W_QUEEN];
+    template<Color side>
+    bool MoveGen::can_attack_square(Square square, u64 all) {
+        u64 rooks = board.current_position.placement[get_piece(PT_ROOK, side)];
+        u64 bishops = board.current_position.placement[get_piece(PT_BISHOP, side)];
+        u64 queens = board.current_position.placement[get_piece(PT_QUEEN, side)];
 
         u64 bishop_attacks = 0, rook_attacks = 0;
 
@@ -413,55 +353,20 @@ namespace engine {
             return true;
         }
 
-        if (KNIGHT_ATTACKS[square] & board.current_position.placement[P_W_KNIGHT])
+        if (KNIGHT_ATTACKS[square] & board.current_position.placement[get_piece(PT_KNIGHT, side)])
             return true;
-        if (KING_ATTACKS[square] & board.current_position.placement[P_W_KING])
+        if (KING_ATTACKS[square] & board.current_position.placement[get_piece(PT_KING, side)])
             return true;
 
         /*We take the opposite color pawn attack to know if any white pawns attack this square.*/
-        if (PAWN_ATTACKS[square][C_BLACK] & board.current_position.placement[P_W_PAWN])
-            return true;
-
-        return false;
-    }
-
-    bool MoveGen::can_black_attack_square(Square square, u64 all) {
-        u64 rooks = board.current_position.placement[P_B_ROOK];
-        u64 bishops = board.current_position.placement[P_B_BISHOP];
-        u64 queens = board.current_position.placement[P_B_QUEEN];
-
-        u64 bishop_attacks = 0, rook_attacks = 0;
-
-        if (ROOK_ATTACKS[square] & (queens | rooks))
-            rook_attacks = get_magic_rook_attacks(square, all);
-
-        if (BISHOP_ATTACKS[square] & (queens | bishops))
-            bishop_attacks = get_magic_bishop_attacks(square, all);
-
-        if (bishop_attacks & bishops)
-            return true;
-
-        if (rook_attacks & rooks)
-            return true;
-
-        if ((bishop_attacks | rook_attacks) & queens) {
-            return true;
-        }
-
-        if (KNIGHT_ATTACKS[square] & board.current_position.placement[P_B_KNIGHT])
-            return true;
-        if (KING_ATTACKS[square] & board.current_position.placement[P_B_KING])
-            return true;
-
-        /*We take the opposite color pawn attack to know if any black pawns attack this square.*/
-        if (PAWN_ATTACKS[square][C_WHITE] & board.current_position.placement[P_B_PAWN])
+        if (PAWN_ATTACKS[square][get_opposite(side)] & board.current_position.placement[get_piece(PT_PAWN, side)])
             return true;
 
         return false;
     }
 
     void MoveGen::add_white_castling_moves(u64 all) {
-        if (can_black_attack_square(SQ_E1, all))
+        if (can_attack_square<C_BLACK>(SQ_E1, all))
             return;
 
         bool occupied, attacked, can_castle;
@@ -471,8 +376,8 @@ namespace engine {
         can_castle = board.current_state->state & S_WHITE_CASTLE_K;
 
         if (can_castle && !occupied) {
-            attacked = can_black_attack_square(SQ_F1, all) ||
-                       can_black_attack_square(SQ_G1, all);
+            attacked = can_attack_square<C_BLACK>(SQ_F1, all) ||
+                       can_attack_square<C_BLACK>(SQ_G1, all);
 
             if (!attacked) {
                 legal_moves.push_back(create_kingside_castle_move(SQ_E1, SQ_G1, P_W_KING));
@@ -483,8 +388,8 @@ namespace engine {
         can_castle = board.current_state->state & S_WHITE_CASTLE_Q;
 
         if (can_castle && !occupied) {
-            attacked = can_black_attack_square(SQ_D1, all) ||
-                       can_black_attack_square(SQ_C1, all);
+            attacked = can_attack_square<C_BLACK>(SQ_D1, all) ||
+                       can_attack_square<C_BLACK>(SQ_C1, all);
             if (!attacked) {
                 legal_moves.push_back(create_queenside_castle_move(SQ_E1, SQ_C1, P_W_KING));
             }
@@ -492,7 +397,7 @@ namespace engine {
     }
 
     void MoveGen::add_black_castling_moves(u64 all) {
-        if (can_white_attack_square(SQ_E8, all))
+        if (can_attack_square<C_WHITE>(SQ_E8, all))
             return;
 
         bool occupied, attacked, can_castle;
@@ -502,8 +407,8 @@ namespace engine {
         can_castle = board.current_state->state & S_BLACK_CASTLE_K;
 
         if (can_castle && !occupied) {
-            attacked = can_white_attack_square(SQ_F8, all) ||
-                       can_white_attack_square(SQ_G8, all);
+            attacked = can_attack_square<C_WHITE>(SQ_F8, all) ||
+                       can_attack_square<C_WHITE>(SQ_G8, all);
 
             if (!attacked) {
                 legal_moves.push_back(create_kingside_castle_move(SQ_E8, SQ_G8, P_B_KING));
@@ -514,8 +419,8 @@ namespace engine {
         can_castle = board.current_state->state & S_BLACK_CASTLE_Q;
 
         if (can_castle && !occupied) {
-            attacked = can_white_attack_square(SQ_D8, all) ||
-                       can_white_attack_square(SQ_C8, all);
+            attacked = can_attack_square<C_WHITE>(SQ_D8, all) ||
+                       can_attack_square<C_WHITE>(SQ_C8, all);
             if (!attacked) {
                 legal_moves.push_back(create_queenside_castle_move(SQ_E8, SQ_C8, P_B_KING));
             }
@@ -529,11 +434,11 @@ namespace engine {
         if (color == C_WHITE) {
             king_bitboard = board.current_position.placement[P_W_KING];
             assert(king_bitboard != 0);
-            return can_black_attack_square(popLsb(king_bitboard), all);
+            return can_attack_square<C_BLACK>(popLsb(king_bitboard), all);
         } else {
             king_bitboard = board.current_position.placement[P_B_KING];
             assert(king_bitboard != 0);
-            return can_white_attack_square(popLsb(king_bitboard), all);
+            return can_attack_square<C_WHITE>(popLsb(king_bitboard), all);
         }
     }
 
@@ -595,36 +500,33 @@ namespace engine {
                     board.current_position.placement[P_B_KING];
 
         u64 all = white | black;
-        Square king_square;
         moves.clear();
         legal_moves.clear();
         Color current = board.color_to_play();
 
+        /*Getting the king square.*/
+        Square king_square;
+        u64 king_bitboard = board.current_position.placement[get_piece(PT_KING, current)];
+        assert(king_bitboard != 0);
+        king_square = popLsb(king_bitboard);
+
+        /*Generating all moves.*/
         if (current == C_BLACK) {
-            add_black_king_moves(white, all);
-            add_black_knight_moves(white, all);
+            add_king_moves<C_BLACK>(white, all);
+            add_knight_moves<C_BLACK>(white, all);
             add_black_pawn_moves(white, all);
-            add_black_rook_moves(white, all);
-            add_black_bishop_moves(white, all);
-            add_black_queen_moves(white, all);
+            add_rook_moves<C_BLACK>(white, all);
+            add_bishop_moves<C_BLACK>(white, all);
+            add_queen_moves<C_BLACK>(white, all);
             add_black_castling_moves(all);
-
-            u64 king_bitboard = board.current_position.placement[P_B_KING];
-            assert(king_bitboard != 0);
-            king_square = popLsb(king_bitboard);
-
         } else {
-            add_white_king_moves(black, all);
-            add_white_knight_moves(black, all);
+            add_king_moves<C_WHITE>(black, all);
+            add_knight_moves<C_WHITE>(black, all);
             add_white_pawn_moves(black, all);
-            add_white_rook_moves(black, all);
-            add_white_bishop_moves(black, all);
-            add_white_queen_moves(black, all);
+            add_rook_moves<C_WHITE>(black, all);
+            add_bishop_moves<C_WHITE>(black, all);
+            add_queen_moves<C_WHITE>(black, all);
             add_white_castling_moves(all);
-
-            u64 king_bitboard = board.current_position.placement[P_W_KING];
-            assert(king_bitboard != 0);
-            king_square = popLsb(king_bitboard);
         }
 
         bool in_check = is_in_check(current);

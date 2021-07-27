@@ -72,7 +72,7 @@ namespace engine {
         return (Square) bitScanReverse(x);
     }
 
-    inline int popCount(u64 &x) {
+    inline int popCount(u64 x) {
         return __builtin_popcountll(x);
     }
 
@@ -82,17 +82,17 @@ namespace engine {
         return res;
     }
 
-    inline Color get_opposite(Color color) {
+    constexpr inline Color get_opposite(Color color) {
         return (Color) (1 - color);
     }
 
-    inline Piece get_piece(PieceType type, Color color) {
+    constexpr inline Piece get_piece(PieceType type, Color color) {
         if (type == PT_NONE)
             return P_NONE;
         return (Piece) (type + C_NUM_PIECE_TYPES * color);
     }
 
-    inline PieceType get_piece_type(Piece piece) {
+    constexpr inline PieceType get_piece_type(Piece piece) {
         if (piece == P_NONE)
             return PT_NONE;
         return (PieceType) (piece % C_NUM_PIECE_TYPES);

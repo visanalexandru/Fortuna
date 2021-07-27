@@ -28,17 +28,25 @@ namespace engine {
         /* Generates all capture moves for the given attack bitboard. */
         void add_capture_moves(Square origin, u64 attacks, Piece piece);
 
-        /* Generates all king moves for white. */
-        void add_white_king_moves(u64 black, u64 all);
+        /* Generates all king moves for the given side. */
+        template<Color side>
+        void add_king_moves(u64 opposite, u64 all);
 
-        /* Generates all king moves for black. */
-        void add_black_king_moves(u64 white, u64 all);
+        /* Generates all knight moves for the given side.*/
+        template<Color side>
+        void add_knight_moves(u64 opposite, u64 all);
 
-        /* Generates all knight moves for white.*/
-        void add_white_knight_moves(u64 black, u64 all);
+        /*Generates all rook moves for the given side. */
+        template<Color side>
+        void add_rook_moves(u64 opposite, u64 all);
 
-        /*Generates all knight moves for black.*/
-        void add_black_knight_moves(u64 white, u64 all);
+        /*Generates all bishop moves for the given side.*/
+        template<Color side>
+        void add_bishop_moves(u64 opposite, u64 all);
+
+        /*Generates all queen moves for the given side.*/
+        template<Color side>
+        void add_queen_moves(u64 opposite, u64 all);
 
         /*Generates single and double pawn pushes for white.*/
         void add_white_pawn_pushes(u64 all);
@@ -64,29 +72,9 @@ namespace engine {
         /*Generates all pawn moves for black. */
         void add_black_pawn_moves(u64 white, u64 all);
 
-        /*Generates all rook moves for white. */
-        void add_white_rook_moves(u64 black, u64 all);
-
-        /*Generates all rook moves for black. */
-        void add_black_rook_moves(u64 white, u64 all);
-
-        /*Generates all bishop moves for white.*/
-        void add_white_bishop_moves(u64 black, u64 all);
-
-        /*Generates all bishop moves for black.*/
-        void add_black_bishop_moves(u64 white, u64 all);
-
-        /*Generates all queen moves for white.*/
-        void add_white_queen_moves(u64 black, u64 all);
-
-        /*Generates all queen moves for black.*/
-        void add_black_queen_moves(u64 white, u64 all);
-
-        /*Checks if white can attack the given square.*/
-        bool can_white_attack_square(Square square, u64 all);
-
-        /*Checks if black can attack the given square.*/
-        bool can_black_attack_square(Square square, u64 all);
+        /*Checks if the given side can attack the given square.*/
+        template<Color side>
+        bool can_attack_square(Square square, u64 all);
 
         /* Adds all white castling moves.*/
         void add_white_castling_moves(u64 all);

@@ -47,7 +47,7 @@ namespace engine {
     };
 
     enum PieceType : u8 {
-        PT_PAWN=0,
+        PT_PAWN = 0,
         PT_KNIGHT,
         PT_BISHOP,
         PT_ROOK,
@@ -110,6 +110,11 @@ namespace engine {
         D_SOUTH_WEST,
         D_WEST,
         D_NORTH_WEST
+    };
+
+    enum Phase {
+        P_MIDDLEGAME,
+        P_ENDGAME
     };
 
     enum State : u32 {

@@ -113,8 +113,8 @@ namespace engine {
     };
 
     enum Phase {
-        P_MIDDLEGAME,
-        P_ENDGAME
+        PH_MIDDLEGAME,
+        PH_ENDGAME
     };
 
     enum State : u32 {

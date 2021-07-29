@@ -54,6 +54,9 @@ namespace engine {
     /*Statically evaluates the board, returning a heuristic score.*/
     int evaluate(const Board &board);
 
+    /*Returns the static evaluation of the board, from the perspective of the given side.*/
+    int evaluate_side(const Board &board, Color side);
+
 }
 
 

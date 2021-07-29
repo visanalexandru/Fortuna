@@ -36,4 +36,9 @@ namespace engine {
         int eval = (opening * (C_MAX_PHASE - phase) + (end_game * phase)) / C_MAX_PHASE;
         return eval;
     }
+
+    int evaluate_side(const Board &board, Color side) {
+        int score = evaluate(board);
+        return (side == C_WHITE) ? score : -score;
+    }
 }

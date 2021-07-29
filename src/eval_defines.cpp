@@ -9,7 +9,7 @@ namespace engine {
 
     void init_pst() {
         for (int piece = 0; piece < C_NUM_PIECE_TYPES; piece++) {
-            for (int phase = 0; phase < 2; phase++) {
+            for (int phase = 0; phase < C_NUM_PHASES; phase++) {
                 for (int square = 0; square < C_NUM_SQUARES; square++) {
                     /*White, mirrored.*/
                     PST[piece][C_WHITE][phase][square] = C_PST[piece][phase][C_NUM_SQUARES - square - 1];

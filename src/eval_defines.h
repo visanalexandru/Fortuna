@@ -18,7 +18,7 @@ namespace engine {
     const int C_PIECE_VALUES[] = {C_PAWN_VALUE, C_KNIGHT_VALUE, C_BISHOP_VALUE, C_ROOK_VALUE, C_QUEEN_VALUE,
                                   C_KING_VALUE, 0};
 
-    inline int get_piece_value(PieceType type) {
+    extern inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];
     }
 
@@ -178,6 +178,11 @@ namespace engine {
                     },
             };
 
+    /*Precalculated piece square tables, mirrored for white.*/
+    extern int PST[C_NUM_PIECE_TYPES][2][C_NUM_PHASES][C_NUM_SQUARES];
+
+    /*Initializes the piece square tables.*/
+    void init_pst();
 
 }
 

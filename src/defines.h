@@ -65,6 +65,7 @@ namespace engine {
         M_PROMOTION,
         M_PROMOTION_CAPTURE,
         M_DOUBLE_PAWN_PUSH,
+        M_NONE
     };
 
     enum Square : u8 {

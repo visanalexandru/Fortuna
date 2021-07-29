@@ -53,6 +53,10 @@ namespace engine {
         return {MoveType::M_QUEENSIDE_CASTLE, origin, destination, moved};
     }
 
+    inline Move create_empty_move() {
+        return {MoveType::M_NONE, SQ_NONE, SQ_NONE, P_NONE, P_NONE, P_NONE};
+    }
+
     inline std::string move_to_string(const Move &move) {
         std::string result = square_to_notation(move.origin);
         if (move.type == MoveType::M_CAPTURE || move.type == MoveType::M_PROMOTION_CAPTURE ||

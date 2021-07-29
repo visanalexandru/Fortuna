@@ -15,6 +15,15 @@ namespace engine {
     const int C_QUEEN_VALUE = 980;
     const int C_KING_VALUE = 10000;
 
+    const int C_KNIGHT_PHASE_WEIGHT = 1;
+    const int C_BISHOP_PHASE_WEIGHT = 1;
+    const int C_ROOK_PHASE_WEIGHT = 2;
+    const int C_QUEEN_PHASE_WEIGHT = 4;
+
+    const int C_PHASE_WEIGHT_SUM =
+            C_KNIGHT_PHASE_WEIGHT * 4 + C_BISHOP_PHASE_WEIGHT * 4 + C_ROOK_PHASE_WEIGHT * 4 + C_QUEEN_PHASE_WEIGHT * 2;
+    const int C_MAX_PHASE = 256;
+
     const int C_PIECE_VALUES[] = {C_PAWN_VALUE, C_KNIGHT_VALUE, C_BISHOP_VALUE, C_ROOK_VALUE, C_QUEEN_VALUE,
                                   C_KING_VALUE, 0};
 

@@ -7,6 +7,7 @@
 #include"movegen.h"
 #include"catch.hpp"
 #include "util.h"
+#include"eval.h"
 
 using namespace engine;
 
@@ -483,3 +484,21 @@ TEST_CASE("SEE", "[board]") {
     REQUIRE(board.see(SQ_E6, C_WHITE) == C_PAWN_VALUE);
 }
 
+TEST_CASE("Material-Count", "[eval]") {
+    engine::init_tables();
+    engine::init_pst();
+    Board board;
+    board.load_fen("2b5/p2NBp1p/1bp1nPPr/3P4/2pRnr1P/Rk1B1Ppp/5pBP/Rq1N3K b - - 0 1");
+    REQUIRE(score_material<C_BLACK>(board) ==
+            8 * C_PAWN_VALUE + 2 * C_KNIGHT_VALUE + 2 * C_BISHOP_VALUE + 2 * C_ROOK_VALUE + C_QUEEN_VALUE);
+    REQUIRE(score_material<C_WHITE>(board) ==
+            6 * C_PAWN_VALUE + 2 * C_KNIGHT_VALUE + 3 * C_BISHOP_VALUE + 3 * C_ROOK_VALUE);
+
+    board.load_fen("8/8/8/5pK1/1b2kP2/1P1p4/7P/2B5 b - - 1 54");
+    REQUIRE(score_material<C_BLACK>(board) == 2 * C_PAWN_VALUE + C_BISHOP_VALUE);
+    REQUIRE(score_material<C_WHITE>(board) == 3 * C_PAWN_VALUE + C_BISHOP_VALUE);
+
+    board.load_fen("1r4rk/7p/3q4/ppp1p1B1/5p1P/3P1BP1/PP3P2/3RR1K1 w - - 0 29");
+    REQUIRE(score_material<C_BLACK>(board) == 6 * C_PAWN_VALUE + 2 * C_ROOK_VALUE + C_QUEEN_VALUE);
+    REQUIRE(score_material<C_WHITE>(board) == 6 * C_PAWN_VALUE + 2 * C_ROOK_VALUE + 2 * C_BISHOP_VALUE);
+}

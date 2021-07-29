@@ -249,6 +249,8 @@ namespace engine {
             case MoveType::M_EN_PASSANT:
                 make_en_passant_move(move);
                 break;
+            case MoveType::M_NONE:
+                break;
         }
         /*We copy the current state into the next state.*/
         *(current_state + 1) = *current_state;
@@ -292,6 +294,8 @@ namespace engine {
 
             case MoveType::M_EN_PASSANT:
                 undo_en_passant_move(move);
+                break;
+            case MoveType::M_NONE:
                 break;
         }
         /*We decrement the state pointer.*/

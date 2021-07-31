@@ -27,8 +27,17 @@ namespace engine {
     const int C_PIECE_VALUES[] = {C_PAWN_VALUE, C_KNIGHT_VALUE, C_BISHOP_VALUE, C_ROOK_VALUE, C_QUEEN_VALUE,
                                   C_KING_VALUE, 0};
 
+    const int C_VALUE_INFINITE = 60000;
+
+    const int C_VALUE_MATE = 30000;
+    const int C_VALUE_DRAW = 0;
+
     extern inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];
+    }
+
+    extern inline int mated_in(int ply) {
+        return -C_VALUE_MATE + ply;
     }
 
 

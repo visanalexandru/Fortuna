@@ -18,6 +18,7 @@ namespace engine {
         Piece moved;
         Piece captured;
         Piece promotion;
+        unsigned short score;
     };
 
     inline Move create_quiet_move(Square origin, Square destination, Piece moved) {

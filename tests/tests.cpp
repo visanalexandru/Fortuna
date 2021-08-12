@@ -132,6 +132,29 @@ TEST_CASE("Pieces", "[util]") {
     REQUIRE(get_piece_value(PT_KING) == C_KING_VALUE);
     REQUIRE(get_piece_value(PT_NONE) == 0);
 }
+std::map<std::pair<u64, int>, unsigned> memo;
+
+unsigned perft_memoized(int depth, MoveGen &gen, Board &board) {
+    u64 zkey = board.current_state->zobrist_key;
+    unsigned result = 0;
+
+    if (memo.find({zkey, depth}) != memo.end()) {
+        return memo[{zkey, depth}];
+    }
+
+    auto moves = gen.get_moves();
+    if (depth == 1) {
+        result = moves.size();
+    } else {
+        for (auto &move:moves) {
+            board.make_move(move);
+            result += perft_memoized(depth - 1, gen, board);
+            board.undo_move(move);
+        }
+    }
+    memo[{zkey,depth}]=result;
+    return result;
+}
 
 
 TEST_CASE("Perft", "[move-generation]") {
@@ -406,6 +429,7 @@ TEST_CASE("Perft", "[move-generation]") {
             {15, 126,  1928,  13931,   206379,   1440467},
             {7,  57,   415,   3415,    25611,    209382}
     };
+    init_zobrist();
     unsigned positions = fen_strings.size(), to_check, depth;
     for (int pos = 0; pos < positions; pos++) {
         to_check = values[pos].size();
@@ -414,7 +438,8 @@ TEST_CASE("Perft", "[move-generation]") {
             depth = val + 1;
 
             float time_taken = clock();
-            unsigned result = gen.perft(depth);
+            memo.clear();
+            unsigned result = perft_memoized(depth,gen,board);
             time_taken = (clock() - time_taken) / CLOCKS_PER_SEC;
             REQUIRE(result == values[pos][val]);
             std::cout << "nodes: " << result << " time: " << time_taken << " nps: "

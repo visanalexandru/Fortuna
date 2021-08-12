@@ -40,6 +40,8 @@ TEST_CASE("Squares", "[util]") {
             REQUIRE(position_to_square(file, rank) == squares[rank][file]);
             REQUIRE(notation_to_square(string_squares[rank][file]) == squares[rank][file]);
             REQUIRE(square_to_notation(position_to_square(file, rank)) == string_squares[rank][file]);
+            REQUIRE(get_file(position_to_square(file,rank))==file);
+            REQUIRE(get_rank(position_to_square(file,rank))==rank);
         }
     }
 }

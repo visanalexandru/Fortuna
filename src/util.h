@@ -98,6 +98,14 @@ namespace engine {
         return (PieceType) (piece % C_NUM_PIECE_TYPES);
     }
 
+    constexpr inline File get_file(Square square) {
+        return (File) (square % 8);
+    }
+
+    constexpr inline Rank get_rank(Square square) {
+        return (Rank) (square / 8);
+    }
+
 }
 
 

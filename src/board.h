@@ -15,6 +15,7 @@
 #include "move.h"
 #include "attacks.h"
 #include"eval_defines.h"
+#include"zobrist.h"
 
 
 namespace engine {
@@ -42,6 +43,9 @@ namespace engine {
 
             /* If the last move was a double pawn push, remember the en passant target square.*/
             Square ep_square;
+
+            /*The zobrist key of the current position.*/
+            u64 zobrist_key;
         };
 
         /* Keep an array of irreversible states, to easily undo moves.*/

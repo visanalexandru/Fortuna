@@ -529,3 +529,61 @@ TEST_CASE("Material-Count", "[eval]") {
     REQUIRE(score_material<C_BLACK>(board) == 6 * C_PAWN_VALUE + 2 * C_ROOK_VALUE + C_QUEEN_VALUE);
     REQUIRE(score_material<C_WHITE>(board) == 6 * C_PAWN_VALUE + 2 * C_ROOK_VALUE + 2 * C_BISHOP_VALUE);
 }
+
+TEST_CASE("Transposition-Table", "[ttable]") {
+    TranspositionTable table(1);
+    unsigned bytes_per_mb = 1000000;
+    REQUIRE(table.get_size() == bytes_per_mb / sizeof(TTEntry));
+    table.reserve(5);
+    REQUIRE(table.get_size() == 5 * bytes_per_mb / sizeof(TTEntry));
+
+    u64 first_key = 1237918123123273;
+    u64 second_key = 4809012380129831;
+    REQUIRE(table.probe(first_key) == nullptr);
+    REQUIRE(table.probe(second_key) == nullptr);
+
+    TTEntry first_entry{first_key, TT_EXACT, create_empty_move(), mated_in(2), 20};
+    table.save(first_entry);
+    REQUIRE(table.probe(first_key)->score == first_entry.score);
+    REQUIRE(table.probe(second_key) == nullptr);
+
+    TTEntry second_entry{first_key, TT_LOWERBOUND, create_empty_move(), mated_in(4), 21};
+    table.save(second_entry);
+    REQUIRE(table.probe(first_key)->score == second_entry.score);
+    REQUIRE(table.probe(second_key) == nullptr);
+
+    TTEntry third_entry{second_key, TT_UPPERBOUND, create_empty_move(), mated_in(10), 4};
+    table.save(third_entry);
+    REQUIRE(table.probe(first_key)->score == second_entry.score);
+    REQUIRE(table.probe(second_key)->score == third_entry.score);
+
+    TTEntry fourth_entry{second_key, TT_EXACT, create_empty_move(), -233, 2};
+    table.save(fourth_entry);
+    REQUIRE(table.probe(second_key)->score == third_entry.score);
+
+    table.reserve(2);
+    REQUIRE(table.probe(first_key) == nullptr);
+    REQUIRE(table.probe(second_key) == nullptr);
+
+}
+
+TEST_CASE("Tactics", "[search]") {
+    engine::init_tables();
+    engine::init_pst();
+    engine::init_zobrist();
+    Board board;
+    Search search(board);
+
+    board.load_fen("8/2k5/8/2K5/2B5/2b5/2q2N2/8 b - - 0 1");
+    REQUIRE(move_to_string(search.nega_max_root(4)) == "c2a4");
+
+    board.load_fen("8/6b1/1pp5/k1pqN3/N6Q/PP2P3/3P4/4KB2 w - - 0 1");
+    REQUIRE(move_to_string(search.nega_max_root(4)) == "h4d8");
+
+
+    board.load_fen("8/p7/p6p/1p3Kpk/p7/PRP2pPp/pPP2P1P/8 w - - 0 1");
+    REQUIRE(move_to_string(search.nega_max_root(6)) == "b3b4");
+    board.load_fen("6bk/5P1p/7K/8/8/8/8/1B6 w - - 0 1");
+    REQUIRE(move_to_string(search.nega_max_root(6)) == "f7f8=B");
+
+}

@@ -21,7 +21,13 @@ namespace engine {
 
     }
 
-    int MoveOrder::score_move(const Move &move, Color side) {
+    int MoveOrder::score_move(const Move &move, TTEntry *entry) {
+
+        /*If it's a hash move.*/
+        if (entry != nullptr && entry->move == move) {
+            return C_HASH_MOVE_BONUS;
+        }
+
         switch (move.type) {
             case M_PROMOTION:
                 return C_PROMOTION_BONUS + get_piece_value(get_piece_type(move.promotion));
@@ -36,9 +42,9 @@ namespace engine {
 
     }
 
-    void MoveOrder::order_moves(std::vector<Move> &moves, Color side) {
+    void MoveOrder::order_moves(std::vector<Move> &moves, TTEntry *entry) {
         for (Move &move:moves) {
-            move.score = score_move(move, side);
+            move.score = score_move(move, entry);
         }
         std::sort(moves.begin(), moves.end(), compare_moves);
     }

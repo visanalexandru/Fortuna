@@ -9,6 +9,7 @@
 #include"movegen.h"
 #include"eval.h"
 #include"moveorder.h"
+#include"ttable.h"
 
 namespace engine {
     /*This class is responsible for searching for the best move from a given position.*/

@@ -7,11 +7,13 @@
 
 #include"board.h"
 #include"move.h"
+#include"ttable.h"
 #include<vector>
 #include<algorithm>
 
 namespace engine {
     /*This class is responsible for ordering moves using simple heuristics like mvv-lva.*/
+    const int C_HASH_MOVE_BONUS=6000;
     const int C_PROMOTION_BONUS = 3000;
     const int C_CAPTURE_BONUS = 1000;
 
@@ -24,13 +26,13 @@ namespace engine {
         int mvv_lva[5][6];
 
         /*Returns a heuristic score of the move, higher is better.*/
-        int score_move(const Move &move, Color side);
+        int score_move(const Move &move, TTEntry*entry);
 
     public:
         explicit MoveOrder(Board &internal_board);
 
         /*Orders moves by their heuristic score.*/
-        void order_moves(std::vector<Move> &moves, Color side);
+        void order_moves(std::vector<Move> &moves, TTEntry*entry);
     };
 
     /*Move comparator, used to sort moves.

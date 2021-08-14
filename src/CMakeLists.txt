@@ -1,5 +1,5 @@
-add_library (Engine util.cpp util.h board.cpp board.h defines.h move.h movegen.cpp movegen.h attacks.cpp attacks.h magic.h)
+add_library (Engine util.cpp util.h board.cpp board.h defines.h move.h movegen.cpp movegen.h attacks.cpp attacks.h magic.h eval_defines.h eval.cpp eval.h eval_defines.cpp search.cpp search.h moveorder.cpp moveorder.h zobrist.cpp zobrist.h ttable.cpp ttable.h)
 add_executable(program main.cpp)
 target_link_libraries(program Engine)
-target_compile_options(program PRIVATE -Wall)
-target_compile_options(Engine PRIVATE -Wall)
+target_compile_options(program PRIVATE -Wall -Ofast  -fno-rtti -ansi  -m64 -march=native  -msse -flto)
+target_compile_options(Engine PRIVATE -Wall -Ofast  -fno-rtti -ansi  -m64  -march=native -msse -flto)

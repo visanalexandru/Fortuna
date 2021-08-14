@@ -8,6 +8,8 @@
 #include"catch.hpp"
 #include "util.h"
 #include"eval.h"
+#include"search.h"
+#include"ttable.h"
 
 using namespace engine;
 
@@ -40,8 +42,8 @@ TEST_CASE("Squares", "[util]") {
             REQUIRE(position_to_square(file, rank) == squares[rank][file]);
             REQUIRE(notation_to_square(string_squares[rank][file]) == squares[rank][file]);
             REQUIRE(square_to_notation(position_to_square(file, rank)) == string_squares[rank][file]);
-            REQUIRE(get_file(position_to_square(file,rank))==file);
-            REQUIRE(get_rank(position_to_square(file,rank))==rank);
+            REQUIRE(get_file(position_to_square(file, rank)) == file);
+            REQUIRE(get_rank(position_to_square(file, rank)) == rank);
         }
     }
 }
@@ -132,6 +134,7 @@ TEST_CASE("Pieces", "[util]") {
     REQUIRE(get_piece_value(PT_KING) == C_KING_VALUE);
     REQUIRE(get_piece_value(PT_NONE) == 0);
 }
+
 std::map<std::pair<u64, int>, unsigned> memo;
 
 unsigned perft_memoized(int depth, MoveGen &gen, Board &board) {
@@ -152,7 +155,7 @@ unsigned perft_memoized(int depth, MoveGen &gen, Board &board) {
             board.undo_move(move);
         }
     }
-    memo[{zkey,depth}]=result;
+    memo[{zkey, depth}] = result;
     return result;
 }
 
@@ -439,7 +442,7 @@ TEST_CASE("Perft", "[move-generation]") {
 
             float time_taken = clock();
             memo.clear();
-            unsigned result = perft_memoized(depth,gen,board);
+            unsigned result = perft_memoized(depth, gen, board);
             time_taken = (clock() - time_taken) / CLOCKS_PER_SEC;
             REQUIRE(result == values[pos][val]);
             std::cout << "nodes: " << result << " time: " << time_taken << " nps: "
@@ -542,17 +545,17 @@ TEST_CASE("Transposition-Table", "[ttable]") {
     REQUIRE(table.probe(first_key) == nullptr);
     REQUIRE(table.probe(second_key) == nullptr);
 
-    TTEntry first_entry{first_key, TT_EXACT, create_empty_move(), mated_in(2), 20};
+    TTEntry first_entry{first_key, TT_EXACT, create_empty_move(), 400, 20};
     table.save(first_entry);
     REQUIRE(table.probe(first_key)->score == first_entry.score);
     REQUIRE(table.probe(second_key) == nullptr);
 
-    TTEntry second_entry{first_key, TT_LOWERBOUND, create_empty_move(), mated_in(4), 21};
+    TTEntry second_entry{first_key, TT_LOWERBOUND, create_empty_move(), -100, 21};
     table.save(second_entry);
     REQUIRE(table.probe(first_key)->score == second_entry.score);
     REQUIRE(table.probe(second_key) == nullptr);
 
-    TTEntry third_entry{second_key, TT_UPPERBOUND, create_empty_move(), mated_in(10), 4};
+    TTEntry third_entry{second_key, TT_UPPERBOUND, create_empty_move(), 30, 4};
     table.save(third_entry);
     REQUIRE(table.probe(first_key)->score == second_entry.score);
     REQUIRE(table.probe(second_key)->score == third_entry.score);

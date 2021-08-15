@@ -6,7 +6,7 @@
 
 namespace engine {
     Search::Search(Board &internal_board) : board(internal_board), move_gen(internal_board), move_order(internal_board),
-                                            nodes(0), abort_search(false), limits() {
+                                            nodes(0), ply(0), abort_search(false), limits() {
 
     }
 
@@ -65,6 +65,7 @@ namespace engine {
 
         for (const Move &move:moves) {
             board.make_move(move);
+            ply++;
 
             move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));
             if (move_score > score) {
@@ -73,6 +74,7 @@ namespace engine {
             }
 
             board.undo_move(move);
+            ply--;
 
             alpha = std::max(alpha, score);
             if (alpha >= beta)
@@ -105,12 +107,15 @@ namespace engine {
 
         Color side = board.color_to_play();
         nodes = 0;
+        ply = 0;
 
         auto moves = move_gen.get_moves();
         move_order.order_moves(moves, entry);
 
         for (const Move &move:moves) {
             board.make_move(move);
+            ply++;
+
             move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));
 
             if (move_score > score) {
@@ -119,6 +124,7 @@ namespace engine {
             }
 
             board.undo_move(move);
+            ply--;
 
             alpha = std::max(alpha, score);
         }
@@ -128,7 +134,8 @@ namespace engine {
             return create_empty_move();
         }
         transposition_table.save({hash, TT_EXACT, best, score, (u8) depth});
-        std::cout <<"depth:"<<depth<< " move: " << move_to_string(best) << " score: " << score << " nodes searched " << nodes
+        std::cout << "depth:" << depth << " move: " << move_to_string(best) << " score: " << score << " nodes searched "
+                  << nodes
                   << std::endl;
         return best;
     }

@@ -48,6 +48,9 @@ namespace engine {
         /*Number of nodes searched.*/
         int nodes;
 
+        /*The distance to the root in the search.*/
+        int ply;
+
         /*The time point at which the search started, used to get the elapsed time of the search.*/
         std::chrono::time_point<std::chrono::system_clock> start_search;
 

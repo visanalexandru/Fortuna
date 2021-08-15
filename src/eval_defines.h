@@ -32,17 +32,19 @@ namespace engine {
     const int C_VALUE_MATE = 30000;
     const int C_VALUE_DRAW = 0;
 
+    const int C_MAX_SEARCH_DEPTH = 256;
+
     inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];
     }
 
     /*Adjusts the mate score for a new ply.*/
     inline int adjust_mate_score(int score) {
-        if (score >= C_VALUE_MATE - C_MAX_PLY) {
+        if (score >= C_VALUE_MATE - C_MAX_SEARCH_DEPTH) {
             return score - 1;
         }
 
-        if (score <= -C_VALUE_MATE + C_MAX_PLY) {
+        if (score <= -C_VALUE_MATE + C_MAX_SEARCH_DEPTH) {
             return score + 1;
         }
         return score;

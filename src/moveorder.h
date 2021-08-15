@@ -20,7 +20,7 @@ namespace engine {
     class MoveOrder {
     private:
         /*The internal board.*/
-        Board board;
+        Board& board;
 
         /*MVV-LVA table.*/
         int mvv_lva[5][6];

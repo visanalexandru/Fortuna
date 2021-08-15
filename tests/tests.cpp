@@ -576,17 +576,30 @@ TEST_CASE("Tactics", "[search]") {
     engine::init_zobrist();
     Board board;
     Search search(board);
+    search.limits.allotted_time = 1000.0;
 
-    board.load_fen("8/2k5/8/2K5/2B5/2b5/2q2N2/8 b - - 0 1");
-    REQUIRE(move_to_string(search.nega_max_root(4)) == "c2a4");
+    SECTION("Checkmates") {
+        search.limits.maximum_depth = 4;
+        board.load_fen("8/2k5/8/2K5/2B5/2b5/2q2N2/8 b - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "c2a4");
 
-    board.load_fen("8/6b1/1pp5/k1pqN3/N6Q/PP2P3/3P4/4KB2 w - - 0 1");
-    REQUIRE(move_to_string(search.nega_max_root(4)) == "h4d8");
+        board.load_fen("8/6b1/1pp5/k1pqN3/N6Q/PP2P3/3P4/4KB2 w - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "h4d8");
 
 
-    board.load_fen("8/p7/p6p/1p3Kpk/p7/PRP2pPp/pPP2P1P/8 w - - 0 1");
-    REQUIRE(move_to_string(search.nega_max_root(6)) == "b3b4");
-    board.load_fen("6bk/5P1p/7K/8/8/8/8/1B6 w - - 0 1");
-    REQUIRE(move_to_string(search.nega_max_root(6)) == "f7f8=B");
+        search.limits.maximum_depth = 6;
+        board.load_fen("8/p7/p6p/1p3Kpk/p7/PRP2pPp/pPP2P1P/8 w - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "b3b4");
+        board.load_fen("6bk/5P1p/7K/8/8/8/8/1B6 w - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "f7f8=B");
+        board.load_fen("3r2k1/2p2ppp/4p3/pPK5/2P3P1/3q4/8/3R1R2 b - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "d3e3");
+
+        search.limits.maximum_depth = 8;
+        board.load_fen("r4rk1/2p2pp1/p1q2n1p/4p3/2Qn2b1/PP1P3N/2P2PPP/R1B2RK1 b - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "c6xg2");
+        board.load_fen("1rb3k1/p1q2p1p/Pp4p1/1P1Q1nb1/3P2P1/B7/5P1P/4R1K1 w - - 0 1");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "e1e8");
+    }
 
 }

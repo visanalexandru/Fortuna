@@ -30,6 +30,15 @@ namespace engine {
                a.promotion == b.promotion;
     }
 
+    inline bool operator!=(const Move &a, const Move &b) {
+        return a.type != b.type ||
+               a.origin != b.origin ||
+               a.destination != b.destination ||
+               a.moved != b.moved ||
+               a.captured != b.captured ||
+               a.promotion != b.promotion;
+    }
+
     inline Move create_quiet_move(Square origin, Square destination, Piece moved) {
         return {MoveType::M_QUIET, origin, destination, moved, Piece::P_NONE, Piece::P_NONE};
     }

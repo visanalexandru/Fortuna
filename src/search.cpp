@@ -58,7 +58,7 @@ namespace engine {
             else return C_VALUE_DRAW;
         }
 
-        move_order.order_moves(moves, entry);
+        move_order.order_moves(moves, entry,ply);
 
         Move best = create_empty_move();
         int score = -C_VALUE_INFINITE, move_score;
@@ -77,8 +77,10 @@ namespace engine {
             ply--;
 
             alpha = std::max(alpha, score);
-            if (alpha >= beta)
+            if (alpha >= beta){
+                move_order.set_killer(move,ply);
                 break;
+            }
         }
 
         /*Do not store the result into the transposition table as the search was inconclusive.*/
@@ -110,7 +112,7 @@ namespace engine {
         ply = 0;
 
         auto moves = move_gen.get_moves();
-        move_order.order_moves(moves, entry);
+        move_order.order_moves(moves, entry,ply);
 
         for (const Move &move:moves) {
             board.make_move(move);
@@ -144,6 +146,7 @@ namespace engine {
     Move Search::iterative_deepening() {
         start_search = std::chrono::system_clock::now();
         abort_search = false;
+        move_order.clear_killers();
 
         auto moves = move_gen.get_moves();
 

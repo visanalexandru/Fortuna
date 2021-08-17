@@ -118,9 +118,6 @@ namespace engine {
         /* Parse the fen string and construct the board representation.*/
         void load_fen(const std::string &fen);
 
-        /* Converts the board to a string. */
-        std::string to_string() const;
-
         /* Makes a move, updating the internal state accordingly. */
         void make_move(const Move &move);
 
@@ -142,6 +139,9 @@ namespace engine {
 
         Board();
     };
+
+    /*Outputs a text based board representation.*/
+    std::ostream &operator<<(std::ostream &stream, const Board &board);
 }
 
 

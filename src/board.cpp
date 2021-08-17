@@ -469,18 +469,18 @@ namespace engine {
 
     }
 
-
-    std::string Board::to_string() const {
-        std::string result;
-
+    std::ostream &operator<<(std::ostream &stream, const Board &board) {
+        stream<<"\n+---+---+---+---+---+---+---+---+\n";
         for (int rank = 7; rank >= 0; rank--) {
             for (int file = 0; file < 8; file++) {
                 Square here = position_to_square(file, rank);
-                result += piece_to_notation(current_position.pieces[here]);
+                stream << "# "<<piece_to_notation(board.current_position.pieces[here])<<" ";
             }
-            result += '\n';
+            stream<<'#';
+            stream<<"\n+---+---+---+---+---+---+---+---+\n";
         }
-        result += '\n';
-        return result;
+        stream << "Zobrist key:" << board.current_state->zobrist_key << std::endl;
+        stream << std::endl;
+        return stream;
     }
 }

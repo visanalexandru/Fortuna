@@ -10,6 +10,12 @@
 #include<vector>
 
 namespace engine {
+    /*Move generation type.*/
+    enum GenType {
+        GT_NORMAL, //Generate both captures and non-capture moves.
+        GT_CAPTURES_ONLY, //Generate only captures.
+    };
+
     /* This class is responsible for generating moves for a given configuration of the board.*/
     class MoveGen {
     private:
@@ -29,23 +35,23 @@ namespace engine {
         void add_capture_moves(Square origin, u64 attacks, Piece piece);
 
         /* Generates all king moves for the given side. */
-        template<Color side>
+        template<Color side, GenType type>
         void add_king_moves(u64 opposite, u64 all);
 
         /* Generates all knight moves for the given side.*/
-        template<Color side>
+        template<Color side, GenType type>
         void add_knight_moves(u64 opposite, u64 all);
 
         /*Generates all rook moves for the given side. */
-        template<Color side>
+        template<Color side, GenType type>
         void add_rook_moves(u64 opposite, u64 all);
 
         /*Generates all bishop moves for the given side.*/
-        template<Color side>
+        template<Color side, GenType type>
         void add_bishop_moves(u64 opposite, u64 all);
 
         /*Generates all queen moves for the given side.*/
-        template<Color side>
+        template<Color side, GenType type>
         void add_queen_moves(u64 opposite, u64 all);
 
         /*Generates single and double pawn pushes for white.*/
@@ -67,9 +73,11 @@ namespace engine {
         void add_black_en_passant_moves();
 
         /*Generates all pawn moves for white. */
+        template<GenType type>
         void add_white_pawn_moves(u64 black, u64 all);
 
         /*Generates all pawn moves for black. */
+        template<GenType type>
         void add_black_pawn_moves(u64 white, u64 all);
 
         /*Checks if the given side can attack the given square.*/
@@ -92,6 +100,7 @@ namespace engine {
         explicit MoveGen(Board &internal_board);
 
         /* Returns all legal moves of the current position.*/
+        template<GenType type>
         std::vector<Move> get_moves();
 
         /*Returns the number of leaf nodes of the tree with the given depth.*/

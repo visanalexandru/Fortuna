@@ -48,7 +48,7 @@ namespace engine {
             return evaluate_side(board, side);
         }
 
-        auto moves = move_gen.get_moves();
+        auto moves = move_gen.get_moves<GT_NORMAL>();
         /*If there are no moves available.*/
         if (moves.empty()) {
             /*Checkmated.*/
@@ -111,7 +111,7 @@ namespace engine {
         nodes = 0;
         ply = 0;
 
-        auto moves = move_gen.get_moves();
+        auto moves = move_gen.get_moves<GT_NORMAL>();
         move_order.order_moves(moves, entry,ply);
 
         for (const Move &move:moves) {
@@ -148,7 +148,7 @@ namespace engine {
         abort_search = false;
         move_order.clear_killers();
 
-        auto moves = move_gen.get_moves();
+        auto moves = move_gen.get_moves<GT_NORMAL>();
 
         /*If there are no moves in the position return an empty move.*/
         if (moves.empty()) {

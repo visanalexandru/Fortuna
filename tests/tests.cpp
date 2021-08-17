@@ -145,7 +145,7 @@ unsigned perft_memoized(int depth, MoveGen &gen, Board &board) {
         return memo[{zkey, depth}];
     }
 
-    auto moves = gen.get_moves();
+    auto moves = gen.get_moves<GT_NORMAL>();
     if (depth == 1) {
         result = moves.size();
     } else {

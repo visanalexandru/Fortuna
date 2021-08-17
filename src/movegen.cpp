@@ -31,7 +31,7 @@ namespace engine {
         }
     }
 
-    template<Color side>
+    template<Color side, GenType type>
     void MoveGen::add_king_moves(u64 opposite, u64 all) {
         u64 king_bitboard = board.current_position.placement[get_piece(PT_KING, side)];
         assert(king_bitboard != 0);
@@ -39,11 +39,13 @@ namespace engine {
         u64 attacks = KING_ATTACKS[king_square];
         u64 king_quiet_moves = attacks & (~all);
         u64 king_captures = attacks & opposite;
-        add_quiet_moves(king_square, king_quiet_moves, get_piece(PT_KING, side));
+        if (type == GT_NORMAL) {
+            add_quiet_moves(king_square, king_quiet_moves, get_piece(PT_KING, side));
+        }
         add_capture_moves(king_square, king_captures, get_piece(PT_KING, side));
     }
 
-    template<Color side>
+    template<Color side, GenType type>
     void MoveGen::add_knight_moves(u64 opposite, u64 all) {
         u64 knights = board.current_position.placement[get_piece(PT_KNIGHT, side)];
         u64 attacks, knight_quiet_moves, knight_captures;
@@ -53,7 +55,9 @@ namespace engine {
             attacks = KNIGHT_ATTACKS[knight_square];
             knight_quiet_moves = attacks & (~all);
             knight_captures = attacks & (opposite);
-            add_quiet_moves(knight_square, knight_quiet_moves, get_piece(PT_KNIGHT, side));
+            if (type == GT_NORMAL) {
+                add_quiet_moves(knight_square, knight_quiet_moves, get_piece(PT_KNIGHT, side));
+            }
             add_capture_moves(knight_square, knight_captures, get_piece(PT_KNIGHT, side));
 
         }
@@ -266,19 +270,25 @@ namespace engine {
         }
     }
 
+    template<GenType type>
     void MoveGen::add_white_pawn_moves(u64 black, u64 all) {
-        add_white_pawn_pushes(all);
+        if (type == GT_NORMAL) {
+            add_white_pawn_pushes(all);
+        }
         add_white_pawn_captures(black);
         add_white_en_passant_moves();
     }
 
+    template<GenType type>
     void MoveGen::add_black_pawn_moves(u64 white, u64 all) {
-        add_black_pawn_pushes(all);
+        if (type == GT_NORMAL) {
+            add_black_pawn_pushes(all);
+        }
         add_black_pawn_captures(white);
         add_black_en_passant_moves();
     }
 
-    template<Color side>
+    template<Color side, GenType type>
     void MoveGen::add_rook_moves(u64 opposite, u64 all) {
         u64 rooks = board.current_position.placement[get_piece(PT_ROOK, side)];
         u64 rook_attacks, rook_captures, rook_quiet_moves;
@@ -290,12 +300,14 @@ namespace engine {
             rook_captures = rook_attacks & opposite;
             rook_quiet_moves = rook_attacks & (~all);
 
+            if (type == GT_NORMAL) {
+                add_quiet_moves(rook_square, rook_quiet_moves, get_piece(PT_ROOK, side));
+            }
             add_capture_moves(rook_square, rook_captures, get_piece(PT_ROOK, side));
-            add_quiet_moves(rook_square, rook_quiet_moves, get_piece(PT_ROOK, side));
         }
     }
 
-    template<Color side>
+    template<Color side, GenType type>
     void MoveGen::add_bishop_moves(u64 opposite, u64 all) {
         u64 bishops = board.current_position.placement[get_piece(PT_BISHOP, side)];
         u64 bishop_attacks, bishop_captures, bishop_quiet_moves;
@@ -307,12 +319,14 @@ namespace engine {
             bishop_captures = bishop_attacks & opposite;
             bishop_quiet_moves = bishop_attacks & (~all);
 
+            if (type == GT_NORMAL) {
+                add_quiet_moves(bishop_square, bishop_quiet_moves, get_piece(PT_BISHOP, side));
+            }
             add_capture_moves(bishop_square, bishop_captures, get_piece(PT_BISHOP, side));
-            add_quiet_moves(bishop_square, bishop_quiet_moves, get_piece(PT_BISHOP, side));
         }
     }
 
-    template<Color side>
+    template<Color side, GenType type>
     void MoveGen::add_queen_moves(u64 opposite, u64 all) {
         u64 queens = board.current_position.placement[get_piece(PT_QUEEN, side)];
         u64 queen_attacks, queen_captures, queen_quiet_moves;
@@ -324,8 +338,10 @@ namespace engine {
             queen_captures = queen_attacks & opposite;
             queen_quiet_moves = queen_attacks & (~all);
 
+            if (type == GT_NORMAL) {
+                add_quiet_moves(queen_square, queen_quiet_moves, get_piece(PT_QUEEN, side));
+            }
             add_capture_moves(queen_square, queen_captures, get_piece(PT_QUEEN, side));
-            add_quiet_moves(queen_square, queen_quiet_moves, get_piece(PT_QUEEN, side));
         }
     }
 
@@ -484,6 +500,7 @@ namespace engine {
         return pinned;
     }
 
+    template<GenType type>
     std::vector<Move> MoveGen::get_moves() {
         u64 white = board.current_position.placement[P_W_PAWN] |
                     board.current_position.placement[P_W_KNIGHT] |
@@ -512,21 +529,25 @@ namespace engine {
 
         /*Generating all moves.*/
         if (current == C_BLACK) {
-            add_king_moves<C_BLACK>(white, all);
-            add_knight_moves<C_BLACK>(white, all);
-            add_black_pawn_moves(white, all);
-            add_rook_moves<C_BLACK>(white, all);
-            add_bishop_moves<C_BLACK>(white, all);
-            add_queen_moves<C_BLACK>(white, all);
-            add_black_castling_moves(all);
+            add_king_moves<C_BLACK, type>(white, all);
+            add_knight_moves<C_BLACK, type>(white, all);
+            add_black_pawn_moves<type>(white, all);
+            add_rook_moves<C_BLACK, type>(white, all);
+            add_bishop_moves<C_BLACK, type>(white, all);
+            add_queen_moves<C_BLACK, type>(white, all);
+            if (type == GT_NORMAL) {
+                add_black_castling_moves(all);
+            }
         } else {
-            add_king_moves<C_WHITE>(black, all);
-            add_knight_moves<C_WHITE>(black, all);
-            add_white_pawn_moves(black, all);
-            add_rook_moves<C_WHITE>(black, all);
-            add_bishop_moves<C_WHITE>(black, all);
-            add_queen_moves<C_WHITE>(black, all);
-            add_white_castling_moves(all);
+            add_king_moves<C_WHITE, type>(black, all);
+            add_knight_moves<C_WHITE, type>(black, all);
+            add_white_pawn_moves<type>(black, all);
+            add_rook_moves<C_WHITE, type>(black, all);
+            add_bishop_moves<C_WHITE, type>(black, all);
+            add_queen_moves<C_WHITE, type>(black, all);
+            if (type == GT_NORMAL) {
+                add_white_castling_moves(all);
+            }
         }
 
         bool in_check = is_in_check(current);
@@ -566,7 +587,7 @@ namespace engine {
 
 
     unsigned int MoveGen::perft(unsigned int depth) {
-        auto generated = get_moves();
+        auto generated = get_moves<GT_NORMAL>();
         if (depth == 1) {
             return generated.size();
         } else {

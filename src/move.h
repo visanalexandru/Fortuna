@@ -77,18 +77,15 @@ namespace engine {
     }
 
     inline std::string move_to_string(const Move &move) {
-        std::string result = square_to_notation(move.origin);
-        if (move.type == MoveType::M_CAPTURE || move.type == MoveType::M_PROMOTION_CAPTURE ||
-            move.type == MoveType::M_EN_PASSANT) {
-            result += 'x';
+        //Return a null move.
+        if (move.type == M_NONE) {
+            return "0000";
         }
+        std::string result = square_to_notation(move.origin);
         result += square_to_notation(move.destination);
         if (move.type == MoveType::M_PROMOTION || move.type == MoveType::M_PROMOTION_CAPTURE) {
-            result += "=";
-            result += piece_to_notation(move.promotion);
+            result += tolower(piece_to_notation(move.promotion));
         }
-        if (move.type == MoveType::M_EN_PASSANT)
-            result += "ep";
         return result;
     }
 

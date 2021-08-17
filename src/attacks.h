@@ -22,6 +22,7 @@ namespace engine {
     extern u64 ROOK_MAGIC[C_NUM_SQUARES][magic::ROOK_MAGIC_MAX];
     extern u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
     extern u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
+    extern u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
 
     /* Generates the king move bitboard. */
     u64 king_movement(u64 king_location);
@@ -59,6 +60,9 @@ namespace engine {
 
     /*Initializes the in-between table.*/
     void init_in_between();
+
+    /*Initializes the lines table.*/
+    void init_lines();
 
     /* Returns the rook attack bitboard for the given square and blockers.*/
     u64 get_rook_attacks(Square square, u64 all);

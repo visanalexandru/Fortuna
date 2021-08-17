@@ -16,6 +16,7 @@ namespace engine {
     u64 ROOK_MAGIC[C_NUM_SQUARES][magic::ROOK_MAGIC_MAX];
     u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
     u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
+    u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & CLEAR_FILE[FILE_H];
@@ -344,6 +345,69 @@ namespace engine {
         }
     }
 
+    void init_lines() {
+        u64 mask;
+
+        for (int origin = 0; origin < C_NUM_SQUARES; origin++) {
+            for (int destination = origin; destination < C_NUM_SQUARES; destination++) {
+
+                int origin_rank = origin / 8, destination_rank = destination / 8;
+                int origin_file = origin % 8, destination_file = destination % 8;
+
+                if (destination_rank - origin_rank == destination_file - origin_file) {//Same diagonal
+                    mask = 0;
+                    int rank = origin_rank, file = origin_file;
+                    while (rank >= 0 && file >= 0) {
+                        mask |= square_to_bitboard(position_to_square(file, rank));
+                        rank--;
+                        file--;
+                    }
+                    rank = origin_rank, file = origin_file;
+                    while (rank < 8 && file < 8) {
+                        mask |= square_to_bitboard(position_to_square(file, rank));
+                        rank++;
+                        file++;
+                    }
+                    LINE[origin][destination] = mask;
+                    LINE[destination][origin] = mask;
+
+                } else if (destination_rank - origin_rank == origin_file - destination_file) {//Same anti-diagonal
+                    mask = 0;
+                    int rank = origin_rank, file = origin_file;
+                    while (rank >= 0 && file < 8) {
+                        mask |= square_to_bitboard(position_to_square(file, rank));
+                        rank--;
+                        file++;
+                    }
+                    rank = origin_rank, file = origin_file;
+                    while (rank < 8 && file >= 0) {
+                        mask |= square_to_bitboard(position_to_square(file, rank));
+                        rank++;
+                        file--;
+                    }
+                    LINE[origin][destination] = mask;
+                    LINE[destination][origin] = mask;
+
+                } else if (origin_file == destination_file) {//Same file
+                    mask = 0;
+                    for (int square = origin_file; square < C_NUM_SQUARES; square += 8) {
+                        mask |= square_to_bitboard((Square) square);
+                    }
+                    LINE[origin][destination] = mask;
+                    LINE[destination][origin] = mask;
+
+                } else if (origin_rank == destination_rank) {//Same rank
+                    int left = origin_rank * 8, right = origin_rank * 8 + 7;
+                    mask = 0;
+                    for (int square = left; square <= right; square++) {
+                        mask |= square_to_bitboard((Square) square);
+                    }
+                    LINE[origin][destination] = mask;
+                    LINE[destination][origin] = mask;
+                }
+            }
+        }
+    }
 
     u64 get_magic_rook_attacks(Square square, u64 all) {
         u64 blockers = all & ROOK_MASKS[square];
@@ -382,5 +446,6 @@ namespace engine {
         init_rook_magic();
         init_bishop_magic();
         init_in_between();
+        init_lines();
     }
 }

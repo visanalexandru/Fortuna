@@ -79,7 +79,7 @@ namespace engine {
             case P_B_KING:
                 return 'k';
             case P_NONE:
-                return '#';
+                return ' ';
         }
 
     }

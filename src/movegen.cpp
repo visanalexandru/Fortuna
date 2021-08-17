@@ -530,29 +530,36 @@ namespace engine {
         }
 
         bool in_check = is_in_check(current);
-        u64 pinned_pieces = (in_check) ? 0 : get_pinned_pieces(current, white, black) | square_to_bitboard(king_square);
+        u64 pinned_pieces = (in_check) ? 0 : get_pinned_pieces(current, white, black);
         u64 king_evasions = (!in_check) ? 0 : get_magic_rook_attacks(king_square, all) |
                                               get_magic_bishop_attacks(king_square, all) |
                                               KNIGHT_ATTACKS[king_square];
 
         /*Checking for legality.*/
+        bool legal;
         for (const Move &move:moves) {
+            legal = false;
 
-            if (!in_check) {
-                /*If the piece is pinned, check for legality.*/
-                if (move.type == MoveType::M_EN_PASSANT || ((square_to_bitboard(move.origin)) & pinned_pieces)) {
-                    if (is_legal(move, current)) {
-                        legal_moves.push_back(move);
-                    }
-                } else legal_moves.push_back(move);
+            if (move.type == MoveType::M_EN_PASSANT) {
+                legal = is_legal(move, current);
+            } else if (move.origin == king_square) {
+                legal = (current == C_WHITE) ? (!can_attack_square<C_BLACK>(move.destination,
+                                                                            all ^ square_to_bitboard(king_square)))
+                                             : (!can_attack_square<C_WHITE>(move.destination,
+                                                                            all ^ square_to_bitboard(king_square)));
+            } else if (!in_check) {
+                if (square_to_bitboard(move.origin) & pinned_pieces) {
+                    legal = LINE[move.origin][move.destination] & square_to_bitboard(king_square);
+                } else legal = true;
 
             } else {
-                if (move.type == MoveType::M_EN_PASSANT || ((square_to_bitboard(move.destination)) & king_evasions)) {
-                    if (is_legal(move, current)) {
-                        legal_moves.push_back(move);
-                    }
+                if ((square_to_bitboard(move.destination)) & king_evasions) {
+                    legal = is_legal(move, current);
                 }
             }
+
+            if (legal)
+                legal_moves.push_back(move);
         }
         return legal_moves;
     }

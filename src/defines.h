@@ -23,6 +23,7 @@ namespace engine {
     const int C_NUM_PIECE_TYPES = 6;
     const int C_NUM_PHASES = 2;
     const int C_NUM_FILES=8;
+    const int C_NUM_RANKS=8;
     const int C_NUM_CASTLING_RIGHTS=4;
 
     const std::string C_BASE_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

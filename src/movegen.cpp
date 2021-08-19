@@ -585,6 +585,11 @@ namespace engine {
         return legal_moves;
     }
 
+    /*Explicit template instantiation.*/
+    template std::vector<Move> MoveGen::get_moves<GT_NORMAL>();
+
+    template std::vector<Move> MoveGen::get_moves<GT_CAPTURES_ONLY>();
+
 
     unsigned int MoveGen::perft(unsigned int depth) {
         auto generated = get_moves<GT_NORMAL>();

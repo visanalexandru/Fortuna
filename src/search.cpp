@@ -12,9 +12,13 @@ namespace engine {
     }
 
 
+    double seconds_since_time_point(const std::chrono::time_point<std::chrono::system_clock> &point) {
+        std::chrono::duration<double> difference = std::chrono::system_clock::now() - point;
+        return difference.count();
+    }
+
     bool Search::timeout() const {
-        std::chrono::duration<double> difference = std::chrono::system_clock::now() - start_search;
-        return difference.count() > limits.allotted_time;
+        return seconds_since_time_point(start_search) > limits.allotted_time;
     }
 
     int Search::nega_max(int depth, int alpha, int beta, Color side) {
@@ -104,6 +108,7 @@ namespace engine {
     Move Search::nega_max_root(int depth) {
         Move best = create_empty_move();
         int score = -C_VALUE_INFINITE, move_score, alpha = -C_VALUE_INFINITE, beta = C_VALUE_INFINITE;
+        auto start_time_point = std::chrono::system_clock::now();
 
         u64 hash = board.current_state->zobrist_key;
         TTEntry *entry = transposition_table.probe(hash);
@@ -136,10 +141,14 @@ namespace engine {
         if (abort_search) {
             return create_empty_move();
         }
+        double elapsed = seconds_since_time_point(start_time_point);
         transposition_table.save({hash, TT_EXACT, best, score, (u8) depth});
-        std::cout << "depth:" << depth << " move: " << move_to_string(best) << " score: " << score << " nodes searched "
-                  << nodes
-                  << std::endl;
+        std::cout << "info depth " << depth
+                  << " time " << (unsigned) (elapsed * 1000.0)
+                  << " nodes " << nodes
+                  << " score cp " << score
+                  << " nps " << (unsigned) (nodes / elapsed)
+                  << " nodes " << nodes << std::endl;
         return best;
     }
 

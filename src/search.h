@@ -30,6 +30,9 @@ namespace engine {
         }
     };
 
+    /*Returns the elapsed time since the given time point in seconds.*/
+    double seconds_since_time_point(const std::chrono::time_point<std::chrono::system_clock> &point);
+
     /*This class is responsible for searching for the best move from a given position.*/
     class Search {
     private:

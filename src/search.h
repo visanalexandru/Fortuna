@@ -6,6 +6,8 @@
 #define CHESSENGINE_SEARCH_H
 
 #include<chrono>
+#include<atomic>
+#include<thread>
 #include"board.h"
 #include"movegen.h"
 #include"eval.h"
@@ -57,11 +59,23 @@ namespace engine {
         /*Checks if the search needs to stop as there is no more time left.*/
         bool timeout() const;
 
-        /*This flag is set when a timeout occurs.*/
+        /*This flag is set when a timeout or forced stop occurs.*/
         bool abort_search;
 
         /*Returns the best move in the current position.*/
         Move nega_max_root(int depth);
+
+        /*This flag is set when a GUI forced stop occurs.*/
+        std::atomic_bool stop;
+
+        /*This flag is set while the thread is busy calculating.*/
+        std::atomic_bool searching;
+
+        /*The search thread pointer, all calculation is done on this thread.*/
+        std::shared_ptr<std::thread> search_thread;
+
+        /*This method wraps the iterative_deepening method, to be called on a separate thread.*/
+        void search();
 
     public:
         /*Search limits.*/
@@ -72,6 +86,13 @@ namespace engine {
         /*Starts the iterative deepening search and returns the best move,
          * with respect to the given search parameters.*/
         Move iterative_deepening();
+
+        /*Starts the thread containing the iterative deepening search.*/
+        void start_thread();
+
+        /*Sets the stop flag so the search immediately stops, and waits for the search thread to finish.*/
+        void stop_thread();
+
     };
 }
 

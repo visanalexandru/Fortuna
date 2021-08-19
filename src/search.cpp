@@ -6,7 +6,8 @@
 
 namespace engine {
     Search::Search(Board &internal_board) : board(internal_board), move_gen(internal_board), move_order(internal_board),
-                                            nodes(0), ply(0), abort_search(false), limits() {
+                                            nodes(0), ply(0), abort_search(false), stop(false), searching(false),
+                                            search_thread(nullptr), limits() {
 
     }
 
@@ -18,8 +19,8 @@ namespace engine {
 
     int Search::nega_max(int depth, int alpha, int beta, Color side) {
 
-        /*Check for timeout.*/
-        if (timeout()) {
+        /*Check for timeout or a forced stop.*/
+        if (timeout() || stop) {
             abort_search = true;
             return C_VALUE_DRAW; /*This value won't be used anyway.*/
         }
@@ -58,7 +59,7 @@ namespace engine {
             else return C_VALUE_DRAW;
         }
 
-        move_order.order_moves(moves, entry,ply);
+        move_order.order_moves(moves, entry, ply);
 
         Move best = create_empty_move();
         int score = -C_VALUE_INFINITE, move_score;
@@ -77,8 +78,8 @@ namespace engine {
             ply--;
 
             alpha = std::max(alpha, score);
-            if (alpha >= beta){
-                move_order.set_killer(move,ply);
+            if (alpha >= beta) {
+                move_order.set_killer(move, ply);
                 break;
             }
         }
@@ -112,7 +113,7 @@ namespace engine {
         ply = 0;
 
         auto moves = move_gen.get_moves<GT_NORMAL>();
-        move_order.order_moves(moves, entry,ply);
+        move_order.order_moves(moves, entry, ply);
 
         for (const Move &move:moves) {
             board.make_move(move);
@@ -170,6 +171,38 @@ namespace engine {
             current_depth++;
         }
         return best_move;
+    }
+
+    void Search::search() {
+        searching = true;
+        Move best_move = iterative_deepening();
+        std::cout << "bestmove " << move_to_string(best_move) << std::endl;
+        searching = false;
+    }
+
+
+    void Search::start_thread() {
+        /*Call join() to be sure that the thread has completed the search.*/
+        if (search_thread) {
+            search_thread->join();
+        }
+
+        /*Set the force stop top flag to false.*/
+        stop = false;
+
+        /*Create and start new thread.*/
+        search_thread = std::make_shared<std::thread>(&Search::search, this);
+    }
+
+    void Search::stop_thread() {
+        stop = true;
+
+        /*Wait for the thread to finish.*/
+        if (search_thread) {
+            search_thread->join();
+        }
+
+        search_thread = nullptr;
     }
 
 }

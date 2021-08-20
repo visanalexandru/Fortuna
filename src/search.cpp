@@ -58,6 +58,11 @@ namespace engine {
             return C_VALUE_DRAW; /*This value won't be used anyway.*/
         }
 
+        /*Check extensions.*/
+        if(move_gen.is_in_check(side)){
+            depth++;
+        }
+
         int alpha_orig = alpha;
         /*Transposition table lookup.*/
         u64 hash = board.current_state->zobrist_key;

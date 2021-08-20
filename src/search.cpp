@@ -21,6 +21,35 @@ namespace engine {
         return seconds_since_time_point(start_search) > limits.allotted_time;
     }
 
+
+    int Search::quiescence(int alpha, int beta, Color side) {
+        nodes++;
+        int stand_pat = evaluate_side(board, side);
+        if (stand_pat >= beta) {
+            return beta;
+        }
+        if (alpha < stand_pat) {
+            alpha = stand_pat;
+        }
+
+        auto captures = move_gen.get_moves<GT_CAPTURES_ONLY>();
+        move_order.order_captures(captures);
+        int score;
+
+        for (const Move &capture:captures) {
+            board.make_move(capture);
+            score = -quiescence(-beta, -alpha, get_opposite(side));
+            board.undo_move(capture);
+            if (score >= beta) {
+                return beta;
+            }
+            if (score > alpha) {
+                alpha = score;
+            }
+        }
+        return alpha;
+    }
+
     int Search::nega_max(int depth, int alpha, int beta, Color side) {
 
         /*Check for timeout or a forced stop.*/
@@ -28,8 +57,6 @@ namespace engine {
             abort_search = true;
             return C_VALUE_DRAW; /*This value won't be used anyway.*/
         }
-
-        nodes++;
 
         int alpha_orig = alpha;
         /*Transposition table lookup.*/
@@ -50,7 +77,7 @@ namespace engine {
 
 
         if (depth == 0) {
-            return evaluate_side(board, side);
+            return quiescence(alpha, beta, side);
         }
 
         auto moves = move_gen.get_moves<GT_NORMAL>();

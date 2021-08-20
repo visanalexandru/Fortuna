@@ -30,6 +30,9 @@ namespace engine {
         /*Returns a heuristic score of the move, higher is better.*/
         int score_move(const Move &move, TTEntry *entry, int ply);
 
+        /*Returns a heuristic score of the given capture, used in quiescence search.*/
+        int score_capture(const Move &move);
+
         /*First killer move.*/
         Move first_killer[C_MAX_SEARCH_DEPTH];
 
@@ -41,6 +44,9 @@ namespace engine {
 
         /*Orders moves by their heuristic score.*/
         void order_moves(std::vector<Move> &moves, TTEntry *entry, int ply);
+
+        /*Orders captures by their heuristic score.*/
+        void order_captures(std::vector<Move>&moves);
 
         /*Sets a new killer, when a quiet move causes a cutoff.*/
         void set_killer(const Move &move, int ply);

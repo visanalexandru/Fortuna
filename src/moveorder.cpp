@@ -48,6 +48,18 @@ namespace engine {
 
     }
 
+    int MoveOrder::score_capture(const Move &move) {
+        switch (move.type) {
+            case M_PROMOTION_CAPTURE:
+                return C_PROMOTION_BONUS + get_piece_value(get_piece_type(move.promotion)) +
+                       get_piece_value(get_piece_type(move.captured));
+            case M_CAPTURE:
+                return mvv_lva[get_piece_type(move.captured)][get_piece_type(move.moved)];
+            default:
+                return 0;
+        }
+    }
+
     void MoveOrder::order_moves(std::vector<Move> &moves, TTEntry *entry, int ply) {
         for (Move &move:moves) {
             move.score = score_move(move, entry, ply);
@@ -55,8 +67,15 @@ namespace engine {
         std::sort(moves.begin(), moves.end(), compare_moves);
     }
 
+    void MoveOrder::order_captures(std::vector<Move> &moves) {
+        for (Move &capture:moves) {
+            capture.score = score_capture(capture);
+        }
+        std::sort(moves.begin(), moves.end(), compare_moves);
+    }
+
     void MoveOrder::set_killer(const Move &move, int ply) {
-        if (move.type==M_QUIET && move != first_killer[ply]) {
+        if (move.type == M_QUIET && move != first_killer[ply]) {
             second_killer[ply] = first_killer[ply];
             first_killer[ply] = move;
         }

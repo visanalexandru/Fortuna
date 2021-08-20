@@ -50,6 +50,11 @@ namespace engine {
          * It is called by nega_max_root to get the best move in the current position.*/
         int nega_max(int depth, int alpha, int beta, Color side);
 
+        /*https://www.chessprogramming.org/Quiescence_Search*/
+        /*To avoid the horizon effect, apply a quiescence search that only looks at capture moves until the
+         * position has stabilized.*/
+        int quiescence(int alpha, int beta, Color side);
+
         /*Number of nodes searched.*/
         int nodes;
 

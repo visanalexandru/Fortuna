@@ -23,6 +23,7 @@ namespace engine {
     extern u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
     extern u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
     extern u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
+    extern u64 PAWN_FORWARD[C_NUM_SQUARES][2];
 
     /* Generates the king move bitboard. */
     u64 king_movement(u64 king_location);
@@ -60,6 +61,9 @@ namespace engine {
 
     /*Initializes the in-between table.*/
     void init_in_between();
+
+    /*Initializes all pawn-structure tables.*/
+    void init_pawn_structure();
 
     /*Initializes the lines table.*/
     void init_lines();

@@ -28,6 +28,8 @@ namespace engine {
 
         score_piece_placement<C_WHITE>(board, white_mg, white_eg);
         score_piece_placement<C_BLACK>(board, black_mg, black_eg);
+        score_pawn_structure<C_WHITE>(board, white_mg, white_eg);
+        score_pawn_structure<C_BLACK>(board, black_mg, black_eg);
 
         int opening = white_mg - black_mg;
         int end_game = white_eg - black_eg;

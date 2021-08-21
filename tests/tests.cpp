@@ -533,6 +533,48 @@ TEST_CASE("Material-Count", "[eval]") {
     REQUIRE(score_material<C_WHITE>(board) == 6 * C_PAWN_VALUE + 2 * C_ROOK_VALUE + 2 * C_BISHOP_VALUE);
 }
 
+
+TEST_CASE("Pawn-structure","[eval]"){
+    engine::init_tables();
+    Board board;
+    board.load_fen("r1bq1knr/p2p1ppp/3p4/1P6/1P6/5N2/1P1PP1PP/RNBQKB1R b KQ - 0 8");
+
+    int middle_game=0,end_game=0;
+    score_pawn_structure<C_WHITE>(board,middle_game,end_game);
+    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]*2);
+    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]*2);
+
+    middle_game=0,end_game=0;
+    score_pawn_structure<C_BLACK>(board,middle_game,end_game);
+    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]);
+    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]);
+    board.load_fen("3rr1k1/1ppq1pp1/p4n2/3P1nB1/2Q1p3/2N3P1/PP2PPKP/2RR4 b - - 4 22");
+
+    middle_game=0,end_game=0;
+    score_pawn_structure<C_WHITE>(board,middle_game,end_game);
+    REQUIRE(middle_game==0);
+    REQUIRE(end_game==0);
+
+    middle_game=0,end_game=0;
+    score_pawn_structure<C_BLACK>(board,middle_game,end_game);
+    REQUIRE(middle_game==0);
+    REQUIRE(end_game==0);
+
+
+    board.load_fen("8/2pkp2p/2p1p3/4p1P1/1P1P1PP1/1P1P1P2/1K6/8 w - - 0 1");
+
+    middle_game=0,end_game=0;
+    score_pawn_structure<C_WHITE>(board,middle_game,end_game);
+    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]*4);
+    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]*4);
+
+    middle_game=0,end_game=0;
+    score_pawn_structure<C_BLACK>(board,middle_game,end_game);
+    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]*3);
+    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]*3);
+
+}
+
 TEST_CASE("Transposition-Table", "[ttable]") {
     TranspositionTable table(1);
     unsigned bytes_per_mb = 1000000;

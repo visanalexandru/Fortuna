@@ -47,6 +47,22 @@ namespace engine {
         score_piece<side, PT_KING>(board, middle_game, end_game);
     }
 
+    /*Adds the pawn structure score for the given side to the game phases.*/
+    template<Color side>
+    void score_pawn_structure(const Board &board, int &middle_game, int &end_game) {
+        u64 pawns = board.current_position.placement[get_piece(PT_PAWN, side)];
+        u64 allied_pawns = pawns;
+
+        Square pawn_square;
+        while (pawns) {
+            pawn_square = popLsb(pawns);
+            if (PAWN_FORWARD[pawn_square][side] & allied_pawns) {
+                middle_game += C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME];
+                end_game += C_DOUBLED_PAWN_PENALTY[PH_ENDGAME];
+            }
+        }
+    }
+
     /*Gets the current game phase, between 0 and C_MAX_PHASE, used for tapered eval.*/
     int get_phase(const Board &board);
 

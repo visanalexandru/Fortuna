@@ -34,6 +34,8 @@ namespace engine {
 
     const int C_MAX_SEARCH_DEPTH = 256;
 
+    const int C_DOUBLED_PAWN_PENALTY[C_NUM_PHASES] = {-20, -30};
+
     inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];
     }

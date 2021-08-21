@@ -17,6 +17,7 @@ namespace engine {
     u64 BISHOP_MAGIC[C_NUM_SQUARES][magic::BISHOP_MAGIC_MAX];
     u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
     u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
+    u64 PAWN_FORWARD[C_NUM_SQUARES][2];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & CLEAR_FILE[FILE_H];
@@ -409,6 +410,13 @@ namespace engine {
         }
     }
 
+    void init_pawn_structure(){
+        for(int square=0;square<C_NUM_SQUARES;square++){
+            PAWN_FORWARD[square][C_WHITE]=RAY_ATTACKS[square][D_NORTH];
+            PAWN_FORWARD[square][C_BLACK]=RAY_ATTACKS[square][D_SOUTH];
+        }
+    }
+
     u64 get_magic_rook_attacks(Square square, u64 all) {
         u64 blockers = all & ROOK_MASKS[square];
 
@@ -447,5 +455,6 @@ namespace engine {
         init_bishop_magic();
         init_in_between();
         init_lines();
+        init_pawn_structure();
     }
 }

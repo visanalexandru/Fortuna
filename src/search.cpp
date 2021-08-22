@@ -177,7 +177,6 @@ namespace engine {
         transposition_table.save({hash, TT_EXACT, best, score, (u8) depth});
         std::cout << "info depth " << depth
                   << " time " << (unsigned) (elapsed * 1000.0)
-                  << " nodes " << nodes
                   << " score cp " << score
                   << " nps " << (unsigned) (nodes / elapsed)
                   << " nodes " << nodes << std::endl;

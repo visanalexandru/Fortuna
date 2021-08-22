@@ -52,6 +52,8 @@ namespace engine {
     void score_pawn_structure(const Board &board, int &middle_game, int &end_game) {
         u64 pawns = board.current_position.placement[get_piece(PT_PAWN, side)];
         u64 allied_pawns = pawns;
+        u64 enemy_pawns = board.current_position.placement[get_piece(PT_PAWN, get_opposite(side))];
+        int advanced;
 
         Square pawn_square;
         while (pawns) {
@@ -59,6 +61,10 @@ namespace engine {
             if (PAWN_FORWARD[pawn_square][side] & allied_pawns) {
                 middle_game += C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME];
                 end_game += C_DOUBLED_PAWN_PENALTY[PH_ENDGAME];
+            } else if ((PAWN_FRONT_SPANS[pawn_square][side] & enemy_pawns) == 0) {
+                advanced = (side == C_WHITE) ? get_rank(pawn_square) : (7 - get_rank(pawn_square));
+                middle_game += C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][advanced];
+                end_game += C_PASSED_PAWN_BONUS[PH_ENDGAME][advanced];
             }
         }
     }

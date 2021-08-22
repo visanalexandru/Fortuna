@@ -36,6 +36,9 @@ namespace engine {
 
     const int C_DOUBLED_PAWN_PENALTY[C_NUM_PHASES] = {-20, -30};
 
+    const int C_PASSED_PAWN_BONUS[C_NUM_PHASES][C_NUM_RANKS] = {{0, 0, 0, 10, 15, 20, 45, 0},
+                                                                {0, 10, 15, 20, 30, 40, 90, 0}};
+
     inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];
     }

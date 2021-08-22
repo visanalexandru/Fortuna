@@ -534,44 +534,68 @@ TEST_CASE("Material-Count", "[eval]") {
 }
 
 
-TEST_CASE("Pawn-structure","[eval]"){
+TEST_CASE("Pawn-structure", "[eval]") {
     engine::init_tables();
     Board board;
+    int middle_game = 0, end_game = 0;
+
     board.load_fen("r1bq1knr/p2p1ppp/3p4/1P6/1P6/5N2/1P1PP1PP/RNBQKB1R b KQ - 0 8");
 
-    int middle_game=0,end_game=0;
-    score_pawn_structure<C_WHITE>(board,middle_game,end_game);
-    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]*2);
-    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]*2);
+    score_pawn_structure<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game == C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME] * 2);
+    REQUIRE(end_game == C_DOUBLED_PAWN_PENALTY[PH_ENDGAME] * 2);
 
-    middle_game=0,end_game=0;
-    score_pawn_structure<C_BLACK>(board,middle_game,end_game);
-    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]);
-    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]);
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game == C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]);
+    REQUIRE(end_game == C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]);
     board.load_fen("3rr1k1/1ppq1pp1/p4n2/3P1nB1/2Q1p3/2N3P1/PP2PPKP/2RR4 b - - 4 22");
 
-    middle_game=0,end_game=0;
-    score_pawn_structure<C_WHITE>(board,middle_game,end_game);
-    REQUIRE(middle_game==0);
-    REQUIRE(end_game==0);
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game == 0);
+    REQUIRE(end_game == 0);
 
-    middle_game=0,end_game=0;
-    score_pawn_structure<C_BLACK>(board,middle_game,end_game);
-    REQUIRE(middle_game==0);
-    REQUIRE(end_game==0);
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game == 0);
+    REQUIRE(end_game == 0);
 
 
     board.load_fen("8/2pkp2p/2p1p3/4p1P1/1P1P1PP1/1P1P1P2/1K6/8 w - - 0 1");
 
-    middle_game=0,end_game=0;
-    score_pawn_structure<C_WHITE>(board,middle_game,end_game);
-    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]*4);
-    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]*4);
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game == C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME] * 4);
+    REQUIRE(end_game == C_DOUBLED_PAWN_PENALTY[PH_ENDGAME] * 4);
 
-    middle_game=0,end_game=0;
-    score_pawn_structure<C_BLACK>(board,middle_game,end_game);
-    REQUIRE(middle_game==C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]*3);
-    REQUIRE(end_game==C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]*3);
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game == C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME] * 3);
+    REQUIRE(end_game == C_DOUBLED_PAWN_PENALTY[PH_ENDGAME] * 3);
+
+    board.load_fen("8/2k2p2/p5p1/p7/8/3PK2P/2P5/8 w - - 0 1");
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game == C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][1] + C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][2]);
+    REQUIRE(end_game == C_PASSED_PAWN_BONUS[PH_ENDGAME][1] + C_PASSED_PAWN_BONUS[PH_ENDGAME][2]);
+
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game == C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][3] + C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][1] +
+                           C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]);
+
+
+    board.load_fen("1k6/8/8/6P1/1pP3P1/8/P6p/5K2 w - - 0 1");
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game==C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][3]+C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][4]+C_DOUBLED_PAWN_PENALTY[PH_MIDDLEGAME]);
+    REQUIRE(end_game==C_PASSED_PAWN_BONUS[PH_ENDGAME][3]+C_PASSED_PAWN_BONUS[PH_ENDGAME][4]+C_DOUBLED_PAWN_PENALTY[PH_ENDGAME]);
+
+    middle_game = 0, end_game = 0;
+    score_pawn_structure<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game==C_PASSED_PAWN_BONUS[PH_MIDDLEGAME][6]);
+    REQUIRE(end_game==C_PASSED_PAWN_BONUS[PH_ENDGAME][6]);
 
 }
 

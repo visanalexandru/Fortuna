@@ -18,6 +18,7 @@ namespace engine {
     u64 IN_BETWEEN[C_NUM_SQUARES][C_NUM_SQUARES];
     u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
     u64 PAWN_FORWARD[C_NUM_SQUARES][2];
+    u64 PAWN_FRONT_SPANS[C_NUM_SQUARES][2];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & CLEAR_FILE[FILE_H];
@@ -410,10 +411,23 @@ namespace engine {
         }
     }
 
-    void init_pawn_structure(){
-        for(int square=0;square<C_NUM_SQUARES;square++){
-            PAWN_FORWARD[square][C_WHITE]=RAY_ATTACKS[square][D_NORTH];
-            PAWN_FORWARD[square][C_BLACK]=RAY_ATTACKS[square][D_SOUTH];
+    void init_pawn_structure() {
+        for (int square = 0; square < C_NUM_SQUARES; square++) {
+            PAWN_FORWARD[square][C_WHITE] = RAY_ATTACKS[square][D_NORTH];
+            PAWN_FORWARD[square][C_BLACK] = RAY_ATTACKS[square][D_SOUTH];
+
+            PAWN_FRONT_SPANS[square][C_WHITE] = PAWN_FORWARD[square][C_WHITE];
+            PAWN_FRONT_SPANS[square][C_BLACK] = PAWN_FORWARD[square][C_BLACK];
+
+            int file = get_file((Square) square);
+            if (file > 0) {
+                PAWN_FRONT_SPANS[square][C_WHITE] |= RAY_ATTACKS[square - 1][D_NORTH];
+                PAWN_FRONT_SPANS[square][C_BLACK] |= RAY_ATTACKS[square - 1][D_SOUTH];
+            }
+            if (file < 7) {
+                PAWN_FRONT_SPANS[square][C_WHITE] |= RAY_ATTACKS[square + 1][D_NORTH];
+                PAWN_FRONT_SPANS[square][C_BLACK] |= RAY_ATTACKS[square + 1][D_SOUTH];
+            }
         }
     }
 

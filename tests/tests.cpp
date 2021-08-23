@@ -599,6 +599,34 @@ TEST_CASE("Pawn-structure", "[eval]") {
 
 }
 
+TEST_CASE("King-safety", "[eval]") {
+    engine::init_tables();
+    int middle_game = 0, end_game = 0;
+    Board board;
+    board.load_fen("1k6/ppp3b1/8/8/5N2/1P6/P7/1K6 w - - 0 1");
+
+    score_king_safety<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game==C_WEAK_PAWN_SHIELD_BONUS[PH_MIDDLEGAME]+C_STRONG_PAWN_SHIELD_BONUS[PH_MIDDLEGAME]);
+    REQUIRE(end_game==C_WEAK_PAWN_SHIELD_BONUS[PH_ENDGAME]+C_STRONG_PAWN_SHIELD_BONUS[PH_ENDGAME]);
+
+    middle_game=0,end_game=0;
+    score_king_safety<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game==C_STRONG_PAWN_SHIELD_BONUS[PH_MIDDLEGAME]*3);
+    REQUIRE(end_game==C_STRONG_PAWN_SHIELD_BONUS[PH_ENDGAME]*3);
+
+    board.load_fen("r7/2k5/2p5/8/4PP2/6P1/1Q3K2/8 w - - 0 1");
+    middle_game=0,end_game=0;
+    score_king_safety<C_WHITE>(board, middle_game, end_game);
+    REQUIRE(middle_game==C_WEAK_PAWN_SHIELD_BONUS[PH_MIDDLEGAME]*2+C_STRONG_PAWN_SHIELD_BONUS[PH_MIDDLEGAME]);
+    REQUIRE(end_game==C_WEAK_PAWN_SHIELD_BONUS[PH_ENDGAME]*2+C_STRONG_PAWN_SHIELD_BONUS[PH_ENDGAME]);
+
+    middle_game=0,end_game=0;
+    score_king_safety<C_BLACK>(board, middle_game, end_game);
+    REQUIRE(middle_game==C_STRONG_PAWN_SHIELD_BONUS[PH_MIDDLEGAME]);
+    REQUIRE(end_game==C_STRONG_PAWN_SHIELD_BONUS[PH_ENDGAME]);
+}
+
+
 TEST_CASE("Transposition-Table", "[ttable]") {
     TranspositionTable table(1);
     unsigned bytes_per_mb = 1000000;

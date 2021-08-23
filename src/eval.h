@@ -69,6 +69,23 @@ namespace engine {
         }
     }
 
+    /*Adds the king safety score for the given side to the game phases.*/
+    template<Color side>
+    void score_king_safety(const Board &board, int &middle_game, int &end_game) {
+        u64 king = board.current_position.placement[get_piece(PT_KING, side)];
+        u64 pawns = board.current_position.placement[get_piece(PT_PAWN, side)];
+        Square king_square = popLsb(king);
+
+        int strong_pawns_count = popCount(pawns & STRONG_PAWN_SHIELD[king_square][side]);
+        int weak_pawns_count = popCount(pawns & WEAK_PAWN_SHIELD[king_square][side]);
+
+        middle_game += strong_pawns_count * C_STRONG_PAWN_SHIELD_BONUS[PH_MIDDLEGAME] +
+                       weak_pawns_count * C_WEAK_PAWN_SHIELD_BONUS[PH_MIDDLEGAME];
+
+        end_game += strong_pawns_count * C_STRONG_PAWN_SHIELD_BONUS[PH_ENDGAME] +
+                    weak_pawns_count * C_WEAK_PAWN_SHIELD_BONUS[PH_ENDGAME];
+    }
+
     /*Gets the current game phase, between 0 and C_MAX_PHASE, used for tapered eval.*/
     int get_phase(const Board &board);
 

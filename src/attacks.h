@@ -25,6 +25,8 @@ namespace engine {
     extern u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
     extern u64 PAWN_FORWARD[C_NUM_SQUARES][2];
     extern u64 PAWN_FRONT_SPANS[C_NUM_SQUARES][2];
+    extern u64 STRONG_PAWN_SHIELD[C_NUM_SQUARES][2];
+    extern u64 WEAK_PAWN_SHIELD[C_NUM_SQUARES][2];
 
     /* Generates the king move bitboard. */
     u64 king_movement(u64 king_location);

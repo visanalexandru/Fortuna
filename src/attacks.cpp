@@ -19,6 +19,8 @@ namespace engine {
     u64 LINE[C_NUM_SQUARES][C_NUM_SQUARES];
     u64 PAWN_FORWARD[C_NUM_SQUARES][2];
     u64 PAWN_FRONT_SPANS[C_NUM_SQUARES][2];
+    u64 STRONG_PAWN_SHIELD[C_NUM_SQUARES][2];
+    u64 WEAK_PAWN_SHIELD[C_NUM_SQUARES][2];
 
     u64 king_movement(u64 king_location) {
         u64 clip_file_h = king_location & CLEAR_FILE[FILE_H];
@@ -413,6 +415,7 @@ namespace engine {
 
     void init_pawn_structure() {
         for (int square = 0; square < C_NUM_SQUARES; square++) {
+            u64 bit = square_to_bitboard((Square) square);
             PAWN_FORWARD[square][C_WHITE] = RAY_ATTACKS[square][D_NORTH];
             PAWN_FORWARD[square][C_BLACK] = RAY_ATTACKS[square][D_SOUTH];
 
@@ -428,6 +431,15 @@ namespace engine {
                 PAWN_FRONT_SPANS[square][C_WHITE] |= RAY_ATTACKS[square + 1][D_NORTH];
                 PAWN_FRONT_SPANS[square][C_BLACK] |= RAY_ATTACKS[square + 1][D_SOUTH];
             }
+
+            u64 clip_file_h = bit & CLEAR_FILE[FILE_H];
+            u64 clip_file_a = bit & CLEAR_FILE[FILE_A];
+
+            STRONG_PAWN_SHIELD[square][C_WHITE] = (bit << 8u) | (clip_file_a << 7u) | (clip_file_h << 9u);
+            STRONG_PAWN_SHIELD[square][C_BLACK] = (bit >> 8u) | (clip_file_a >> 9u) | (clip_file_h >> 7u);
+
+            WEAK_PAWN_SHIELD[square][C_WHITE] = (bit << 16u) | (clip_file_a << 15u) | (clip_file_h << 17u);
+            WEAK_PAWN_SHIELD[square][C_BLACK] = (bit >> 16u) | (clip_file_a >> 17u) | (clip_file_h >> 15u);
         }
     }
 

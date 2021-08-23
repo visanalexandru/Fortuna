@@ -502,19 +502,8 @@ namespace engine {
 
     template<GenType type>
     std::vector<Move> MoveGen::get_moves() {
-        u64 white = board.current_position.placement[P_W_PAWN] |
-                    board.current_position.placement[P_W_KNIGHT] |
-                    board.current_position.placement[P_W_BISHOP] |
-                    board.current_position.placement[P_W_ROOK] |
-                    board.current_position.placement[P_W_QUEEN] |
-                    board.current_position.placement[P_W_KING];
-
-        u64 black = board.current_position.placement[P_B_PAWN] |
-                    board.current_position.placement[P_B_KNIGHT] |
-                    board.current_position.placement[P_B_BISHOP] |
-                    board.current_position.placement[P_B_ROOK] |
-                    board.current_position.placement[P_B_QUEEN] |
-                    board.current_position.placement[P_B_KING];
+        u64 white = board.get_occupancy<C_WHITE>();
+        u64 black = board.get_occupancy<C_BLACK>();
 
         u64 all = white | black;
         moves.clear();

@@ -137,6 +137,10 @@ namespace engine {
         /*Statically evaluates a capture.*/
         int see(const Move &capture, Color side);
 
+        /*Returns the occupancy bitboard for the given side.*/
+        template<Color color>
+        u64 get_occupancy() const;
+
         Board();
     };
 

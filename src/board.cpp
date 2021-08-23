@@ -408,6 +408,24 @@ namespace engine {
         return score;
     }
 
+
+    template<Color color>
+    u64 Board::get_occupancy() const {
+        u64 result = current_position.placement[get_piece(PT_PAWN, color)] |
+                     current_position.placement[get_piece(PT_KNIGHT, color)] |
+                     current_position.placement[get_piece(PT_BISHOP, color)] |
+                     current_position.placement[get_piece(PT_ROOK, color)] |
+                     current_position.placement[get_piece(PT_KING, color)] |
+                     current_position.placement[get_piece(PT_QUEEN, color)];
+        return result;
+
+    }
+
+    /*Explicit template initialization.*/
+    template u64 Board::get_occupancy<C_WHITE>() const;
+
+    template u64 Board::get_occupancy<C_BLACK>() const;
+
     void Board::load_fen(const std::string &fen) {
         history[0] = {};
         current_state = &history[0];
@@ -470,14 +488,14 @@ namespace engine {
     }
 
     std::ostream &operator<<(std::ostream &stream, const Board &board) {
-        stream<<"\n+---+---+---+---+---+---+---+---+\n";
+        stream << "\n+---+---+---+---+---+---+---+---+\n";
         for (int rank = 7; rank >= 0; rank--) {
             for (int file = 0; file < 8; file++) {
                 Square here = position_to_square(file, rank);
-                stream << "# "<<piece_to_notation(board.current_position.pieces[here])<<" ";
+                stream << "# " << piece_to_notation(board.current_position.pieces[here]) << " ";
             }
-            stream<<'#';
-            stream<<"\n+---+---+---+---+---+---+---+---+\n";
+            stream << '#';
+            stream << "\n+---+---+---+---+---+---+---+---+\n";
         }
         stream << "Zobrist key:" << board.current_state->zobrist_key << std::endl;
         stream << std::endl;

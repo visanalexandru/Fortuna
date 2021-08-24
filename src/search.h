@@ -85,6 +85,10 @@ namespace engine {
         /*This method wraps the iterative_deepening method, to be called on a separate thread.*/
         void search();
 
+        /*Outputs the principal variation of the search, for logging purposes.*/
+        /*We extract the PV from the transposition table.*/
+        void output_principal_variation(int depth, std::ostream &stream);
+
     public:
         /*Search limits.*/
         SearchParameters limits;

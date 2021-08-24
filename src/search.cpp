@@ -59,7 +59,7 @@ namespace engine {
         }
 
         /*Check extensions.*/
-        if(move_gen.is_in_check(side)){
+        if (move_gen.is_in_check(side)) {
             depth++;
         }
 
@@ -179,7 +179,10 @@ namespace engine {
                   << " time " << (unsigned) (elapsed * 1000.0)
                   << " score cp " << score
                   << " nps " << (unsigned) (nodes / elapsed)
-                  << " nodes " << nodes << std::endl;
+                  << " nodes " << nodes
+                  << " pv ";
+        output_principal_variation(depth, std::cout);
+        std::cout << std::endl;
         return best;
     }
 
@@ -243,6 +246,37 @@ namespace engine {
         }
 
         search_thread = nullptr;
+    }
+
+
+    void Search::output_principal_variation(int depth, std::ostream &stream) {
+        /*We store the pv so we can undo the moves.*/
+        std::vector<Move> path;
+
+        /*The transposition table node.*/
+        TTEntry *here = transposition_table.probe(board.current_state->zobrist_key);
+
+        int current_depth = 0;
+
+        while (current_depth < depth && here != nullptr) {
+
+            Move move = here->move;
+            stream << move_to_string(move) << " ";
+            path.push_back(move);
+
+            /*We go deeper down the line.*/
+            board.make_move(move);
+
+            /*We update the entry pointer.*/
+            here = transposition_table.probe(board.current_state->zobrist_key);
+
+            current_depth++;
+        }
+
+        /*We undo the principal variation moves.*/
+        for (auto iter = path.rbegin(); iter != path.rend(); iter++) {
+            board.undo_move(*iter);
+        }
     }
 
 }

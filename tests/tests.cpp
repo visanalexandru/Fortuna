@@ -654,6 +654,49 @@ TEST_CASE("Mobility","[eval]"){
     REQUIRE(C_MOBILITY_MULTIPLIER_ROOK*9+C_MOBILITY_MULTIPLIER_QUEEN*40);
 }
 
+int modular_eval(const Board &board) {
+    int white_mg = 0, black_mg = 0, white_eg = 0, black_eg = 0;
+
+    white_mg = white_eg = score_material<C_WHITE>(board);
+    black_mg = black_eg = score_material<C_BLACK>(board);
+
+    score_piece_placement<C_WHITE>(board, white_mg, white_eg);
+    score_piece_placement<C_BLACK>(board, black_mg, black_eg);
+    score_pawn_structure<C_WHITE>(board, white_mg, white_eg);
+    score_pawn_structure<C_BLACK>(board, black_mg, black_eg);
+    score_king_safety<C_WHITE>(board, white_mg, white_eg);
+    score_king_safety<C_BLACK>(board, black_mg, black_eg);
+    score_mobility<C_WHITE>(board, white_mg, white_eg);
+    score_mobility<C_BLACK>(board, black_mg, black_eg);
+
+    int opening = white_mg - black_mg;
+    int end_game = white_eg - black_eg;
+
+    int phase = get_phase(board);
+    int eval = (opening * (C_MAX_PHASE - phase) + (end_game * phase)) / C_MAX_PHASE;
+    return eval;
+}
+
+TEST_CASE("Correct-eval", "[eval]") {
+    engine::init_tables();
+
+    Board board;
+    board.load_fen("2Q1r3/2p4k/1B1p4/P4K2/2B2R2/1p4p1/pP1P2N1/8 w - - 0 1");
+    REQUIRE(evaluate(board)==modular_eval(board));
+
+    board.load_fen("7K/p7/1p4pR/b4p1P/1kB3p1/5P1P/q5N1/5N2 w - - 0 1");
+    REQUIRE(evaluate(board)==modular_eval(board));
+
+    board.load_fen("7k/N2p2p1/PnP2RB1/pPQpR1b1/1N2p3/P1P2rPp/1K1PPQpB/5r2 w - - 0 1");
+    REQUIRE(evaluate(board)==modular_eval(board));
+
+    board.load_fen("4R3/rPk3q1/P2n2R1/p1p1P1p1/pPn4p/Ppp1bbNK/2BQP1rB/2N5 w - - 0 1");
+    REQUIRE(evaluate(board)==modular_eval(board));
+
+    board.load_fen("2Q1NR2/q3P3/1Pp3nk/b3p2B/pP6/PQppPb1p/1BpPrN1p/2K2n2 w - - 0 1");
+    REQUIRE(evaluate(board)==modular_eval(board));
+}
+
 
 TEST_CASE("Transposition-Table", "[ttable]") {
     TranspositionTable table(1);

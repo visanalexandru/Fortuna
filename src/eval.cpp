@@ -32,6 +32,8 @@ namespace engine {
         score_pawn_structure<C_BLACK>(board, black_mg, black_eg);
         score_king_safety<C_WHITE>(board, white_mg, white_eg);
         score_king_safety<C_BLACK>(board, black_mg, black_eg);
+        score_mobility<C_WHITE>(board, white_mg, white_eg);
+        score_mobility<C_BLACK>(board, black_mg, black_eg);
 
         int opening = white_mg - black_mg;
         int end_game = white_eg - black_eg;

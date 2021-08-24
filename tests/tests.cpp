@@ -627,6 +627,34 @@ TEST_CASE("King-safety", "[eval]") {
 }
 
 
+TEST_CASE("Mobility","[eval]"){
+    engine::init_tables();
+    int middle_game=0,end_game=0;
+    Board board;
+    board.load_fen("rn2k2r/1pppppp1/1b6/p2Qnqb1/3P3p/1P3N2/PBP1PPB1/RK5R w KQkq - 0 1");
+    score_mobility<C_WHITE>(board,middle_game,end_game);
+    REQUIRE(middle_game==end_game);
+    REQUIRE(middle_game==C_MOBILITY_MULTIPLIER_BISHOP*5+C_MOBILITY_MULTIPLIER_ROOK*8+C_MOBILITY_MULTIPLIER_QUEEN*12);
+
+    middle_game=0,end_game=0;
+    score_mobility<C_BLACK>(board,middle_game,end_game);
+    REQUIRE(middle_game==end_game);
+    REQUIRE(middle_game==C_MOBILITY_MULTIPLIER_BISHOP*9+C_MOBILITY_MULTIPLIER_ROOK*7+C_MOBILITY_MULTIPLIER_QUEEN*11);
+
+
+    board.load_fen("1k5r/ppp1q3/2B3P1/5BP1/1R1q1P1P/6K1/2B3Q1/8 w k - 0 1");
+    middle_game=0,end_game=0;
+    score_mobility<C_WHITE>(board,middle_game,end_game);
+    REQUIRE(middle_game==end_game);
+    REQUIRE(middle_game==C_MOBILITY_MULTIPLIER_BISHOP*21+C_MOBILITY_MULTIPLIER_ROOK*9+C_MOBILITY_MULTIPLIER_QUEEN*11);
+
+    middle_game=0,end_game=0;
+    score_mobility<C_BLACK>(board,middle_game,end_game);
+    REQUIRE(middle_game==end_game);
+    REQUIRE(C_MOBILITY_MULTIPLIER_ROOK*9+C_MOBILITY_MULTIPLIER_QUEEN*40);
+}
+
+
 TEST_CASE("Transposition-Table", "[ttable]") {
     TranspositionTable table(1);
     unsigned bytes_per_mb = 1000000;

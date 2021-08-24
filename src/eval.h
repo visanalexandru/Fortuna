@@ -86,6 +86,39 @@ namespace engine {
                     weak_pawns_count * C_WEAK_PAWN_SHIELD_BONUS[PH_ENDGAME];
     }
 
+    /*Adds the queen, bishop and rook mobility score to the game phases.*/
+    template<Color side>
+    void score_mobility(const Board &board, int &middle_game, int &end_game) {
+        int bonus = 0;
+        u64 allied_pieces = board.get_occupancy<side>(), all = board.current_position.all;
+        u64 bishops = board.current_position.placement[get_piece(PT_BISHOP, side)];
+        u64 rooks = board.current_position.placement[get_piece(PT_ROOK, side)];
+        u64 queens = board.current_position.placement[get_piece(PT_QUEEN, side)];
+        u64 attacks;
+
+        Square square;
+        while (bishops) {
+            square = popLsb(bishops);
+            attacks = get_magic_bishop_attacks(square, all) & (~allied_pieces);
+            bonus += popCount(attacks) * C_MOBILITY_MULTIPLIER_BISHOP;
+        }
+
+        while (rooks) {
+            square = popLsb(rooks);
+            attacks = get_magic_rook_attacks(square, all) & (~allied_pieces);
+            bonus += popCount(attacks) * C_MOBILITY_MULTIPLIER_ROOK;
+        }
+
+        while (queens) {
+            square = popLsb(queens);
+            attacks = (get_magic_rook_attacks(square, all) | get_magic_bishop_attacks(square, all)) & (~allied_pieces);
+            bonus += popCount(attacks) * C_MOBILITY_MULTIPLIER_QUEEN;
+        }
+
+        middle_game += bonus;
+        end_game += bonus;
+    }
+
     /*Gets the current game phase, between 0 and C_MAX_PHASE, used for tapered eval.*/
     int get_phase(const Board &board);
 

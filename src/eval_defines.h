@@ -42,6 +42,10 @@ namespace engine {
     const int C_STRONG_PAWN_SHIELD_BONUS[C_NUM_PHASES]={6,0};
     const int C_WEAK_PAWN_SHIELD_BONUS[C_NUM_PHASES]={3,0};
 
+    const int C_MOBILITY_MULTIPLIER_BISHOP=3;
+    const int C_MOBILITY_MULTIPLIER_ROOK=4;
+    const int C_MOBILITY_MULTIPLIER_QUEEN=2;
+
     inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];
     }

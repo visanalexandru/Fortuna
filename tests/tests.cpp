@@ -767,4 +767,25 @@ TEST_CASE("Tactics", "[search]") {
         REQUIRE(move_to_string(search.iterative_deepening()) == "e1e8");
     }
 
+
+    SECTION("Material-wins"){
+        search.limits.maximum_depth=7;
+        board.load_fen("r5k1/2q2p1p/r1p2npb/6N1/p1Q1Pp2/Pp6/1PPR2P1/1NKR4 w - - 0 24");
+        REQUIRE(move_to_string(search.iterative_deepening()) == "d2d7");
+
+        board.load_fen("r4rk1/pb1n1ppp/1p2p3/6q1/1PNPn3/1P6/1B1NBPPP/R2QR1K1 b - - 0 15");
+        REQUIRE(move_to_string(search.iterative_deepening())=="e4c3");
+
+        search.limits.maximum_depth=8;
+        board.load_fen("8/4k3/5p2/5P2/6K1/8/8/8 w - - 2 52");
+        REQUIRE(move_to_string(search.iterative_deepening())=="g4h5");
+
+        board.load_fen("rn2k2r/pp3ppp/2p1pn2/q7/1bB5/P1N2Q1P/2PP1PP1/R1B2RK1 w kq - 0 11");
+        REQUIRE(move_to_string(search.iterative_deepening())=="a3b4");
+
+
+        board.load_fen("8/8/4p3/3p2P1/1p1P4/1kpbP2P/6B1/2K1B3 b - - 0 56");
+        REQUIRE(move_to_string(search.iterative_deepening())=="b3c4");
+    }
+
 }

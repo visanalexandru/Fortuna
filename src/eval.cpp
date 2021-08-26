@@ -64,10 +64,14 @@ namespace engine {
 
     template<Color side>
     void score_knights(const Board &board, int &middle_game, int &end_game) {
-        u64 knights = board.current_position.placement[get_piece(PT_KNIGHT, side)];
+        u64 knights = board.current_position.placement[get_piece(PT_KNIGHT, side)], attacks;
         Square knight_square;
+        u64 allied_pieces = board.get_occupancy<side>();
+        int mobility;
+
         while (knights) {
             knight_square = popLsb(knights);
+            attacks = KNIGHT_ATTACKS[knight_square] & (~allied_pieces);
 
             /*Material bonus.*/
             middle_game += C_KNIGHT_VALUE;
@@ -76,6 +80,11 @@ namespace engine {
             /*PST bonus.*/
             middle_game += PST[PT_KNIGHT][side][PH_MIDDLEGAME][knight_square];
             end_game += PST[PT_KNIGHT][side][PH_ENDGAME][knight_square];
+
+            /*Mobility bonus.*/
+            mobility = popCount(attacks);
+            middle_game += mobility * C_MOBILITY_MULTIPLIER_KNIGHT;
+            end_game += mobility * C_MOBILITY_MULTIPLIER_KNIGHT;
         }
     }
 
@@ -83,6 +92,7 @@ namespace engine {
     void score_bishops(const Board &board, int &middle_game, int &end_game) {
         u64 bishops = board.current_position.placement[get_piece(PT_BISHOP, side)], attacks;
         u64 all = board.current_position.all, allied_pieces = board.get_occupancy<side>();
+        int mobility;
 
         Square bishop_square;
         while (bishops) {
@@ -98,8 +108,9 @@ namespace engine {
             end_game += PST[PT_BISHOP][side][PH_ENDGAME][bishop_square];
 
             /*Mobility bonus.*/
-            middle_game += popCount(attacks) * C_MOBILITY_MULTIPLIER_BISHOP;
-            end_game += popCount(attacks) * C_MOBILITY_MULTIPLIER_BISHOP;
+            mobility = popCount(attacks);
+            middle_game += mobility * C_MOBILITY_MULTIPLIER_BISHOP;
+            end_game += mobility * C_MOBILITY_MULTIPLIER_BISHOP;
         }
     }
 
@@ -107,6 +118,7 @@ namespace engine {
     void score_rooks(const Board &board, int &middle_game, int &end_game) {
         u64 rooks = board.current_position.placement[get_piece(PT_ROOK, side)], attacks;
         u64 all = board.current_position.all, allied_pieces = board.get_occupancy<side>();
+        int mobility;
 
         Square rook_square;
         while (rooks) {
@@ -122,8 +134,9 @@ namespace engine {
             end_game += PST[PT_ROOK][side][PH_ENDGAME][rook_square];
 
             /*Mobility bonus.*/
-            middle_game += popCount(attacks) * C_MOBILITY_MULTIPLIER_ROOK;
-            end_game += popCount(attacks) * C_MOBILITY_MULTIPLIER_ROOK;
+            mobility = popCount(attacks);
+            middle_game += mobility * C_MOBILITY_MULTIPLIER_ROOK;
+            end_game += mobility * C_MOBILITY_MULTIPLIER_ROOK;
         }
     }
 
@@ -131,6 +144,7 @@ namespace engine {
     void score_queens(const Board &board, int &middle_game, int &end_game) {
         u64 queens = board.current_position.placement[get_piece(PT_QUEEN, side)], attacks;
         u64 all = board.current_position.all, allied_pieces = board.get_occupancy<side>();
+        int mobility;
 
         Square queen_square;
         while (queens) {
@@ -147,8 +161,9 @@ namespace engine {
             end_game += PST[PT_QUEEN][side][PH_ENDGAME][queen_square];
 
             /*Mobility bonus.*/
-            middle_game += popCount(attacks) * C_MOBILITY_MULTIPLIER_QUEEN;
-            end_game += popCount(attacks) * C_MOBILITY_MULTIPLIER_QUEEN;
+            mobility = popCount(attacks);
+            middle_game += mobility * C_MOBILITY_MULTIPLIER_QUEEN;
+            end_game += mobility * C_MOBILITY_MULTIPLIER_QUEEN;
         }
     }
 
@@ -280,9 +295,17 @@ namespace engine {
         u64 bishops = board.current_position.placement[get_piece(PT_BISHOP, side)];
         u64 rooks = board.current_position.placement[get_piece(PT_ROOK, side)];
         u64 queens = board.current_position.placement[get_piece(PT_QUEEN, side)];
+        u64 knights = board.current_position.placement[get_piece(PT_KNIGHT, side)];
         u64 attacks;
 
         Square square;
+
+        while (knights) {
+            square = popLsb(knights);
+            attacks = KNIGHT_ATTACKS[square] & (~allied_pieces);
+            bonus += popCount(attacks) * C_MOBILITY_MULTIPLIER_KNIGHT;
+        }
+
         while (bishops) {
             square = popLsb(bishops);
             attacks = get_magic_bishop_attacks(square, all) & (~allied_pieces);

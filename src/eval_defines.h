@@ -45,6 +45,7 @@ namespace engine {
     const int C_MOBILITY_MULTIPLIER_BISHOP=3;
     const int C_MOBILITY_MULTIPLIER_ROOK=4;
     const int C_MOBILITY_MULTIPLIER_QUEEN=2;
+    const int C_MOBILITY_MULTIPLIER_KNIGHT=4;
 
     inline int get_piece_value(PieceType type) {
         return C_PIECE_VALUES[type];

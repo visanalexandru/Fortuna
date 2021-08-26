@@ -19,7 +19,7 @@ namespace engine {
     template<Color side>
     void score_pawns(const Board &board, int &middle_game, int &end_game);
 
-    /*Evaluates the knights. Knight PST and material.*/
+    /*Evaluates the knights. Knight PST, material and mobility bonus.*/
     template<Color side>
     void score_knights(const Board &board, int &middle_game, int &end_game);
 

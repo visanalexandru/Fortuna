@@ -49,6 +49,8 @@ namespace engine {
         /*Information about the position (is it the start position or we need to parse a fen string).*/
         std::string header, move;
         position >> header;
+        /*Clear the game history.*/
+        game_history.clear();
 
         if (header == "startpos") {
             board.load_fen(C_BASE_POSITION);
@@ -64,6 +66,9 @@ namespace engine {
             board.load_fen(fen_string);
         }
 
+        /*The first position in the history.*/
+        game_history.push_position(board.current_state->zobrist_key);
+
         position >> move;
         if (move == "moves") {
             /*We need to make moves.*/
@@ -71,6 +76,7 @@ namespace engine {
                 /*We get the corresponding move from the move string.*/
                 Move corresponding = find_move(move);
                 board.make_move(corresponding);
+                game_history.push_position(board.current_state->zobrist_key);
             }
         }
     }

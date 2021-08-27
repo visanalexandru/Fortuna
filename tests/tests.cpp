@@ -10,6 +10,7 @@
 #include"eval.h"
 #include"search.h"
 #include"ttable.h"
+#include"history.h"
 
 using namespace engine;
 
@@ -788,4 +789,29 @@ TEST_CASE("Tactics", "[search]") {
         REQUIRE(move_to_string(search.iterative_deepening())=="b3c4");
     }
 
+}
+
+
+TEST_CASE("History","[history]"){
+    History history;
+    REQUIRE(history.get_ply()==0);
+    REQUIRE(history.is_repetition()==false);
+
+    history.push_position(12347912739123);
+    history.push_position(1231777757577);
+    history.push_position(129083102983012893);
+    history.push_position(1237128749879382752);
+    history.push_position(12347912739123);
+
+    REQUIRE(history.is_repetition()==true);
+    REQUIRE(history.get_ply()==5);
+
+    history.pop_position();
+    REQUIRE(history.is_repetition()==false);
+
+    history.push_position(1908123177624124);
+    history.push_position(1237128749879382752);
+
+    REQUIRE(history.is_repetition()==true);
+    REQUIRE(history.get_ply()==6);
 }

@@ -1,5 +1,5 @@
 find_package(Threads REQUIRED)
-add_library (Engine util.cpp util.h board.cpp board.h defines.h move.h movegen.cpp movegen.h attacks.cpp attacks.h magic.h eval_defines.h eval.cpp eval.h eval_defines.cpp search.cpp search.h moveorder.cpp moveorder.h zobrist.cpp zobrist.h ttable.cpp ttable.h uci.cpp uci.h timeman.cpp timeman.h)
+add_library (Engine util.cpp util.h board.cpp board.h defines.h move.h movegen.cpp movegen.h attacks.cpp attacks.h magic.h eval_defines.h eval.cpp eval.h eval_defines.cpp search.cpp search.h moveorder.cpp moveorder.h zobrist.cpp zobrist.h ttable.cpp ttable.h uci.cpp uci.h timeman.cpp timeman.h history.cpp history.h)
 add_executable(program main.cpp)
 target_link_libraries(program PRIVATE Threads::Threads Engine)
 target_compile_options(program PRIVATE -Wall -Ofast  -fno-rtti -ansi  -m64 -march=native  -msse -flto)

@@ -9,6 +9,7 @@
 #include<iostream>
 #include<string>
 #include"timeman.h"
+#include"history.h"
 #include"search.h"
 
 namespace engine {

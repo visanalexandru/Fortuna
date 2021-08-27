@@ -58,6 +58,11 @@ namespace engine {
             return C_VALUE_DRAW; /*This value won't be used anyway.*/
         }
 
+        /*Check for threefold repetition.*/
+        if (game_history.is_repetition()) {
+            return C_VALUE_DRAW;
+        }
+
         /*Check extensions.*/
         if (move_gen.is_in_check(side)) {
             depth++;
@@ -102,6 +107,7 @@ namespace engine {
 
         for (const Move &move:moves) {
             board.make_move(move);
+            game_history.push_position(board.current_state->zobrist_key);
             ply++;
 
             move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));
@@ -111,6 +117,7 @@ namespace engine {
             }
 
             board.undo_move(move);
+            game_history.pop_position();
             ply--;
 
             alpha = std::max(alpha, score);
@@ -154,6 +161,7 @@ namespace engine {
 
         for (const Move &move:moves) {
             board.make_move(move);
+            game_history.push_position(board.current_state->zobrist_key);
             ply++;
 
             move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));
@@ -164,6 +172,7 @@ namespace engine {
             }
 
             board.undo_move(move);
+            game_history.pop_position();
             ply--;
 
             alpha = std::max(alpha, score);

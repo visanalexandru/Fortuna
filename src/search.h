@@ -13,6 +13,7 @@
 #include"eval.h"
 #include"moveorder.h"
 #include"ttable.h"
+#include"history.h"
 
 namespace engine {
     const double C_DEFAULT_SEARCH_TIME = 5.0;

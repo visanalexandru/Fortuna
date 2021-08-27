@@ -5,6 +5,7 @@
 #include"attacks.h"
 #include"ttable.h"
 #include"uci.h"
+#include"nnue_eval.h"
 
 using namespace engine;
 
@@ -13,6 +14,7 @@ int main() {
     init_pst();
     init_zobrist();
     transposition_table.reserve(128);
+    init_nnue("net.nnue");
     UCI protocol;
     protocol.start();
 

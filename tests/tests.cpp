@@ -739,6 +739,7 @@ TEST_CASE("Tactics", "[search]") {
     engine::init_tables();
     engine::init_pst();
     engine::init_zobrist();
+    engine::init_nnue("net.nnue");
     Board board;
     Search search(board);
     search.limits.allotted_time = 1000.0;

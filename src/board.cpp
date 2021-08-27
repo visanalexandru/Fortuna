@@ -501,4 +501,16 @@ namespace engine {
         stream << std::endl;
         return stream;
     }
+
+    void Board::get_piece_info(Piece piece, int *pieces, int *squares, int &count) const {
+        u64 occupancy = current_position.placement[piece];
+        Square location;
+
+        while (occupancy) {
+            location = popLsb(occupancy);
+            pieces[count] = get_nnue_piece(piece);
+            squares[count] = location;
+            count++;
+        }
+    }
 }

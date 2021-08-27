@@ -141,6 +141,9 @@ namespace engine {
         template<Color color>
         u64 get_occupancy() const;
 
+        /*Adds the piece information to the piece and square buffers, for the nnue evaluation.*/
+        void get_piece_info(Piece piece, int *pieces, int *squares, int &count) const;
+
         Board();
     };
 

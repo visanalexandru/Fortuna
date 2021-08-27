@@ -10,9 +10,9 @@
 #include<thread>
 #include"board.h"
 #include"movegen.h"
-#include"eval.h"
 #include"moveorder.h"
 #include"ttable.h"
+#include"nnue_eval.h"
 
 namespace engine {
     const double C_DEFAULT_SEARCH_TIME = 5.0;

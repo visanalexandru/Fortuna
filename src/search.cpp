@@ -24,7 +24,7 @@ namespace engine {
 
     int Search::quiescence(int alpha, int beta, Color side) {
         nodes++;
-        int stand_pat = evaluate_side(board, side);
+        int stand_pat =evaluate_nnue(board);
         if (stand_pat >= beta) {
             return beta;
         }

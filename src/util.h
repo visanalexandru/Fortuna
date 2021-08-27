@@ -106,6 +106,40 @@ namespace engine {
         return (Rank) (square / 8);
     }
 
+    /*Converts the given piece to its corresponding nnue piece index.*/
+    constexpr int get_nnue_piece(Piece piece) {
+        switch (piece) {
+            case P_W_KING:
+                return 1;
+            case P_W_PAWN:
+                return 6;
+            case P_W_KNIGHT:
+                return 5;
+            case P_W_BISHOP:
+                return 4;
+            case P_W_ROOK:
+                return 3;
+            case P_W_QUEEN:
+                return 2;
+
+            case P_B_KING:
+                return 7;
+            case P_B_PAWN:
+                return 12;
+            case P_B_KNIGHT:
+                return 11;
+            case P_B_BISHOP:
+                return 10;
+            case P_B_ROOK:
+                return 9;
+            case P_B_QUEEN:
+                return 8;
+            case P_NONE:
+                return 0;
+        }
+        return 0;
+    }
+
 }
 
 

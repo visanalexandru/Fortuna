@@ -35,6 +35,10 @@ namespace engine {
         u8 depth;
     };
 
+    const int C_DEFAULT_HASH_SIZE = 128;
+    const int C_MINIMUM_HASH_SIZE = 1;
+    const int C_MAXIMUM_HASH_SIZE = 4096;
+
     /*This class is a big hash table, which holds information that can be reused when
      *we encounter a position that is already in the table.*/
     class TranspositionTable {

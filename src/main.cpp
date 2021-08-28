@@ -12,7 +12,6 @@ int main() {
     init_tables();
     init_pst();
     init_zobrist();
-    transposition_table.reserve(128);
     UCI protocol;
     protocol.start();
 

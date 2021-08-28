@@ -5,7 +5,7 @@
 #include "ttable.h"
 
 namespace engine {
-    TranspositionTable transposition_table(1);
+    TranspositionTable transposition_table(C_DEFAULT_HASH_SIZE);
 
     TranspositionTable::TranspositionTable(unsigned megabytes) : size(0), table(nullptr) {
         reserve(megabytes);

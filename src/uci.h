@@ -26,6 +26,9 @@ namespace engine {
         /*Move generation class, used to find the move received in string form from the GUI.*/
         MoveGen move_gen;
 
+        /*Sends the engine info and options to the gui when we receive the "uci" command.*/
+        void send_info() const;
+
         /*Process the command that was received from the GUI.*/
         void process(std::stringstream &command);
 
@@ -34,6 +37,9 @@ namespace engine {
 
         /*Process the parameters given by the "go" command and start the search.*/
         void process_search(std::stringstream &parameters);
+
+        /*Process the option values given by the "setoption" command.*/
+        void process_option(std::stringstream &option);
 
         /*Finds the move in the current position that has the given string representation.
          * Return an empty move if it was not found.*/

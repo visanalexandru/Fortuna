@@ -18,14 +18,22 @@ namespace engine {
         return create_empty_move();
     }
 
+    void UCI::send_info() const {
+        std::cout << "id name Fortuna" << std::endl;
+        std::cout << "id author Visan Alexandru" << std::endl;
+
+        std::cout << "option name Hash type spin default " << C_DEFAULT_HASH_SIZE << " min " << C_MINIMUM_HASH_SIZE
+                  << " max " << C_MAXIMUM_HASH_SIZE << std::endl;
+
+        std::cout << "uciok" << std::endl;
+    }
+
     void UCI::process(std::stringstream &command) {
         std::string header;
         command >> header;
 
         if (header == "uci") {
-            std::cout << "id name Fortuna" << std::endl;
-            std::cout << "id author Visan Alexandru" << std::endl;
-            std::cout << "uciok" << std::endl;
+            send_info();
         } else if (header == "isready") {
             std::cout << "readyok" << std::endl;
         } else if (header == "ucinewgame") {
@@ -42,7 +50,9 @@ namespace engine {
             search.stop_thread();
         } else if (header == "board") {
             std::cout << board << std::endl;
-        }
+        } else if (header == "setoption") {
+            process_option(command);
+        } else std::cout << "Unknown command" << std::endl;
     }
 
     void UCI::process_position(std::stringstream &position) {
@@ -121,6 +131,25 @@ namespace engine {
                                                    board.color_to_play());
         }
         search.start_thread();
+    }
+
+
+    void UCI::process_option(std::stringstream &option) {
+        std::string token, name;
+        /*We pass over the "name" string to get the option's name.*/
+        option >> token >> name;
+
+        if (name == "Hash") {
+            /*We pass over the "value" string.*/
+            option >> token;
+            /*We get the new transposition table size.*/
+            int hash_size_mb;
+            option >> hash_size_mb;
+            transposition_table.reserve(hash_size_mb);
+        } else {
+            std::cout << "Unknown option" << std::endl;
+        }
+
     }
 
     void UCI::start() {

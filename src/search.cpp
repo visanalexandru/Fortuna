@@ -62,9 +62,10 @@ namespace engine {
         if (game_history.is_repetition()) {
             return C_VALUE_DRAW;
         }
+        bool in_check = move_gen.is_in_check(side);
 
         /*Check extensions.*/
-        if (move_gen.is_in_check(side)) {
+        if (in_check) {
             depth++;
         }
 
@@ -94,7 +95,7 @@ namespace engine {
         /*If there are no moves available.*/
         if (moves.empty()) {
             /*Checkmated.*/
-            if (move_gen.is_in_check(side)) {
+            if (in_check) {
                 return -C_VALUE_MATE;
             }/*Stalemate.*/
             else return C_VALUE_DRAW;
@@ -103,28 +104,47 @@ namespace engine {
         move_order.order_moves(moves, entry, ply);
 
         Move best = create_empty_move();
-        int score = -C_VALUE_INFINITE, move_score;
+        int score = -C_VALUE_INFINITE, move_score, move_count = 0;
+        bool gives_check;
 
         for (const Move &move:moves) {
             board.make_move(move);
             game_history.push_position(board.current_state->zobrist_key);
             ply++;
 
-            move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));
-            if (move_score > score) {
-                score = move_score;
-                best = move;
+            gives_check = move_gen.is_in_check(get_opposite(side));
+
+            /*Late move reductions.*/
+            if (move_count >= C_LMR_MOVE_COUNT &&
+                depth >= 3 &&
+                !is_tactical(move) &&
+                !in_check &&
+                !gives_check) {
+
+                /*Check if the score can be greater than alpha.*/
+                move_score = -nega_max(depth - 2, -alpha - 1, -alpha, get_opposite(side));
+
+            } else move_score = alpha + 1;
+
+            /*The score can be greater than alpha, search with a full window.*/
+            if (move_score > alpha) {
+                move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));
+                if (move_score > score) {
+                    score = move_score;
+                    best = move;
+                }
+                alpha = std::max(alpha, score);
             }
 
             board.undo_move(move);
             game_history.pop_position();
             ply--;
 
-            alpha = std::max(alpha, score);
             if (alpha >= beta) {
                 move_order.set_killer(move, ply);
                 break;
             }
+            move_count++;
         }
 
         /*Do not store the result into the transposition table as the search was inconclusive.*/

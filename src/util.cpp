@@ -81,6 +81,6 @@ namespace engine {
             case P_NONE:
                 return ' ';
         }
-
+        return '?';
     }
 }

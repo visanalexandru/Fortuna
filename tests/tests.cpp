@@ -10,6 +10,7 @@
 #include"eval.h"
 #include"search.h"
 #include"ttable.h"
+#include"history.h"
 
 using namespace engine;
 
@@ -770,14 +771,14 @@ TEST_CASE("Tactics", "[search]") {
 
 
     SECTION("Material-wins"){
-        search.limits.maximum_depth=7;
+        search.limits.maximum_depth=9;
         board.load_fen("r5k1/2q2p1p/r1p2npb/6N1/p1Q1Pp2/Pp6/1PPR2P1/1NKR4 w - - 0 24");
         REQUIRE(move_to_string(search.iterative_deepening()) == "d2d7");
 
         board.load_fen("r4rk1/pb1n1ppp/1p2p3/6q1/1PNPn3/1P6/1B1NBPPP/R2QR1K1 b - - 0 15");
         REQUIRE(move_to_string(search.iterative_deepening())=="e4c3");
 
-        search.limits.maximum_depth=8;
+        search.limits.maximum_depth=10;
         board.load_fen("8/4k3/5p2/5P2/6K1/8/8/8 w - - 2 52");
         REQUIRE(move_to_string(search.iterative_deepening())=="g4h5");
 
@@ -789,4 +790,29 @@ TEST_CASE("Tactics", "[search]") {
         REQUIRE(move_to_string(search.iterative_deepening())=="b3c4");
     }
 
+}
+
+
+TEST_CASE("History","[history]"){
+    History history;
+    REQUIRE(history.get_ply()==0);
+    REQUIRE(history.is_repetition()==false);
+
+    history.push_position(12347912739123);
+    history.push_position(1231777757577);
+    history.push_position(129083102983012893);
+    history.push_position(1237128749879382752);
+    history.push_position(12347912739123);
+
+    REQUIRE(history.is_repetition()==true);
+    REQUIRE(history.get_ply()==5);
+
+    history.pop_position();
+    REQUIRE(history.is_repetition()==false);
+
+    history.push_position(1908123177624124);
+    history.push_position(1237128749879382752);
+
+    REQUIRE(history.is_repetition()==true);
+    REQUIRE(history.get_ply()==6);
 }

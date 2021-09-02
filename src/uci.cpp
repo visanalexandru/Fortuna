@@ -18,14 +18,22 @@ namespace engine {
         return create_empty_move();
     }
 
+    void UCI::send_info() const {
+        std::cout << "id name Fortuna" << std::endl;
+        std::cout << "id author Visan Alexandru" << std::endl;
+
+        std::cout << "option name Hash type spin default " << C_DEFAULT_HASH_SIZE << " min " << C_MINIMUM_HASH_SIZE
+                  << " max " << C_MAXIMUM_HASH_SIZE << std::endl;
+
+        std::cout << "uciok" << std::endl;
+    }
+
     void UCI::process(std::stringstream &command) {
         std::string header;
         command >> header;
 
         if (header == "uci") {
-            std::cout << "id name Fortuna" << std::endl;
-            std::cout << "id author Visan Alexandru" << std::endl;
-            std::cout << "uciok" << std::endl;
+            send_info();
         } else if (header == "isready") {
             std::cout << "readyok" << std::endl;
         } else if (header == "ucinewgame") {
@@ -42,13 +50,17 @@ namespace engine {
             search.stop_thread();
         } else if (header == "board") {
             std::cout << board << std::endl;
-        }
+        } else if (header == "setoption") {
+            process_option(command);
+        } else std::cout << "Unknown command" << std::endl;
     }
 
     void UCI::process_position(std::stringstream &position) {
         /*Information about the position (is it the start position or we need to parse a fen string).*/
         std::string header, move;
         position >> header;
+        /*Clear the game history.*/
+        game_history.clear();
 
         if (header == "startpos") {
             board.load_fen(C_BASE_POSITION);
@@ -64,6 +76,9 @@ namespace engine {
             board.load_fen(fen_string);
         }
 
+        /*The first position in the history.*/
+        game_history.push_position(board.current_state->zobrist_key);
+
         position >> move;
         if (move == "moves") {
             /*We need to make moves.*/
@@ -71,6 +86,7 @@ namespace engine {
                 /*We get the corresponding move from the move string.*/
                 Move corresponding = find_move(move);
                 board.make_move(corresponding);
+                game_history.push_position(board.current_state->zobrist_key);
             }
         }
     }
@@ -115,6 +131,25 @@ namespace engine {
                                                    board.color_to_play());
         }
         search.start_thread();
+    }
+
+
+    void UCI::process_option(std::stringstream &option) {
+        std::string token, name;
+        /*We pass over the "name" string to get the option's name.*/
+        option >> token >> name;
+
+        if (name == "Hash") {
+            /*We pass over the "value" string.*/
+            option >> token;
+            /*We get the new transposition table size.*/
+            int hash_size_mb;
+            option >> hash_size_mb;
+            transposition_table.reserve(hash_size_mb);
+        } else {
+            std::cout << "Unknown option" << std::endl;
+        }
+
     }
 
     void UCI::start() {

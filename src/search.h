@@ -13,9 +13,13 @@
 #include"moveorder.h"
 #include"ttable.h"
 #include"nnue_eval.h"
+#include"history.h"
 
 namespace engine {
     const double C_DEFAULT_SEARCH_TIME = 5.0;
+
+    /*The number of moves that need to be searched before applying null move pruning.*/
+    const int C_LMR_MOVE_COUNT=4;
 
     /*This structure contains parameters for the search.*/
     struct SearchParameters {

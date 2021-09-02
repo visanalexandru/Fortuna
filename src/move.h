@@ -39,6 +39,11 @@ namespace engine {
                a.promotion != b.promotion;
     }
 
+    inline bool is_tactical(const Move &move) {
+        return move.type == M_PROMOTION_CAPTURE || move.type == M_CAPTURE || move.type == M_EN_PASSANT ||
+               move.type == M_PROMOTION;
+    }
+
     inline Move create_quiet_move(Square origin, Square destination, Piece moved) {
         return {MoveType::M_QUIET, origin, destination, moved, Piece::P_NONE, Piece::P_NONE};
     }

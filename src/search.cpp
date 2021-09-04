@@ -69,6 +69,10 @@ namespace engine {
             depth++;
         }
 
+        if (depth == 0) {
+            return quiescence(alpha, beta, side);
+        }
+
         int alpha_orig = alpha;
         /*Transposition table lookup.*/
         u64 hash = board.current_state->zobrist_key;
@@ -84,11 +88,6 @@ namespace engine {
             }
             if (alpha >= beta)
                 return entry->score;
-        }
-
-
-        if (depth == 0) {
-            return quiescence(alpha, beta, side);
         }
 
         auto moves = move_gen.get_moves<GT_NORMAL>();

@@ -797,21 +797,40 @@ TEST_CASE("History","[history]"){
     REQUIRE(history.get_ply()==0);
     REQUIRE(history.is_repetition()==false);
 
-    history.push_position(12347912739123);
-    history.push_position(1231777757577);
-    history.push_position(129083102983012893);
-    history.push_position(1237128749879382752);
-    history.push_position(12347912739123);
-
+    history.push_position(12347912739123,true);
+    history.push_position(1231777757577,false);
+    history.push_position(129083102983012893,false);
+    REQUIRE(history.get_last_irreversible()==0);
+    history.push_position(1237128749879382752,false);
+    history.push_position(12347912739123,false);
     REQUIRE(history.is_repetition()==true);
     REQUIRE(history.get_ply()==5);
 
     history.pop_position();
     REQUIRE(history.is_repetition()==false);
 
-    history.push_position(1908123177624124);
-    history.push_position(1237128749879382752);
+    history.push_position(1908123177624124,false);
+    history.push_position(1237128749879382752,false);
 
     REQUIRE(history.is_repetition()==true);
     REQUIRE(history.get_ply()==6);
+
+    history.push_position(123177474747,true);
+    REQUIRE(history.get_last_irreversible()==6);
+    history.push_position(12317749999047,false);
+    history.push_position(9241577999047,false);
+    REQUIRE(history.get_last_irreversible()==6);
+    history.push_position(1231231444,true);
+    history.push_position(9241577999047,false);
+    REQUIRE(history.is_repetition()==false);
+    REQUIRE(history.get_last_irreversible()==9);
+    history.pop_position();
+
+    history.pop_position();
+    REQUIRE(history.get_last_irreversible()==6);
+    history.pop_position();
+    history.pop_position();
+    history.pop_position();
+    REQUIRE(history.get_last_irreversible()==0);
+
 }

@@ -77,7 +77,7 @@ namespace engine {
         }
 
         /*The first position in the history.*/
-        game_history.push_position(board.current_state->zobrist_key);
+        game_history.push_position(board.current_state->zobrist_key, true);
 
         position >> move;
         if (move == "moves") {
@@ -86,7 +86,7 @@ namespace engine {
                 /*We get the corresponding move from the move string.*/
                 Move corresponding = find_move(move);
                 board.make_move(corresponding);
-                game_history.push_position(board.current_state->zobrist_key);
+                game_history.push_position(board.current_state->zobrist_key, is_irreversible(corresponding));
             }
         }
     }

@@ -108,7 +108,7 @@ namespace engine {
 
         for (const Move &move:moves) {
             board.make_move(move);
-            game_history.push_position(board.current_state->zobrist_key);
+            game_history.push_position(board.current_state->zobrist_key,is_irreversible(move));
             ply++;
 
             gives_check = move_gen.is_in_check(get_opposite(side));
@@ -180,7 +180,7 @@ namespace engine {
 
         for (const Move &move:moves) {
             board.make_move(move);
-            game_history.push_position(board.current_state->zobrist_key);
+            game_history.push_position(board.current_state->zobrist_key,is_irreversible(move));
             ply++;
 
             move_score = adjust_mate_score(-nega_max(depth - 1, -beta, -alpha, get_opposite(side)));

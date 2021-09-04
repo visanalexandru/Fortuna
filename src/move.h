@@ -44,6 +44,10 @@ namespace engine {
                move.type == M_PROMOTION;
     }
 
+    inline bool is_irreversible(const Move &move) {
+        return move.type == M_CAPTURE || get_piece_type(move.moved) == PT_PAWN;
+    }
+
     inline Move create_quiet_move(Square origin, Square destination, Piece moved) {
         return {MoveType::M_QUIET, origin, destination, moved, Piece::P_NONE, Piece::P_NONE};
     }

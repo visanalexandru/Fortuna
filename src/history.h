@@ -14,6 +14,11 @@ namespace engine {
         /*The game history buffer, holds zobrist keys of the visited positions.*/
         u64 game_history[C_MAX_PLY];
 
+        /* Captures and pawn moves are irreversible (they reset the half-move clock), so we can save time in detecting
+         * repetition by only considering the positions that were reached after a irreversible move.
+         * This array holds for each position in the history the last position index that was reached after a irreversible move.*/
+        int last_irreversible[C_MAX_PLY];
+
         /*The number of half-moves played.*/
         int ply;
 
@@ -21,7 +26,8 @@ namespace engine {
         History();
 
         /*Adds a new position to the history, usually called when we make a move or start from another position.*/
-        void push_position(u64 key);
+        /*The first added position must pass a true value to the "irreversible" parameter.*/
+        void push_position(u64 key, bool irreversible);
 
         /*Removes the last position from the history, usually when we undo a move.*/
         void pop_position();
@@ -34,6 +40,9 @@ namespace engine {
 
         /*Returns the number of half-moves played.*/
         int get_ply() const;
+
+        /*Returns the ply of the position reached by the last irreversible move. The starting position, at ply 0 is also considered irreversible.*/
+        int get_last_irreversible() const;
     };
 
     extern History game_history;

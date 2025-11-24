@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/Tests.dir/link.d CMakeFiles/Tests.dir/tests.cpp.o -o Tests  ../src/libEngine.a

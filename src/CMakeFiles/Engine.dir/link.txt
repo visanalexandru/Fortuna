@@ -1,0 +1,2 @@
+/usr/bin/ar qc libEngine.a CMakeFiles/Engine.dir/util.cpp.o CMakeFiles/Engine.dir/board.cpp.o CMakeFiles/Engine.dir/movegen.cpp.o CMakeFiles/Engine.dir/attacks.cpp.o CMakeFiles/Engine.dir/eval.cpp.o CMakeFiles/Engine.dir/eval_defines.cpp.o CMakeFiles/Engine.dir/search.cpp.o CMakeFiles/Engine.dir/moveorder.cpp.o CMakeFiles/Engine.dir/zobrist.cpp.o CMakeFiles/Engine.dir/ttable.cpp.o CMakeFiles/Engine.dir/uci.cpp.o CMakeFiles/Engine.dir/timeman.cpp.o CMakeFiles/Engine.dir/history.cpp.o
+/usr/bin/ranlib libEngine.a

@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/fortuna.dir/link.d CMakeFiles/fortuna.dir/main.cpp.o -o fortuna  libEngine.a

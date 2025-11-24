@@ -40,7 +40,7 @@ make
 
 This engine implements the UCI protocol. You can test it with Arena Chess: https://playwitharena.de/
 
-1. Build the engine (e.g., engine.exe or ./engine).
+1. Build the engine (as shown above: `./src/Fortuna` on Linux/Mac or `src\Fortuna.exe` on Windows).
 2. In Arena: Engines → Install New Engine...; select the executable and choose the UCI protocol.
 3. Play: Game → Play → Human vs Engine or use Tournament to run automated matches and export PGN.
   
